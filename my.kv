@@ -1,0 +1,533 @@
+#:import Factory kivy.factory.Factory
+<MyPopup@Popup>:
+    auto_dismiss: False
+    Button:
+        text: 'Close me!'
+        on_release: root.dismiss()
+
+<Password>:
+    password: password
+    FloatLayout:
+        Label:
+            text:"Usunąć?"
+            font_size: (root.width**2 + root.height**2) / 13**4
+            pos_hint: {"x":0.25, "y":0.8}
+            size_hint: 0.5, 0.2
+        TextInput:
+            pos_hint: {"x":0.25, "top":0.6}
+            size_hint: 0.5, 0.1
+            id: password
+            hint_text: "hasło"
+            multiline: False
+            font_size: (root.width**2 + root.height**2) / 15**4
+        Button:
+            pos_hint:{"x":0.1,"y":0.1}
+            size_hint: 0.35, 0.1
+            font_size: (root.width**2 + root.height**2) / 15**4
+            text: "Tak"
+            on_release:
+                root.delete()
+        Button:
+            pos_hint:{"x":0.55,"y":0.1}
+            size_hint: 0.35, 0.1
+            font_size: (root.width**2 + root.height**2) / 15**4
+            text: "Nie"
+            on_release:
+                root.clear()
+                root.manager.transition.direction = "right"
+                app.root.current = "browser"
+
+<StartWindow>:
+    FloatLayout:
+        Label:
+            text:"Raportowanie OSP"
+            font_size: (root.width**2 + root.height**2) / 13**4
+            pos_hint: {"x":0.25, "y":0.8}
+            size_hint: 0.5, 0.2
+        Button:
+            pos_hint:{"x":0.1,"y":0.1}
+            size_hint: 0.35, 0.1
+            font_size: (root.width**2 + root.height**2) / 15**4
+            text: "Nowy raport"
+            on_release:
+                root.manager.transition.direction = "down"
+                app.root.current = "create"
+        Button:
+            pos_hint:{"x":0.55,"y":0.1}
+            size_hint: 0.35, 0.1
+            font_size: (root.width**2 + root.height**2) / 15**4
+            text: "Przeglądaj"
+            on_release:
+                root.manager.transition.direction = "up"
+                app.root.current = "browser"
+
+<CreateReport>:
+    id_number: id_number
+    dep_date: dep_date
+    dep_time: dep_time
+    spot_time: spot_time
+    location: location
+    type_of_action: type_of_action
+    section_com: section_com
+    action_com: action_com
+    driver: driver
+    perpetrator: perpetrator
+    victim: victim
+    section: section
+    details: details
+    return_date: return_date
+    end_time: end_time
+    home_time: home_time
+    stan_licznika: stan_licznika
+    km_location: km_location
+
+    layout_content: layout_content
+    BoxLayout:
+        id: bl
+        orientation: 'vertical'
+        padding: 10, 10
+        row_default_height: '48dp'
+        row_force_default: True
+        spacing: 10, 10
+        ScrollView:
+            size: self.size
+            GridLayout:
+                id: layout_content
+                size_hint_y: None
+                cols: 1
+                row_default_height: '100dp'
+                row_force_default: True
+                spacing: 0, 0
+                padding: 0, 0
+                Label:
+                    text: "Podaj szczegóły raportu"
+                TextInput:
+#                    pos_hint: {"x":0.55, "top":0.7}
+                    size_hint: 0.35, 0.1
+                    id: id_number
+                    hint_text: "L.P."
+                    multiline: False
+                    font_size: (root.width**2 + root.height**2) / 15**4
+#                Label:
+#                    text: "Lorem ipsum dolor sit amet"
+                TextInput:
+#                    pos_hint: {"x":0.55, "top":0.7}
+                    size_hint: 0.35, 0.1
+                    id: dep_date
+                    hint_text: "Data wyjazdu"
+                    multiline: False
+                    font_size: (root.width**2 + root.height**2) / 15**4
+#                Label:
+#                    text: "Lorem ipsum dolor sit amet"
+                TextInput:
+#                    pos_hint: {"x":0.55, "top":0.7}
+                    size_hint: 0.35, 0.1
+                    id: dep_time
+                    hint_text: "Godzina wyjazdu"
+                    multiline: False
+                    font_size: (root.width**2 + root.height**2) / 15**4
+#                Label:
+#                    text: "Lorem ipsum dolor sit amet"
+                TextInput:
+#                    pos_hint: {"x":0.55, "top":0.7}
+                    size_hint: 0.35, 0.1
+                    id: spot_time
+                    hint_text: "na miejscu"
+                    multiline: False
+                    font_size: (root.width**2 + root.height**2) / 15**4
+#                Label:
+#                    text: "Lorem ipsum dolor sit amet"
+                TextInput:
+#                    pos_hint: {"x":0.55, "top":0.7}
+                    size_hint: 0.35, 0.1
+                    id: location
+                    hint_text: "Miejsce zdarzenia"
+                    multiline: False
+                    font_size: (root.width**2 + root.height**2) / 15**4
+#                Label:
+#                    text: "Lorem ipsum dolor sit amet"
+                TextInput:
+#                    pos_hint: {"x":0.55, "top":0.7}
+                    size_hint: 0.35, 0.1
+                    id: type_of_action
+                    hint_text: "Rodzaj zdarzenia"
+                    multiline: False
+                    font_size: (root.width**2 + root.height**2) / 15**4
+#                Label:
+#                    text: "Lorem ipsum dolor sit amet"
+                TextInput:
+#                    pos_hint: {"x":0.55, "top":0.7}
+                    size_hint: 0.35, 0.1
+                    id: section_com
+                    hint_text: "Dowódca sekcji"
+                    multiline: False
+                    font_size: (root.width**2 + root.height**2) / 15**4
+#                Label:
+#                    text: "Lorem ipsum dolor sit amet"
+                TextInput:
+#                    pos_hint: {"x":0.55, "top":0.7}
+                    size_hint: 0.35, 0.1
+                    id: action_com
+                    hint_text: "Dowódca akcji"
+                    multiline: False
+                    font_size: (root.width**2 + root.height**2) / 15**4
+#                Label:
+#                    text: "Lorem ipsum dolor sit amet"
+                TextInput:
+#                    pos_hint: {"x":0.55, "top":0.7}
+                    size_hint: 0.35, 0.1
+                    id: driver
+                    hint_text: "Kierowca"
+                    multiline: False
+                    font_size: (root.width**2 + root.height**2) / 15**4
+#                Label:
+#                    text: "Lorem ipsum dolor sit amet"
+                TextInput:
+#                    pos_hint: {"x":0.55, "top":0.7}
+                    size_hint: 0.35, 0.1
+                    id: perpetrator
+                    hint_text: "Sprawca"
+                    multiline: False
+                    font_size: (root.width**2 + root.height**2) / 15**4
+#                Label:
+#                    text: "Lorem ipsum dolor sit amet"
+                TextInput:
+#                    pos_hint: {"x":0.55, "top":0.7}
+                    size_hint: 0.35, 0.1
+                    id: victim
+                    hint_text: "Poszkodowany"
+                    multiline: False
+                    font_size: (root.width**2 + root.height**2) / 15**4
+#                Label:
+#                    text: "Lorem ipsum dolor sit amet"
+                TextInput:
+#                    pos_hint: {"x":0.55, "top":0.7}
+                    size_hint: 0.35, 0.1
+                    id: section
+                    hint_text: "Sekcja"
+                    multiline: False
+                    font_size: (root.width**2 + root.height**2) / 15**4
+#                Label:
+#                    text: "Lorem ipsum dolor sit amet"
+                TextInput:
+#                    pos_hint: {"x":0.55, "top":0.7}
+                    size_hint: 0.35, 0.1
+                    id: details
+                    hint_text: "Szczegóły"
+                    multiline: False
+                    font_size: (root.width**2 + root.height**2) / 15**4
+#                Label:
+#                    text: "Lorem ipsum dolor sit amet"
+                TextInput:
+#                    pos_hint: {"x":0.55, "top":0.7}
+                    size_hint: 0.35, 0.1
+                    id: return_date
+                    hint_text: "Data powrotu"
+                    multiline: False
+                    font_size: (root.width**2 + root.height**2) / 15**4
+#                Label:
+#                    text: "Lorem ipsum dolor sit amet"
+                TextInput:
+#                    pos_hint: {"x":0.55, "top":0.7}
+                    size_hint: 0.35, 0.1
+                    id: end_time
+                    hint_text: "Godzina zakończenia"
+                    multiline: False
+                    font_size: (root.width**2 + root.height**2) / 15**4
+#                Label:
+#                    text: "Lorem ipsum dolor sit amet"
+                TextInput:
+#                    pos_hint: {"x":0.55, "top":0.7}
+                    size_hint: 0.35, 0.1
+                    id: home_time
+                    hint_text: "Godzina w remizie"
+                    multiline: False
+                    font_size: (root.width**2 + root.height**2) / 15**4
+#                Label:
+#                    text: "Lorem ipsum dolor sit amet"
+                TextInput:
+#                    pos_hint: {"x":0.55, "top":0.7}
+                    size_hint: 0.35, 0.1
+                    id: stan_licznika
+                    hint_text: "Stan licznika"
+                    multiline: False
+                    font_size: (root.width**2 + root.height**2) / 15**4
+#                Label:
+#                    text: "Lorem ipsum dolor sit amet"
+                TextInput:
+#                    pos_hint: {"x":0.55, "top":0.7}
+                    size_hint: 0.35, 0.1
+                    id: km_location
+                    hint_text: "KM do miejsca zdarzenia"
+                    multiline: False
+                    font_size: (root.width**2 + root.height**2) / 15**4
+                Button:
+#                    pos_hint:{"x":0.15,"y":0.4}
+                    size_hint: 0.35, 0.1
+                    text: "Zapisz"
+                    font_size: (root.width**2 + root.height**2) / 15**4
+                    on_release:
+                        root.submit()
+                Button:
+#                    pos_hint:{"x":0.55,"y":0.1}
+                    size_hint: 0.35, 0.1
+                    font_size: (root.width**2 + root.height**2) / 15**4
+                    text: "Anuluj"
+                    on_release:
+                        root.clear()
+                        root.manager.transition.direction = "up"
+                        app.root.current = "start"
+
+<EditReport>:
+    id_number: id_number
+    dep_date: dep_date
+    dep_time: dep_time
+    spot_time: spot_time
+    location: location
+    type_of_action: type_of_action
+    section_com: section_com
+    action_com: action_com
+    driver: driver
+    perpetrator: perpetrator
+    victim: victim
+    section: section
+    details: details
+    return_date: return_date
+    end_time: end_time
+    home_time: home_time
+    stan_licznika: stan_licznika
+    km_location: km_location
+    modDate: modDate
+
+    layout_content: layout_content
+    BoxLayout:
+        id: bl
+        orientation: 'vertical'
+        padding: 10, 10
+        row_default_height: '48dp'
+        row_force_default: True
+        spacing: 10, 10
+        ScrollView:
+            size: self.size
+            GridLayout:
+                id: layout_content
+                size_hint_y: None
+                cols: 1
+                row_default_height: '100dp'
+                row_force_default: True
+                spacing: 0, 0
+                padding: 0, 0
+                Label:
+                    text: "Edytuj raport o L.P.:"
+                Label:
+                    id: id_number
+                    text: "L.P."
+                Label:
+                    text: "Data ostatniej modyfikacji:"
+                Label:
+                    id: modDate
+                    text: "Data ostatniej modyfikacji"
+#                Label:
+#                    text: "Lorem ipsum dolor sit amet"
+                TextInput:
+#                    pos_hint: {"x":0.55, "top":0.7}
+                    size_hint: 0.35, 0.1
+                    id: dep_date
+                    hint_text: "Data wyjazdu"
+                    multiline: False
+                    font_size: (root.width**2 + root.height**2) / 15**4
+#                Label:
+#                    text: "Lorem ipsum dolor sit amet"
+                TextInput:
+#                    pos_hint: {"x":0.55, "top":0.7}
+                    size_hint: 0.35, 0.1
+                    id: dep_time
+                    hint_text: "Godzina wyjazdu"
+                    multiline: False
+                    font_size: (root.width**2 + root.height**2) / 15**4
+#                Label:
+#                    text: "Lorem ipsum dolor sit amet"
+                TextInput:
+#                    pos_hint: {"x":0.55, "top":0.7}
+                    size_hint: 0.35, 0.1
+                    id: spot_time
+                    hint_text: "na miejscu"
+                    multiline: False
+                    font_size: (root.width**2 + root.height**2) / 15**4
+#                Label:
+#                    text: "Lorem ipsum dolor sit amet"
+                TextInput:
+#                    pos_hint: {"x":0.55, "top":0.7}
+                    size_hint: 0.35, 0.1
+                    id: location
+                    hint_text: "Miejsce zdarzenia"
+                    multiline: False
+                    font_size: (root.width**2 + root.height**2) / 15**4
+#                Label:
+#                    text: "Lorem ipsum dolor sit amet"
+                TextInput:
+#                    pos_hint: {"x":0.55, "top":0.7}
+                    size_hint: 0.35, 0.1
+                    id: type_of_action
+                    hint_text: "Rodzaj zdarzenia"
+                    multiline: False
+                    font_size: (root.width**2 + root.height**2) / 15**4
+#                Label:
+#                    text: "Lorem ipsum dolor sit amet"
+                TextInput:
+#                    pos_hint: {"x":0.55, "top":0.7}
+                    size_hint: 0.35, 0.1
+                    id: section_com
+                    hint_text: "Dowódca sekcji"
+                    multiline: False
+                    font_size: (root.width**2 + root.height**2) / 15**4
+#                Label:
+#                    text: "Lorem ipsum dolor sit amet"
+                TextInput:
+#                    pos_hint: {"x":0.55, "top":0.7}
+                    size_hint: 0.35, 0.1
+                    id: action_com
+                    hint_text: "Dowódca akcji"
+                    multiline: False
+                    font_size: (root.width**2 + root.height**2) / 15**4
+#                Label:
+#                    text: "Lorem ipsum dolor sit amet"
+                TextInput:
+#                    pos_hint: {"x":0.55, "top":0.7}
+                    size_hint: 0.35, 0.1
+                    id: driver
+                    hint_text: "Kierowca"
+                    multiline: False
+                    font_size: (root.width**2 + root.height**2) / 15**4
+#                Label:
+#                    text: "Lorem ipsum dolor sit amet"
+                TextInput:
+#                    pos_hint: {"x":0.55, "top":0.7}
+                    size_hint: 0.35, 0.1
+                    id: perpetrator
+                    hint_text: "Sprawca"
+                    multiline: False
+                    font_size: (root.width**2 + root.height**2) / 15**4
+#                Label:
+#                    text: "Lorem ipsum dolor sit amet"
+                TextInput:
+#                    pos_hint: {"x":0.55, "top":0.7}
+                    size_hint: 0.35, 0.1
+                    id: victim
+                    hint_text: "Poszkodowany"
+                    multiline: False
+                    font_size: (root.width**2 + root.height**2) / 15**4
+#                Label:
+#                    text: "Lorem ipsum dolor sit amet"
+                TextInput:
+#                    pos_hint: {"x":0.55, "top":0.7}
+                    size_hint: 0.35, 0.1
+                    id: section
+                    hint_text: "Sekcja"
+                    multiline: False
+                    font_size: (root.width**2 + root.height**2) / 15**4
+#                Label:
+#                    text: "Lorem ipsum dolor sit amet"
+                TextInput:
+#                    pos_hint: {"x":0.55, "top":0.7}
+                    size_hint: 0.35, 0.1
+                    id: details
+                    hint_text: "Szczegóły"
+                    multiline: False
+                    font_size: (root.width**2 + root.height**2) / 15**4
+#                Label:
+#                    text: "Lorem ipsum dolor sit amet"
+                TextInput:
+#                    pos_hint: {"x":0.55, "top":0.7}
+                    size_hint: 0.35, 0.1
+                    id: return_date
+                    hint_text: "Data powrotu"
+                    multiline: False
+                    font_size: (root.width**2 + root.height**2) / 15**4
+#                Label:
+#                    text: "Lorem ipsum dolor sit amet"
+                TextInput:
+#                    pos_hint: {"x":0.55, "top":0.7}
+                    size_hint: 0.35, 0.1
+                    id: end_time
+                    hint_text: "Godzina zakończenia"
+                    multiline: False
+                    font_size: (root.width**2 + root.height**2) / 15**4
+#                Label:
+#                    text: "Lorem ipsum dolor sit amet"
+                TextInput:
+#                    pos_hint: {"x":0.55, "top":0.7}
+                    size_hint: 0.35, 0.1
+                    id: home_time
+                    hint_text: "Godzina w remizie"
+                    multiline: False
+                    font_size: (root.width**2 + root.height**2) / 15**4
+#                Label:
+#                    text: "Lorem ipsum dolor sit amet"
+                TextInput:
+#                    pos_hint: {"x":0.55, "top":0.7}
+                    size_hint: 0.35, 0.1
+                    id: stan_licznika
+                    hint_text: "Stan licznika"
+                    multiline: False
+                    font_size: (root.width**2 + root.height**2) / 15**4
+#                Label:
+#                    text: "Lorem ipsum dolor sit amet"
+                TextInput:
+#                    pos_hint: {"x":0.55, "top":0.7}
+                    size_hint: 0.35, 0.1
+                    id: km_location
+                    hint_text: "KM do miejsca zdarzenia"
+                    multiline: False
+                    font_size: (root.width**2 + root.height**2) / 15**4
+                Button:
+#                    pos_hint:{"x":0.15,"y":0.4}
+                    size_hint: 0.35, 0.1
+                    text: "Zapisz"
+                    font_size: (root.width**2 + root.height**2) / 15**4
+                    on_release:
+                        root.submit()
+                Button:
+#                    pos_hint:{"x":0.55,"y":0.1}
+                    size_hint: 0.35, 0.1
+                    font_size: (root.width**2 + root.height**2) / 15**4
+                    text: "Anuluj"
+                    on_release:
+                        root.clear()
+                        root.manager.transition.direction = "right"
+                        app.root.current = "browser"
+
+
+<Browser>:
+    name: "browser"
+    id_number: id_number
+    layout_content: layout_content
+#    available: available
+#    grid_id: grid_id
+#    scroll_id:scroll_id
+    BoxLayout:
+        id: bl
+        orientation: 'vertical'
+        padding: 10, 10
+        row_default_height: '48dp'
+        row_force_default: True
+        spacing: 10, 10
+        ScrollView:
+            size: self.size
+            GridLayout:
+                id: layout_content
+                size_hint_y: None
+                cols: 1
+                row_default_height: '100dp'
+                row_force_default: True
+                spacing: 0, 0
+                padding: 0, 0
+#                Label:
+#                    text: "Wybierz raport do edycji lub wpisz poniżej L.P. raportu do usunięcia"
+                TextInput:
+                    pos_hint: {"x":0.15, "top":0.4}
+                    size_hint: 0.35, 0.1
+                    id: id_number
+                    hint_text: "L.P."
+                    multiline: False
+                    font_size: (root.width**2 + root.height**2) / 15**4
