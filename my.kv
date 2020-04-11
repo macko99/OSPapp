@@ -18,6 +18,40 @@
             size_hint: 0.5, 0.1
             id: password
             hint_text: "hasło"
+            password: True
+            multiline: False
+            font_size: (root.width**2 + root.height**2) / 15**4
+        Button:
+            pos_hint:{"x":0.1,"y":0.1}
+            size_hint: 0.35, 0.1
+            font_size: (root.width**2 + root.height**2) / 15**4
+            text: "Tak"
+            on_release:
+                root.delete()
+        Button:
+            pos_hint:{"x":0.55,"y":0.1}
+            size_hint: 0.35, 0.1
+            font_size: (root.width**2 + root.height**2) / 15**4
+            text: "Nie"
+            on_release:
+                root.clear()
+                root.manager.transition.direction = "right"
+                app.root.current = "edit"
+
+<PasswordAll>:
+    password: password
+    FloatLayout:
+        Label:
+            text:"Usunąć wszystkie?"
+            font_size: (root.width**2 + root.height**2) / 13**4
+            pos_hint: {"x":0.25, "y":0.8}
+            size_hint: 0.5, 0.2
+        TextInput:
+            pos_hint: {"x":0.25, "top":0.6}
+            size_hint: 0.5, 0.1
+            id: password
+            password: True
+            hint_text: "hasło"
             multiline: False
             font_size: (root.width**2 + root.height**2) / 15**4
         Button:
@@ -80,6 +114,7 @@
     home_time: home_time
     stan_licznika: stan_licznika
     km_location: km_location
+    scroll_id: scroll_id
 
     layout_content: layout_content
     BoxLayout:
@@ -90,6 +125,7 @@
         row_force_default: True
         spacing: 10, 10
         ScrollView:
+            id: scroll_id
             size: self.size
             GridLayout:
                 id: layout_content
@@ -142,7 +178,7 @@
                     size_hint: 0.35, 0.1
                     id: location
                     hint_text: "Miejsce zdarzenia"
-                    multiline: False
+                    multiline: True
                     font_size: (root.width**2 + root.height**2) / 15**4
 #                Label:
 #                    text: "Lorem ipsum dolor sit amet"
@@ -279,6 +315,7 @@
                         app.root.current = "start"
 
 <EditReport>:
+    sys_id: sys_id
     id_number: id_number
     dep_date: dep_date
     dep_time: dep_time
@@ -298,6 +335,7 @@
     stan_licznika: stan_licznika
     km_location: km_location
     modDate: modDate
+    scroll_id: scroll_id
 
     layout_content: layout_content
     BoxLayout:
@@ -308,6 +346,7 @@
         row_force_default: True
         spacing: 10, 10
         ScrollView:
+            id: scroll_id
             size: self.size
             GridLayout:
                 id: layout_content
@@ -318,15 +357,24 @@
                 spacing: 0, 0
                 padding: 0, 0
                 Label:
-                    text: "Edytuj raport o L.P.:"
+                    text: "Edytuj raport o UUID:"
                 Label:
-                    id: id_number
-                    text: "L.P."
+                    id: sys_id
+                    text: "UUID:"
                 Label:
                     text: "Data ostatniej modyfikacji:"
                 Label:
                     id: modDate
                     text: "Data ostatniej modyfikacji"
+#                Label:
+#                    text: "Lorem ipsum dolor sit amet"
+                TextInput:
+#                    pos_hint: {"x":0.55, "top":0.7}
+                    size_hint: 0.35, 0.1
+                    id: id_number
+                    hint_text: "L.P."
+                    multiline: False
+                    font_size: (root.width**2 + root.height**2) / 15**4
 #                Label:
 #                    text: "Lorem ipsum dolor sit amet"
                 TextInput:
@@ -496,17 +544,23 @@
                         root.clear()
                         root.manager.transition.direction = "right"
                         app.root.current = "browser"
+                Button:
+                    id: del_but
+                    size_hint: 0.35, 0.1
+                    font_size: (root.width**2 + root.height**2) / 15**4
+                    text: "Usuń"
+                    on_release:
+                        root.try_delete()
 
 
 <Browser>:
     name: "browser"
-    id_number: id_number
+    id1: id1
+    id3: id3
+    del_but: del_but
     layout_content: layout_content
-#    available: available
-#    grid_id: grid_id
-#    scroll_id:scroll_id
+    cancel_but: cancel_but
     BoxLayout:
-        id: bl
         orientation: 'vertical'
         padding: 10, 10
         row_default_height: '48dp'
@@ -522,12 +576,23 @@
                 row_force_default: True
                 spacing: 0, 0
                 padding: 0, 0
-#                Label:
-#                    text: "Wybierz raport do edycji lub wpisz poniżej L.P. raportu do usunięcia"
-                TextInput:
-                    pos_hint: {"x":0.15, "top":0.4}
+                Label:
+                    id: id1
+                    text: "Wybierz raport do edycji:"
+                Label:
+                    id: id3
+                    text: "Brak raportów"
+                Button:
+                    id: del_but
                     size_hint: 0.35, 0.1
-                    id: id_number
-                    hint_text: "L.P."
-                    multiline: False
                     font_size: (root.width**2 + root.height**2) / 15**4
+                    text: "Usuń wszystkie"
+                    on_release:
+                        root.try_delete()
+                Button:
+                    id: cancel_but
+                    size_hint: 0.35, 0.1
+                    font_size: (root.width**2 + root.height**2) / 15**4
+                    text: "Anuluj"
+                    on_release:
+                        root.cancel()

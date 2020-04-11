@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
+from os.path import join
 from kivy.clock import mainthread
-from kivy.uix.label import Label
 from kivy.core.window import Window
 from kivy.uix.button import Button
 from database import DataBase
@@ -17,13 +17,16 @@ class CreateReport(Screen):
         super(CreateReport, self).__init__(**kwargs)
         self.layout_content.bind(minimum_height=self.layout_content.setter('height'))
 
+    def on_enter(self, *args):
+        self.ids.scroll_id.scroll_to(self.ids.id_number)
+
     def submit(self):
         if self.id_number.text == "" or self.id_number.text == "Pole wymagane" or self.id_number.text == "Taka L.P. już istnieje!":
             self.id_number.text = "Pole wymagane"
-        elif db.if_exists(self.id_number.text):
+        elif db.find_inner_id(self.id_number.text):
             self.id_number.text = "Taka L.P. już istnieje!"
         else:
-            db.put_report(self.id_number.text, self.dep_date.text, self.dep_time.text, self.spot_time.text,
+            db.put_report("", self.id_number.text, self.dep_date.text, self.dep_time.text, self.spot_time.text,
                           self.location.text, self.type_of_action.text, self.section_com.text, self.action_com.text,
                           self.driver.text, self.perpetrator.text, self.victim.text, self.section.text,
                           self.details.text,
@@ -56,8 +59,9 @@ class CreateReport(Screen):
 
 class EditReport(Screen):
     layout_content = ObjectProperty(None)
-
     data = ""
+    init_id = ""
+    tmp_id_number = ""
 
     def __init__(self, **kwargs):
         super(EditReport, self).__init__(**kwargs)
@@ -68,38 +72,49 @@ class EditReport(Screen):
         data = input_data
 
     def on_enter(self):
+        self.ids.scroll_id.scroll_to(self.ids.sys_id)
         result = db.get_report(data)
-        self.id_number.text = result[0]
-        self.dep_date.text = result[1]
-        self.dep_time.text = result[2]
-        self.spot_time.text = result[3]
-        self.location.text = result[4]
-        self.type_of_action.text = result[5]
-        self.section_com.text = result[6]
-        self.action_com.text = result[7]
-        self.driver.text = result[8]
-        self.perpetrator.text = result[9]
-        self.victim.text = result[10]
-        self.section.text = result[11]
-        self.details.text = result[12]
-        self.return_date.text = result[13]
-        self.end_time.text = result[14]
-        self.home_time.text = result[15]
-        self.stan_licznika.text = result[16]
-        self.km_location.text = result[17]
-        self.modDate.text = result[18]
+        self.sys_id.text = result[0]
+        self.id_number.text = result[1]
+        self.dep_date.text = result[2]
+        self.dep_time.text = result[3]
+        self.spot_time.text = result[4]
+        self.location.text = result[5]
+        self.type_of_action.text = result[6]
+        self.section_com.text = result[7]
+        self.action_com.text = result[8]
+        self.driver.text = result[9]
+        self.perpetrator.text = result[10]
+        self.victim.text = result[11]
+        self.section.text = result[12]
+        self.details.text = result[13]
+        self.return_date.text = result[14]
+        self.end_time.text = result[15]
+        self.home_time.text = result[16]
+        self.stan_licznika.text = result[17]
+        self.km_location.text = result[18]
+        self.modDate.text = result[19]
+        global init_id
+        init_id = result[1]
 
     def submit(self):
-        db.put_report(self.id_number.text, self.dep_date.text, self.dep_time.text, self.spot_time.text,
+        global init_id
+        if self.id_number.text == "" or self.id_number.text == "Pole wymagane" or self.id_number.text == "Taka L.P. już istnieje!":
+            self.id_number.text = "Pole wymagane"
+        elif self.id_number.text != init_id and db.find_inner_id(self.id_number.text):
+            self.id_number.text = "Taka L.P. już istnieje!"
+        else:
+            db.put_report(self.sys_id.text, self.id_number.text, self.dep_date.text, self.dep_time.text, self.spot_time.text,
                       self.location.text, self.type_of_action.text, self.section_com.text, self.action_com.text,
                       self.driver.text, self.perpetrator.text, self.victim.text, self.section.text, self.details.text,
                       self.return_date.text, self.end_time.text, self.home_time.text, self.stan_licznika.text,
                       self.km_location.text)
-        EditReport.clear(self)
-        self.manager.transition.direction = "right"
-        sm.current = "browser"
+            EditReport.clear(self)
+            self.manager.transition.direction = "right"
+            sm.current = "browser"
 
     def clear(self):
+        self.sys_id.text = ""
         self.id_number.text = ""
         self.dep_date.text = ""
         self.dep_time.text = ""
@@ -120,6 +135,16 @@ class EditReport(Screen):
         self.km_location.text = ""
         self.modDate.text = ""
 
+    def delete(self):
+        global tmp_id_number
+        db.delete_report(tmp_id_number)
+
+    def try_delete(self):
+        global tmp_id_number
+        tmp_id_number = self.sys_id.text
+        self.manager.transition.direction = "left"
+        sm.current = "password"
+
 
 class Browser(Screen):
     layout_content = ObjectProperty(None)
@@ -131,65 +156,36 @@ class Browser(Screen):
     @mainthread
     def on_enter(self):
         self.ids.layout_content.clear_widgets()
-        label = Label(text="Wybierz raport do edycji:")
-        self.ids.layout_content.add_widget(label)
-        reports = db.get_all_array()
+        self.ids.layout_content.add_widget(self.ids.id1)
+        reports = db.get_all_friendly()
+
         for report in reports:
-            button = Button(text="L.P. = " + str(report), id=str(report))
+            button = Button(text=str(report), id=str(report).split(" ")[0])
             button.bind(on_press=self.on_press)
             self.ids.layout_content.add_widget(button)
 
         if reports:
-            label = Label(text="Wybierz raport do usunięcia poniżej:")
-            self.ids.layout_content.add_widget(label)
-            self.ids.layout_content.add_widget(self.ids.id_number)
-            button = Button(text="Usuń")
-            button.bind(on_press=self.try_delete)
-            self.ids.layout_content.add_widget(button)
+            self.ids.layout_content.add_widget(self.ids.del_but)
         else:
-            label = Label(text="Brak raportów")
-            self.ids.layout_content.add_widget(label)
-            self.ids.layout_content.add_widget(self.ids.id_number)
-        button = Button(text="Anuluj")
-        button.bind(on_press=self.cancel)
-        self.ids.layout_content.add_widget(button)
+            self.ids.layout_content.add_widget(self.ids.id3)
+
+        self.ids.layout_content.add_widget(self.ids.cancel_but)
 
     def on_press(self, instance):
         EditReport().start(str(instance.id))
         self.manager.transition.direction = "left"
         sm.current = "edit"
 
-    def cancel(self, instance):
-        self.clear()
+    def cancel(self):
         self.manager.transition.direction = "down"
         sm.current = "start"
 
-    id_number = ObjectProperty(None)
-    tmp_id_number = ""
+    def delete_all(self):
+        db.delete_all()
 
-    #
-    # def load(self):
-    #     if not db.if_exists(self.id_number.text):
-    #         self.id_number.text = "brak takiego raportu"
-    #     else:
-    #         EditReport().start(self.id_number.text)
-    #         self.manager.transition.direction = "left"
-    #         self.id_number.text = ""
-    #         sm.current = "edit"
-
-    def delete(self):
-        global tmp_id_number
-        db.delete_report(tmp_id_number)
-
-    def try_delete(self, instance):
-        if not db.if_exists(self.id_number.text):
-            self.id_number.text = "brak takiego raportu"
-        else:
-            global tmp_id_number
-            tmp_id_number = self.id_number.text
-            self.id_number.text = ""
-            self.manager.transition.direction = "left"
-            sm.current = "password"
+    def try_delete(self):
+        self.manager.transition.direction = "left"
+        sm.current = "passwordAll"
 
     def clear(self):
         self.id_number.text = ""
@@ -197,14 +193,26 @@ class Browser(Screen):
 
 class Password(Screen):
     layout_content = ObjectProperty(None)
-    password = ObjectProperty(None)
-
-    def count(self):
-        self.password.text = db.count_reports()
 
     def delete(self):
         if self.password.text == "admin":
-            OSPApp.test.delete()
+            EditReport().delete()
+            self.password.text = ""
+            self.manager.transition.direction = "right"
+            sm.current = "browser"
+        else:
+            self.password.text = "złe hasło"
+
+    def clear(self):
+        self.password.text = ""
+
+
+class PasswordAll(Screen):
+    layout_content = ObjectProperty(None)
+
+    def delete(self):
+        if self.password.text == "admin":
+            Browser().delete_all()
             self.password.text = ""
             self.manager.transition.direction = "right"
             sm.current = "browser"
@@ -225,31 +233,34 @@ class WindowManager(ScreenManager):
 
 Builder.load_file("my.kv")
 sm = WindowManager()
-db = DataBase()
-
+global db
 screens = [StartWindow(name="start"), CreateReport(name="create"), Browser(name="browser"), Password(name="password"),
-           EditReport(name="edit")]
+           EditReport(name="edit"), PasswordAll(name="passwordAll")]
 for screen in screens:
     sm.add_widget(screen)
-
 sm.current = "start"
 
 
+def key_input(window, key, scancode, codepoint, modifier):
+    if key == 27:
+        if sm.current != "start":
+            sm.current = "start"
+        return True
+    else:
+        return False
+
+
 class OSPApp(App):
-    test = Browser()
-    test2 = EditReport()
 
     def build(self):
-        Window.bind(on_keyboard=self.key_input)
+        Window.bind(on_keyboard=key_input)
+        global db
+        db = DataBase(App.get_running_app().storage)
         return sm
 
-    def key_input(self, window, key, scancode, codepoint, modifier):
-        if key == 27:
-            if sm.current != "start":
-                sm.current = "start"
-            return True
-        else:
-            return False
+    @property
+    def storage(self):
+        return join(self.user_data_dir, 'storage.json')
 
 
 if __name__ == "__main__":
