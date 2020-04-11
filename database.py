@@ -1,13 +1,24 @@
 import datetime
 from kivy.storage.jsonstore import JsonStore
 import uuid
-# from plyer import email
+import json
+import requests
+import smtplib
 
 
 class DataBase:
+    email = False
+    url = 'https://ospapp-53708.firebaseio.com/.json?auth='
 
     def __init__(self, path):
+        self.path = path
         self.store = JsonStore(path)
+        with open("secret", 'r') as file:
+            data = file.read().split("\n")
+            self.url = self.url + data[0]
+            self.username = data[1]
+            self.password = data[2]
+        self.firebase_patch_all()
 
     def put_report(self, sys_id, id_number, dep_date, dep_time, spot_time, location, type_of_action,
                    section_com, action_com, driver, perpetrator, victim, section, details,
@@ -20,32 +31,73 @@ class DataBase:
                        victim=victim, section=section, details=details,
                        returnDate=return_date, endTime=end_time, homeTime=home_time, stanLicznika=stan_licznika,
                        KM=km_location, modDate=self.get_date())
-        # recipient = 'abc@gmail.com'
-        # subject = 'Hi'
-        # text = 'This is an example.'
-        # create_chooser = False
-        # email.send(recipient=recipient, subject=subject, text=text,
-        #            create_chooser=create_chooser)
+        try:
+            string = "{'" + sys_id + "': " + str(self.store.get(sys_id)) + "}"
+            if self.email:
+                self.send_mail(string)
+            to_database = json.loads(string.replace("'", '"'))
+            requests.patch(url=self.url, json=to_database)
+        except Exception as e:
+            print(str(e))
+
+    def send_mail(self, msg):
+        try:
+            fromaddr = 'OSPreports@outlook.com'
+            toaddrs = 'OSPreports@outlook.com'
+            msg = '\n' + msg
+            server = smtplib.SMTP('SMTP.office365.com:587')
+            server.starttls()
+            server.login(self.username, self.password)
+            server.sendmail(fromaddr, toaddrs, msg)
+            server.quit()
+        except Exception as e:
+            print(str(e))
 
     def delete_report(self, id_number):
         if self.store.exists(id_number):
             self.store.delete(id_number)
+            try:
+                # requests.delete(url=self.url[:-5] + id_number + ".json")
+                string = '{"deleted-' + id_number + '": "true"}'
+                if self.email:
+                    self.send_mail(string)
+                to_database = json.loads(string)
+                requests.patch(url=self.url, json=to_database)
+            except Exception as e:
+                print(str(e))
         else:
             return -1
 
-    def delete_all(self):
-        self.store.clear()
+    def firebase_patch_all(self):
+        try:
+            with open(self.path, 'r') as file:
+                data = file.read()
+                if self.email:
+                    self.send_mail(data)
+                to_database = json.loads(data)
+                requests.patch(url=self.url, json=to_database)
+        except Exception as e:
+            print(str(e))
 
-    def if_exists(self, id_number):
-        if self.store.exists(id_number):
-            return True
-        else:
-            return False
+    def delete_all(self):
+        string_all = ""
+        try:
+            for key in self.store.keys():
+                # requests.delete(url=self.url[:-5] + key + ".json")
+                string = '{"deleted-' + key + '": "true"}'
+                string_all = string_all + string
+                to_database = json.loads(string)
+                requests.patch(url=self.url, json=to_database)
+        except Exception as e:
+            print(str(e))
+        if self.email:
+            self.send_mail(string_all)
+        self.store.clear()
 
     def get_report(self, id_number):
         for item in self.store.find(innerID=id_number):
             dane = self.store.get(item[0])
-            inner_id = dane["innerID"]
+            inner_id = dane['innerID']
             dep_date = dane['depDate']
             dep_time = dane['depTime']
             spot_time = dane['spotTime']
@@ -86,16 +138,3 @@ class DataBase:
     @staticmethod
     def get_date():
         return str(datetime.datetime.now()).split(".")[0]
-
-
-# class Email(object):
-#
-#     def send(self, recipient=None, subject=None, text=None,
-#              create_chooser=None):
-#         self._send(recipient=recipient, subject=subject, text=text,
-#                    create_chooser=create_chooser)
-#
-#     # private
-#
-#     def _send(self, **kwargs):
-#         raise NotImplementedError()

@@ -1,8 +1,9 @@
 from __future__ import unicode_literals
 from os.path import join
-from kivy.clock import mainthread
 from kivy.core.window import Window
 from kivy.uix.button import Button
+from kivy.uix.label import Label
+
 from database import DataBase
 from kivy.app import App
 from kivy.lang import Builder
@@ -153,7 +154,6 @@ class Browser(Screen):
         super(Browser, self).__init__(**kwargs)
         self.layout_content.bind(minimum_height=self.layout_content.setter('height'))
 
-    @mainthread
     def on_enter(self):
         self.ids.layout_content.clear_widgets()
         self.ids.layout_content.add_widget(self.ids.id1)
@@ -167,7 +167,8 @@ class Browser(Screen):
         if reports:
             self.ids.layout_content.add_widget(self.ids.del_but)
         else:
-            self.ids.layout_content.add_widget(self.ids.id3)
+            label = Label(text="Brak raportów", id="test_id")
+            self.ids.layout_content.add_widget(label)
 
         self.ids.layout_content.add_widget(self.ids.cancel_but)
 
