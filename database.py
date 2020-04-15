@@ -20,19 +20,19 @@ class DataBase:
             self.password = data[2]
         self.firebase_patch_all()
 
-    def put_report(self, sys_id, id_number, dep_date, dep_time, spot_time, location, type_of_action,
+    def put_report(self, uuid_num, id_number, dep_date, dep_time, spot_time, location, type_of_action,
                    section_com, action_com, driver, perpetrator, victim, section, details,
                    return_date, end_time, home_time, stan_licznika, km_location):
-        if sys_id == "":
-            sys_id = str(uuid.uuid1())
-        self.store.put(sys_id, innerID=id_number, depDate=dep_date, depTime=dep_time, spotTime=spot_time,
+        if uuid_num == "":
+            uuid_num = str(uuid.uuid1())
+        self.store.put(uuid_num, innerID=id_number, depDate=dep_date, depTime=dep_time, spotTime=spot_time,
                        location=location, type=type_of_action,
                        sectionCom=section_com, actionCom=action_com, driver=driver, perpetrator=perpetrator,
                        victim=victim, section=section, details=details,
                        returnDate=return_date, endTime=end_time, homeTime=home_time, stanLicznika=stan_licznika,
                        KM=km_location, modDate=self.get_date())
         try:
-            string = "{'" + sys_id + "': " + str(self.store.get(sys_id)) + "}"
+            string = "{'" + uuid_num + "': " + str(self.store.get(uuid_num)) + "}"
             if self.email:
                 self.send_mail(string)
             to_database = json.loads(string.replace("'", '"'))
@@ -53,12 +53,12 @@ class DataBase:
         except Exception as e:
             print(str(e))
 
-    def delete_report(self, id_number):
-        if self.store.exists(id_number):
-            self.store.delete(id_number)
+    def delete_report(self, uuid_num):
+        if self.store.exists(uuid_num):
+            self.store.delete(uuid_num)
             try:
                 # requests.delete(url=self.url[:-5] + id_number + ".json")
-                string = '{"deleted-' + id_number + '": "true"}'
+                string = '{"deleted-' + uuid_num + '": "true"}'
                 if self.email:
                     self.send_mail(string)
                 to_database = json.loads(string)
@@ -97,7 +97,7 @@ class DataBase:
     def get_report(self, id_number):
         for item in self.store.find(innerID=id_number):
             dane = self.store.get(item[0])
-            inner_id = dane['innerID']
+            id_number = dane['innerID']
             dep_date = dane['depDate']
             dep_time = dane['depTime']
             spot_time = dane['spotTime']
@@ -116,7 +116,7 @@ class DataBase:
             stan_licznika = dane['stanLicznika']
             km_location = dane['KM']
             date = dane['modDate']
-            return [item[0], inner_id, dep_date, dep_time, spot_time, location, type_of_action, section_com, action_com,
+            return [item[0], id_number, dep_date, dep_time, spot_time, location, type_of_action, section_com, action_com,
                     driver,
                     perpetrator, victim, section, details,
                     return_date, end_time, home_time, stan_licznika, km_location, date]

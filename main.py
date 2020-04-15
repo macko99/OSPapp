@@ -60,22 +60,23 @@ class CreateReport(Screen):
 
 class EditReport(Screen):
     layout_content = ObjectProperty(None)
-    data = ""
-    init_id = ""
-    tmp_id_number = ""
+    input_id = ""
+    tmp_id = ""
+    tmp_uuid = ""
 
     def __init__(self, **kwargs):
         super(EditReport, self).__init__(**kwargs)
         self.layout_content.bind(minimum_height=self.layout_content.setter('height'))
 
     def start(self, input_data):
-        global data
-        data = input_data
+        global input_id
+        input_id = input_data
 
     def on_enter(self):
-        self.ids.scroll_id.scroll_to(self.ids.sys_id)
-        result = db.get_report(data)
-        self.sys_id.text = result[0]
+        self.ids.scroll_id.scroll_to(self.ids.uuid_num)
+        global input_id
+        result = db.get_report(input_id)
+        self.uuid_num.text = result[0]
         self.id_number.text = result[1]
         self.dep_date.text = result[2]
         self.dep_time.text = result[3]
@@ -95,27 +96,29 @@ class EditReport(Screen):
         self.stan_licznika.text = result[17]
         self.km_location.text = result[18]
         self.modDate.text = result[19]
-        global init_id
-        init_id = result[1]
+        global tmp_id
+        tmp_id = result[1]
 
     def submit(self):
-        global init_id
+        global tmp_id
         if self.id_number.text == "" or self.id_number.text == "Pole wymagane" or self.id_number.text == "Taka L.P. już istnieje!":
             self.id_number.text = "Pole wymagane"
-        elif self.id_number.text != init_id and db.find_inner_id(self.id_number.text):
+        elif self.id_number.text != tmp_id and db.find_inner_id(self.id_number.text):
             self.id_number.text = "Taka L.P. już istnieje!"
         else:
-            db.put_report(self.sys_id.text, self.id_number.text, self.dep_date.text, self.dep_time.text, self.spot_time.text,
-                      self.location.text, self.type_of_action.text, self.section_com.text, self.action_com.text,
-                      self.driver.text, self.perpetrator.text, self.victim.text, self.section.text, self.details.text,
-                      self.return_date.text, self.end_time.text, self.home_time.text, self.stan_licznika.text,
-                      self.km_location.text)
+            db.put_report(self.uuid_num.text, self.id_number.text, self.dep_date.text, self.dep_time.text,
+                          self.spot_time.text,
+                          self.location.text, self.type_of_action.text, self.section_com.text, self.action_com.text,
+                          self.driver.text, self.perpetrator.text, self.victim.text, self.section.text,
+                          self.details.text,
+                          self.return_date.text, self.end_time.text, self.home_time.text, self.stan_licznika.text,
+                          self.km_location.text)
             EditReport.clear(self)
             self.manager.transition.direction = "right"
             sm.current = "browser"
 
     def clear(self):
-        self.sys_id.text = ""
+        self.uuid_num.text = ""
         self.id_number.text = ""
         self.dep_date.text = ""
         self.dep_time.text = ""
@@ -137,12 +140,12 @@ class EditReport(Screen):
         self.modDate.text = ""
 
     def delete(self):
-        global tmp_id_number
-        db.delete_report(tmp_id_number)
+        global tmp_uuid
+        db.delete_report(tmp_uuid)
 
     def try_delete(self):
-        global tmp_id_number
-        tmp_id_number = self.sys_id.text
+        global tmp_uuid
+        tmp_uuid = self.uuid_num.text
         self.manager.transition.direction = "left"
         sm.current = "password"
 
@@ -202,7 +205,8 @@ class Password(Screen):
             self.manager.transition.direction = "right"
             sm.current = "browser"
         else:
-            self.password.text = "złe hasło"
+            self.clear()
+            self.ids.password.hint_text = "złe hasło!"
 
     def clear(self):
         self.password.text = ""
@@ -218,7 +222,8 @@ class PasswordAll(Screen):
             self.manager.transition.direction = "right"
             sm.current = "browser"
         else:
-            self.password.text = "złe hasło"
+            self.clear()
+            self.ids.password.hint_text = "złe hasło!"
 
     def clear(self):
         self.password.text = ""

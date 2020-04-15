@@ -7,7 +7,9 @@
 
 <Password>:
     password: password
+    layout_content: layout_content
     FloatLayout:
+        id: layout_content
         Label:
             text:"Usunąć?"
             font_size: (root.width**2 + root.height**2) / 13**4
@@ -40,7 +42,9 @@
 
 <PasswordAll>:
     password: password
+    layout_content: layout_content
     FloatLayout:
+        id: layout_content
         Label:
             text:"Usunąć wszystkie?"
             font_size: (root.width**2 + root.height**2) / 13**4
@@ -315,7 +319,7 @@
                         app.root.current = "start"
 
 <EditReport>:
-    sys_id: sys_id
+    uuid_num: uuid_num
     id_number: id_number
     dep_date: dep_date
     dep_time: dep_time
@@ -359,7 +363,7 @@
                 Label:
                     text: "Edytuj raport o UUID:"
                 Label:
-                    id: sys_id
+                    id: uuid_num
                     text: "UUID:"
                 Label:
                     text: "Data ostatniej modyfikacji:"
