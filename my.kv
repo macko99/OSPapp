@@ -77,24 +77,60 @@
 
 <StartWindow>:
     FloatLayout:
+        canvas.before:
+            Color:
+                rgba: 0.94, 0.89, 0.68, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
         Label:
-            text:"Raportowanie OSP"
+            text:"Raporty OSP"
             font_size: (root.width**2 + root.height**2) / 13**4
             pos_hint: {"x":0.25, "y":0.8}
             size_hint: 0.5, 0.2
+            color: 0.29, 0.29, 0.29, 1
+            bold: True
+        Image:
+            source: 'truck1.png'
+            pos_hint: {"center_x":0.5, "center_y":0.65}
+            size_hint: 0.3, 0.3
         Button:
-            pos_hint:{"x":0.1,"y":0.1}
-            size_hint: 0.35, 0.1
+            canvas.before:
+                Color:
+                    rgba: 0.85, 0.85, 0.85, 0.3
+                RoundedRectangle:
+                    size: self.size
+                    pos: self.pos
+                    radius: [50,50]
+            pos_hint:{"center_x":0.5,"center_y":0.5}
+            size_hint: 0.45, 0.10
             font_size: (root.width**2 + root.height**2) / 15**4
             text: "Nowy raport"
+            bold: True
+            color: 0.29, 0.29, 0.29, 1
+            background_color: 0.85, 0.85, 0.85, 0.3
             on_release:
                 root.manager.transition.direction = "down"
                 app.root.current = "create"
+        Image:
+            source: 'list2.png'
+            pos_hint: {"center_x":0.5, "center_y":0.3}
+            size_hint: 0.3, 0.2
         Button:
-            pos_hint:{"x":0.55,"y":0.1}
-            size_hint: 0.35, 0.1
+            canvas.before:
+                Color:
+                    rgba: 0.85, 0.85, 0.85, 0.3
+                RoundedRectangle:
+                    size: self.size
+                    pos: self.pos
+                    radius: [50,50]
+            pos_hint:{"center_x":0.5,"center_y":0.15}
+            size_hint: 0.45, 0.10
             font_size: (root.width**2 + root.height**2) / 15**4
-            text: "Przeglądaj"
+            text: "Przeglądaj raporty"
+            bold: True
+            color: 0.29, 0.29, 0.29, 1
+            background_color: 0.85, 0.85, 0.85, 0.3
             on_release:
                 root.manager.transition.direction = "up"
                 app.root.current = "browser"
@@ -122,6 +158,12 @@
 
     layout_content: layout_content
     BoxLayout:
+        canvas.before:
+            Color:
+                rgba: 0.94, 0.89, 0.68, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
         id: bl
         orientation: 'vertical'
         padding: 10, 10
@@ -135,12 +177,14 @@
                 id: layout_content
                 size_hint_y: None
                 cols: 1
-                row_default_height: '100dp'
+                row_default_height: '80dp'
                 row_force_default: True
                 spacing: 0, 0
                 padding: 0, 0
                 Label:
                     text: "Podaj szczegóły raportu"
+                    font_size: (root.width**2 + root.height**2) / 15**4
+                    color: 0.29, 0.29, 0.29, 1
                 TextInput:
 #                    pos_hint: {"x":0.55, "top":0.7}
                     size_hint: 0.35, 0.1
@@ -245,7 +289,7 @@
                     size_hint: 0.35, 0.1
                     id: section
                     hint_text: "Sekcja"
-                    multiline: False
+                    multiline: True
                     font_size: (root.width**2 + root.height**2) / 15**4
 #                Label:
 #                    text: "Lorem ipsum dolor sit amet"
@@ -254,7 +298,7 @@
                     size_hint: 0.35, 0.1
                     id: details
                     hint_text: "Szczegóły"
-                    multiline: False
+                    multiline: True
                     font_size: (root.width**2 + root.height**2) / 15**4
 #                Label:
 #                    text: "Lorem ipsum dolor sit amet"
@@ -305,6 +349,8 @@
 #                    pos_hint:{"x":0.15,"y":0.4}
                     size_hint: 0.35, 0.1
                     text: "Zapisz"
+                    color: 0.29, 0.29, 0.29, 1
+                    background_color: 0.85, 0.6, 0.85, 0.3
                     font_size: (root.width**2 + root.height**2) / 15**4
                     on_release:
                         root.submit()
@@ -313,6 +359,8 @@
                     size_hint: 0.35, 0.1
                     font_size: (root.width**2 + root.height**2) / 15**4
                     text: "Anuluj"
+                    color: 0.29, 0.29, 0.29, 1
+                    background_color: 0.85, 0.6, 0.85, 0.3
                     on_release:
                         root.clear()
                         root.manager.transition.direction = "up"
@@ -343,6 +391,12 @@
 
     layout_content: layout_content
     BoxLayout:
+        canvas.before:
+            Color:
+                rgba: 0.94, 0.89, 0.68, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
         id: bl
         orientation: 'vertical'
         padding: 10, 10
@@ -356,20 +410,30 @@
                 id: layout_content
                 size_hint_y: None
                 cols: 1
-                row_default_height: '100dp'
+                row_default_height: '80dp'
                 row_force_default: True
                 spacing: 0, 0
                 padding: 0, 0
                 Label:
                     text: "Edytuj raport o UUID:"
+                    font_size: (root.width**2 + root.height**2) / 15**4
+                    color: 0.29, 0.29, 0.29, 1
+                    bold: True
                 Label:
                     id: uuid_num
                     text: "UUID:"
+                    font_size: (root.width**2 + root.height**2) / 15**4
+                    color: 0.29, 0.29, 0.29, 1
                 Label:
                     text: "Data ostatniej modyfikacji:"
+                    font_size: (root.width**2 + root.height**2) / 15**4
+                    color: 0.29, 0.29, 0.29, 1
+                    bold: True
                 Label:
                     id: modDate
                     text: "Data ostatniej modyfikacji"
+                    font_size: (root.width**2 + root.height**2) / 15**4
+                    color: 0.29, 0.29, 0.29, 1
 #                Label:
 #                    text: "Lorem ipsum dolor sit amet"
                 TextInput:
@@ -564,6 +628,12 @@
     layout_content: layout_content
     cancel_but: cancel_but
     BoxLayout:
+        canvas.before:
+            Color:
+                rgba: 0.94, 0.89, 0.68, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
         orientation: 'vertical'
         padding: 10, 10
         row_default_height: '48dp'
@@ -575,18 +645,22 @@
                 id: layout_content
                 size_hint_y: None
                 cols: 1
-                row_default_height: '100dp'
+                row_default_height: '80dp'
                 row_force_default: True
                 spacing: 0, 0
                 padding: 0, 0
                 Label:
                     id: id1
                     text: "Wybierz raport do edycji:"
+                    font_size: (root.width**2 + root.height**2) / 15**4
+                    color: 0.29, 0.29, 0.29, 1
                 Button:
                     id: del_but
                     size_hint: 0.35, 0.1
                     font_size: (root.width**2 + root.height**2) / 15**4
                     text: "Usuń wszystkie"
+                    color: 0.29, 0.29, 0.29, 1
+                    background_color: 0.85, 0.85, 0.85, 0.3
                     on_release:
                         root.try_delete()
                 Button:
@@ -594,5 +668,7 @@
                     size_hint: 0.35, 0.1
                     font_size: (root.width**2 + root.height**2) / 15**4
                     text: "Anuluj"
+                    color: 0.29, 0.29, 0.29, 1
+                    background_color: 0.85, 0.85, 0.85, 0.3
                     on_release:
                         root.cancel()
