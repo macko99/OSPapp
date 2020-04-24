@@ -3,6 +3,7 @@ from os.path import join
 from kivy.core.window import Window
 from kivy.uix.button import Button
 from kivy.uix.label import Label
+
 from database import DataBase
 from kivy.app import App
 from kivy.lang import Builder
@@ -21,9 +22,7 @@ class CreateReport(Screen):
         self.ids.scroll_id.scroll_to(self.ids.id_number)
 
     def submit(self):
-        if self.id_number.text == "" or self.id_number.text == "Pole wymagane" or self.id_number.text == "Taka L.P. już istnieje!":
-            self.id_number.text = "Pole wymagane"
-        elif db.find_inner_id(self.id_number.text):
+        if db.find_inner_id(self.id_number.text) or self.id_number.text == "Taka L.P. już istnieje!":
             self.id_number.text = "Taka L.P. już istnieje!"
         else:
             db.put_report("", self.id_number.text, self.dep_date.text, self.dep_time.text, self.spot_time.text,
@@ -100,9 +99,7 @@ class EditReport(Screen):
 
     def submit(self):
         global tmp_id
-        if self.id_number.text == "" or self.id_number.text == "Pole wymagane" or self.id_number.text == "Taka L.P. już istnieje!":
-            self.id_number.text = "Pole wymagane"
-        elif self.id_number.text != tmp_id and db.find_inner_id(self.id_number.text):
+        if (self.id_number.text != tmp_id and db.find_inner_id(self.id_number.text)) or self.id_number.text == "Taka L.P. już istnieje!":
             self.id_number.text = "Taka L.P. już istnieje!"
         else:
             db.put_report(self.uuid_num.text, self.id_number.text, self.dep_date.text, self.dep_time.text,
