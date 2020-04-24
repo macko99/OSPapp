@@ -2,4 +2,4 @@
 /bin/*
 /.buildozer/*
 /secret
-/bin/*
+/.idea/*
