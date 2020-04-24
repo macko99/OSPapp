@@ -3,7 +3,6 @@ from os.path import join
 from kivy.core.window import Window
 from kivy.uix.button import Button
 from kivy.uix.label import Label
-
 from database import DataBase
 from kivy.app import App
 from kivy.lang import Builder
@@ -162,15 +161,19 @@ class Browser(Screen):
         self.ids.layout_content.add_widget(self.ids.id1)
         reports = db.get_all_friendly()
 
+        button_colors = [[1.75, 1.75, 1.75, 1], [2.01, 2.01, 2.01, 1]]
+        button_type = 0
+
         for report in reports:
-            button = Button(text=str(report), id=str(report).split(" ")[0])
+            button = Button(text=str(report), id=str(report).split(" ")[0], color=[0.29, 0.29, 0.29, 1], background_color=button_colors[button_type])
             button.bind(on_press=self.on_press)
             self.ids.layout_content.add_widget(button)
+            button_type = not button_type
 
         if reports:
             self.ids.layout_content.add_widget(self.ids.del_but)
         else:
-            label = Label(text="Brak raportów", id="test_id")
+            label = Label(text="Brak raportów", id="test_id", bold=True, color=[0.29, 0.29, 0.29, 1], font_size=60)
             self.ids.layout_content.add_widget(label)
 
         self.ids.layout_content.add_widget(self.ids.cancel_but)
