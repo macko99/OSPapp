@@ -1,8 +1,13 @@
 from __future__ import unicode_literals
+
+import json
 from os.path import join
 from kivy.core.window import Window
+from kivy.factory import Factory
 from kivy.uix.button import Button
+from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.label import Label
+from kivy.uix.popup import Popup
 
 from database import DataBase
 from kivy.app import App
@@ -20,9 +25,13 @@ class CreateReport(Screen):
 
     def on_enter(self, *args):
         self.ids.scroll_id.scroll_to(self.ids.id_number)
+        self.ids.section_com.values = db.get_heroes() + json.loads('["Dowódca sekcji"]')
+        self.ids.action_com.values = db.get_heroes() + json.loads('["Dowódca akcji"]')
+        self.ids.driver.values = db.get_heroes() + json.loads('["Kierowca"]')
 
     def submit(self):
         if db.find_inner_id(self.id_number.text) or self.id_number.text == "Taka L.P. już istnieje!":
+            Factory.IDpopout().open()
             self.id_number.text = "Taka L.P. już istnieje!"
         else:
             db.put_report("", self.id_number.text, self.dep_date.text, self.dep_time.text, self.spot_time.text,
@@ -31,7 +40,7 @@ class CreateReport(Screen):
                           self.details.text,
                           self.return_date.text, self.end_time.text, self.home_time.text, self.stan_licznika.text,
                           self.km_location.text)
-            CreateReport.clear(self)
+            self.clear()
             self.manager.transition.direction = "down"
             sm.current = "start"
 
@@ -42,9 +51,9 @@ class CreateReport(Screen):
         self.spot_time.text = ""
         self.location.text = ""
         self.type_of_action.text = ""
-        self.section_com.text = ""
-        self.action_com.text = ""
-        self.driver.text = ""
+        self.section_com.text = "Dowódca sekcji"
+        self.action_com.text = "Dowódca akcji"
+        self.driver.text = "Kierowca"
         self.perpetrator.text = ""
         self.victim.text = ""
         self.section.text = ""
@@ -96,10 +105,15 @@ class EditReport(Screen):
         self.modDate.text = result[19]
         global tmp_id
         tmp_id = result[1]
+        self.ids.section_com.values = db.get_heroes() + json.loads('["Dowódca sekcji"]')
+        self.ids.action_com.values = db.get_heroes() + json.loads('["Dowódca akcji"]')
+        self.ids.driver.values = db.get_heroes() + json.loads('["Kierowca"]')
 
     def submit(self):
         global tmp_id
-        if (self.id_number.text != tmp_id and db.find_inner_id(self.id_number.text)) or self.id_number.text == "Taka L.P. już istnieje!":
+        if (self.id_number.text != tmp_id and db.find_inner_id(
+                self.id_number.text)) or self.id_number.text == "Taka L.P. już istnieje!":
+            Factory.IDpopout().open()
             self.id_number.text = "Taka L.P. już istnieje!"
         else:
             db.put_report(self.uuid_num.text, self.id_number.text, self.dep_date.text, self.dep_time.text,
@@ -121,9 +135,9 @@ class EditReport(Screen):
         self.spot_time.text = ""
         self.location.text = ""
         self.type_of_action.text = ""
-        self.section_com.text = ""
-        self.action_com.text = ""
-        self.driver.text = ""
+        self.section_com.text = "Dowódca sekcji"
+        self.action_com.text = "Dowódca akcji"
+        self.driver.text = "Kierowca"
         self.perpetrator.text = ""
         self.victim.text = ""
         self.section.text = ""
@@ -162,7 +176,8 @@ class Browser(Screen):
         button_type = 0
 
         for report in reports:
-            button = Button(text=str(report), id=str(report).split(" ")[0], color=[0.29, 0.29, 0.29, 1], background_color=button_colors[button_type])
+            button = Button(text=str(report), id=str(report).split(" ")[0], color=[0.29, 0.29, 0.29, 1],
+                            background_color=button_colors[button_type])
             button.bind(on_press=self.on_press)
             self.ids.layout_content.add_widget(button)
             button_type = not button_type
@@ -261,12 +276,16 @@ class OSPApp(App):
     def build(self):
         Window.bind(on_keyboard=key_input)
         global db
-        db = DataBase(App.get_running_app().storage)
+        db = DataBase(App.get_running_app().storage, App.get_running_app().heroes)
         return sm
 
     @property
     def storage(self):
         return join(self.user_data_dir, 'storage.json')
+
+    @property
+    def heroes(self):
+        return join(self.user_data_dir, 'heroes')
 
 
 if __name__ == "__main__":

@@ -1,7 +1,6 @@
 To be done in mobile app
 
 Backend:
-- wybieranie strażaków w sekcji
 - walidacja danych
 - rzucanie wyjątków
 - unicode wszędzie

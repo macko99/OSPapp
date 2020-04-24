@@ -1,9 +1,29 @@
 #:import Factory kivy.factory.Factory
-<MyPopup@Popup>:
+
+#:set color_button (0.784, 0.443, 0.216, 1)  # not used
+#:set color_dropdown (0, 0, 190, 1) # not used
+#:set color_font   (0.957, 0.890, 0.843, 1)  # not used
+
+<MySpinnerOption@SpinnerOption>: #do kolorów list dropdown
+#    background_color: color_dropdown
+#    color: color_font
+
+<IDpopout@Popup>:
     auto_dismiss: False
-    Button:
-        text: 'Close me!'
-        on_release: root.dismiss()
+    title: "Uwaga!"
+    size: 400, 400
+    FloatLayout:
+        Label:
+            text:"Taka L.P. już istnieje!"
+            font_size: (root.width**2 + root.height**2) / 15**4
+            pos_hint: {"x":0.3, "y":0.5}
+            size_hint: 0.4, 0.2
+        Button:
+            pos_hint:{"x":0.3,"y":0.1}
+            size_hint: 0.4, 0.1
+            font_size: (root.width**2 + root.height**2) / 15**4
+            text: 'Zamknij'
+            on_release: root.dismiss()
 
 <Password>:
     password: password
@@ -134,6 +154,16 @@
             on_release:
                 root.manager.transition.direction = "up"
                 app.root.current = "browser"
+        Button:
+            pos_hint:{"center_x":0.5,"center_y":0.8}
+            size_hint: 0.55, 0.10
+            font_size: (root.width**2 + root.height**2) / 15**4
+            text: "Przeglądaj raporty"
+            bold: True
+            color: 0.29, 0.29, 0.29, 1
+            background_color: 0.85, 0.85, 0.85, 0.3
+            text: 'Popup test'
+            on_release: Factory.MyPopup().open()
 
 <CreateReport>:
     id_number: id_number
@@ -179,174 +209,145 @@
                 cols: 1
                 row_default_height: '80dp'
                 row_force_default: True
-                spacing: 0, 0
-                padding: 0, 0
+                spacing: 0, 10
+                padding: 0.1, 0.1
                 Label:
                     text: "Podaj szczegóły raportu"
                     font_size: (root.width**2 + root.height**2) / 15**4
                     color: 0.29, 0.29, 0.29, 1
                 TextInput:
-#                    pos_hint: {"x":0.55, "top":0.7}
                     size_hint: 0.35, 0.1
                     id: id_number
                     hint_text: "L.P."
                     multiline: False
                     font_size: (root.width**2 + root.height**2) / 15**4
-#                Label:
-#                    text: "Lorem ipsum dolor sit amet"
                 TextInput:
-#                    pos_hint: {"x":0.55, "top":0.7}
                     size_hint: 0.35, 0.1
                     id: dep_date
                     hint_text: "Data wyjazdu"
                     multiline: False
                     font_size: (root.width**2 + root.height**2) / 15**4
-#                Label:
-#                    text: "Lorem ipsum dolor sit amet"
                 TextInput:
-#                    pos_hint: {"x":0.55, "top":0.7}
                     size_hint: 0.35, 0.1
                     id: dep_time
                     hint_text: "Godzina wyjazdu"
                     multiline: False
                     font_size: (root.width**2 + root.height**2) / 15**4
-#                Label:
-#                    text: "Lorem ipsum dolor sit amet"
                 TextInput:
-#                    pos_hint: {"x":0.55, "top":0.7}
                     size_hint: 0.35, 0.1
                     id: spot_time
-                    hint_text: "na miejscu"
+                    hint_text: "Na miejscu"
                     multiline: False
                     font_size: (root.width**2 + root.height**2) / 15**4
-#                Label:
-#                    text: "Lorem ipsum dolor sit amet"
                 TextInput:
-#                    pos_hint: {"x":0.55, "top":0.7}
                     size_hint: 0.35, 0.1
                     id: location
                     hint_text: "Miejsce zdarzenia"
                     multiline: True
                     font_size: (root.width**2 + root.height**2) / 15**4
-#                Label:
-#                    text: "Lorem ipsum dolor sit amet"
                 TextInput:
-#                    pos_hint: {"x":0.55, "top":0.7}
                     size_hint: 0.35, 0.1
                     id: type_of_action
                     hint_text: "Rodzaj zdarzenia"
                     multiline: False
                     font_size: (root.width**2 + root.height**2) / 15**4
-#                Label:
-#                    text: "Lorem ipsum dolor sit amet"
-                TextInput:
-#                    pos_hint: {"x":0.55, "top":0.7}
-                    size_hint: 0.35, 0.1
+                Spinner:
                     id: section_com
-                    hint_text: "Dowódca sekcji"
-                    multiline: False
-                    font_size: (root.width**2 + root.height**2) / 15**4
-#                Label:
-#                    text: "Lorem ipsum dolor sit amet"
-                TextInput:
-#                    pos_hint: {"x":0.55, "top":0.7}
+                    text: "Dowódca sekcji"
                     size_hint: 0.35, 0.1
+                    size: 100, 44
+#                    background_color: color_button
+#                    color: color_font
+                    option_cls: Factory.get("MySpinnerOption")
+#                TextInput:
+#                    size_hint: 0.35, 0.1
+#                    id: section_com
+#                    hint_text: "Dowódca sekcji"
+#                    multiline: False
+#                    font_size: (root.width**2 + root.height**2) / 15**4
+                Spinner:
                     id: action_com
-                    hint_text: "Dowódca akcji"
-                    multiline: False
-                    font_size: (root.width**2 + root.height**2) / 15**4
-#                Label:
-#                    text: "Lorem ipsum dolor sit amet"
-                TextInput:
-#                    pos_hint: {"x":0.55, "top":0.7}
+                    text:"Dowódca akcji"
                     size_hint: 0.35, 0.1
+                    size: 100, 44
+#                    background_color: color_button
+#                    color: color_font
+                    option_cls: Factory.get("MySpinnerOption")
+#                TextInput:
+#                    size_hint: 0.35, 0.1
+#                    id: action_com
+#                    hint_text: "Dowódca akcji"
+#                    multiline: False
+#                    font_size: (root.width**2 + root.height**2) / 15**4
+                Spinner:
                     id: driver
-                    hint_text: "Kierowca"
-                    multiline: False
-                    font_size: (root.width**2 + root.height**2) / 15**4
-#                Label:
-#                    text: "Lorem ipsum dolor sit amet"
+                    text: "Kierowca"
+                    size_hint: 0.35, 0.1
+                    size: 100, 44
+#                    background_color: color_button
+#                    color: color_font
+                    option_cls: Factory.get("MySpinnerOption")
+#                TextInput:
+#                    size_hint: 0.35, 0.1
+#                    id: driver
+#                    hint_text: "Kierowca"
+#                    multiline: False
+#                    font_size: (root.width**2 + root.height**2) / 15**4
                 TextInput:
-#                    pos_hint: {"x":0.55, "top":0.7}
                     size_hint: 0.35, 0.1
                     id: perpetrator
                     hint_text: "Sprawca"
                     multiline: False
                     font_size: (root.width**2 + root.height**2) / 15**4
-#                Label:
-#                    text: "Lorem ipsum dolor sit amet"
                 TextInput:
-#                    pos_hint: {"x":0.55, "top":0.7}
                     size_hint: 0.35, 0.1
                     id: victim
                     hint_text: "Poszkodowany"
                     multiline: False
                     font_size: (root.width**2 + root.height**2) / 15**4
-#                Label:
-#                    text: "Lorem ipsum dolor sit amet"
                 TextInput:
-#                    pos_hint: {"x":0.55, "top":0.7}
                     size_hint: 0.35, 0.1
                     id: section
                     hint_text: "Sekcja"
                     multiline: True
                     font_size: (root.width**2 + root.height**2) / 15**4
-#                Label:
-#                    text: "Lorem ipsum dolor sit amet"
                 TextInput:
-#                    pos_hint: {"x":0.55, "top":0.7}
                     size_hint: 0.35, 0.1
                     id: details
                     hint_text: "Szczegóły"
                     multiline: True
                     font_size: (root.width**2 + root.height**2) / 15**4
-#                Label:
-#                    text: "Lorem ipsum dolor sit amet"
                 TextInput:
-#                    pos_hint: {"x":0.55, "top":0.7}
                     size_hint: 0.35, 0.1
                     id: return_date
                     hint_text: "Data powrotu"
                     multiline: False
                     font_size: (root.width**2 + root.height**2) / 15**4
-#                Label:
-#                    text: "Lorem ipsum dolor sit amet"
                 TextInput:
-#                    pos_hint: {"x":0.55, "top":0.7}
                     size_hint: 0.35, 0.1
                     id: end_time
                     hint_text: "Godzina zakończenia"
                     multiline: False
                     font_size: (root.width**2 + root.height**2) / 15**4
-#                Label:
-#                    text: "Lorem ipsum dolor sit amet"
                 TextInput:
-#                    pos_hint: {"x":0.55, "top":0.7}
                     size_hint: 0.35, 0.1
                     id: home_time
                     hint_text: "Godzina w remizie"
                     multiline: False
                     font_size: (root.width**2 + root.height**2) / 15**4
-#                Label:
-#                    text: "Lorem ipsum dolor sit amet"
                 TextInput:
-#                    pos_hint: {"x":0.55, "top":0.7}
                     size_hint: 0.35, 0.1
                     id: stan_licznika
                     hint_text: "Stan licznika"
                     multiline: False
                     font_size: (root.width**2 + root.height**2) / 15**4
-#                Label:
-#                    text: "Lorem ipsum dolor sit amet"
                 TextInput:
-#                    pos_hint: {"x":0.55, "top":0.7}
                     size_hint: 0.35, 0.1
                     id: km_location
                     hint_text: "KM do miejsca zdarzenia"
                     multiline: False
                     font_size: (root.width**2 + root.height**2) / 15**4
                 Button:
-#                    pos_hint:{"x":0.15,"y":0.4}
                     size_hint: 0.35, 0.1
                     text: "Zapisz"
                     color: 0.29, 0.29, 0.29, 1
@@ -355,7 +356,6 @@
                     on_release:
                         root.submit()
                 Button:
-#                    pos_hint:{"x":0.55,"y":0.1}
                     size_hint: 0.35, 0.1
                     font_size: (root.width**2 + root.height**2) / 15**4
                     text: "Anuluj"
@@ -441,7 +441,6 @@
 #                Label:
 #                    text: "Lorem ipsum dolor sit amet"
                 TextInput:
-#                    pos_hint: {"x":0.55, "top":0.7}
                     size_hint: 0.35, 0.1
                     id: id_number
                     hint_text: "L.P."
@@ -450,7 +449,6 @@
 #                Label:
 #                    text: "Lorem ipsum dolor sit amet"
                 TextInput:
-#                    pos_hint: {"x":0.55, "top":0.7}
                     size_hint: 0.35, 0.1
                     id: dep_date
                     hint_text: "Data wyjazdu"
@@ -459,7 +457,6 @@
 #                Label:
 #                    text: "Lorem ipsum dolor sit amet"
                 TextInput:
-#                    pos_hint: {"x":0.55, "top":0.7}
                     size_hint: 0.35, 0.1
                     id: dep_time
                     hint_text: "Godzina wyjazdu"
@@ -468,7 +465,6 @@
 #                Label:
 #                    text: "Lorem ipsum dolor sit amet"
                 TextInput:
-#                    pos_hint: {"x":0.55, "top":0.7}
                     size_hint: 0.35, 0.1
                     id: spot_time
                     hint_text: "na miejscu"
@@ -477,7 +473,6 @@
 #                Label:
 #                    text: "Lorem ipsum dolor sit amet"
                 TextInput:
-#                    pos_hint: {"x":0.55, "top":0.7}
                     size_hint: 0.35, 0.1
                     id: location
                     hint_text: "Miejsce zdarzenia"
@@ -486,7 +481,6 @@
 #                Label:
 #                    text: "Lorem ipsum dolor sit amet"
                 TextInput:
-#                    pos_hint: {"x":0.55, "top":0.7}
                     size_hint: 0.35, 0.1
                     id: type_of_action
                     hint_text: "Rodzaj zdarzenia"
@@ -494,35 +488,51 @@
                     font_size: (root.width**2 + root.height**2) / 15**4
 #                Label:
 #                    text: "Lorem ipsum dolor sit amet"
-                TextInput:
-#                    pos_hint: {"x":0.55, "top":0.7}
-                    size_hint: 0.35, 0.1
+                Spinner:
                     id: section_com
-                    hint_text: "Dowódca sekcji"
-                    multiline: False
-                    font_size: (root.width**2 + root.height**2) / 15**4
-#                Label:
-#                    text: "Lorem ipsum dolor sit amet"
-                TextInput:
-#                    pos_hint: {"x":0.55, "top":0.7}
+                    text: "Dowódca sekcji"
                     size_hint: 0.35, 0.1
+                    size: 100, 44
+#                    background_color: color_button
+#                    color: color_font
+                    option_cls: Factory.get("MySpinnerOption")
+#                TextInput:
+#                    size_hint: 0.35, 0.1
+#                    id: section_com
+#                    hint_text: "Dowódca sekcji"
+#                    multiline: False
+#                    font_size: (root.width**2 + root.height**2) / 15**4
+                Spinner:
                     id: action_com
-                    hint_text: "Dowódca akcji"
-                    multiline: False
-                    font_size: (root.width**2 + root.height**2) / 15**4
-#                Label:
-#                    text: "Lorem ipsum dolor sit amet"
-                TextInput:
-#                    pos_hint: {"x":0.55, "top":0.7}
+                    text:"Dowódca akcji"
                     size_hint: 0.35, 0.1
+                    size: 100, 44
+#                    background_color: color_button
+#                    color: color_font
+                    option_cls: Factory.get("MySpinnerOption")
+#                TextInput:
+#                    size_hint: 0.35, 0.1
+#                    id: action_com
+#                    hint_text: "Dowódca akcji"
+#                    multiline: False
+#                    font_size: (root.width**2 + root.height**2) / 15**4
+                Spinner:
                     id: driver
-                    hint_text: "Kierowca"
-                    multiline: False
-                    font_size: (root.width**2 + root.height**2) / 15**4
+                    text: "Kierowca"
+                    size_hint: 0.35, 0.1
+                    size: 100, 44
+#                    background_color: color_button
+#                    color: color_font
+                    option_cls: Factory.get("MySpinnerOption")
+#                TextInput:
+#                    size_hint: 0.35, 0.1
+#                    id: driver
+#                    hint_text: "Kierowca"
+#                    multiline: False
+#                    font_size: (root.width**2 + root.height**2) / 15**4
 #                Label:
 #                    text: "Lorem ipsum dolor sit amet"
                 TextInput:
-#                    pos_hint: {"x":0.55, "top":0.7}
                     size_hint: 0.35, 0.1
                     id: perpetrator
                     hint_text: "Sprawca"
@@ -531,7 +541,6 @@
 #                Label:
 #                    text: "Lorem ipsum dolor sit amet"
                 TextInput:
-#                    pos_hint: {"x":0.55, "top":0.7}
                     size_hint: 0.35, 0.1
                     id: victim
                     hint_text: "Poszkodowany"
@@ -540,7 +549,6 @@
 #                Label:
 #                    text: "Lorem ipsum dolor sit amet"
                 TextInput:
-#                    pos_hint: {"x":0.55, "top":0.7}
                     size_hint: 0.35, 0.1
                     id: section
                     hint_text: "Sekcja"
@@ -549,7 +557,6 @@
 #                Label:
 #                    text: "Lorem ipsum dolor sit amet"
                 TextInput:
-#                    pos_hint: {"x":0.55, "top":0.7}
                     size_hint: 0.35, 0.1
                     id: details
                     hint_text: "Szczegóły"
@@ -558,7 +565,6 @@
 #                Label:
 #                    text: "Lorem ipsum dolor sit amet"
                 TextInput:
-#                    pos_hint: {"x":0.55, "top":0.7}
                     size_hint: 0.35, 0.1
                     id: return_date
                     hint_text: "Data powrotu"
@@ -567,7 +573,6 @@
 #                Label:
 #                    text: "Lorem ipsum dolor sit amet"
                 TextInput:
-#                    pos_hint: {"x":0.55, "top":0.7}
                     size_hint: 0.35, 0.1
                     id: end_time
                     hint_text: "Godzina zakończenia"
@@ -576,7 +581,6 @@
 #                Label:
 #                    text: "Lorem ipsum dolor sit amet"
                 TextInput:
-#                    pos_hint: {"x":0.55, "top":0.7}
                     size_hint: 0.35, 0.1
                     id: home_time
                     hint_text: "Godzina w remizie"
@@ -585,7 +589,6 @@
 #                Label:
 #                    text: "Lorem ipsum dolor sit amet"
                 TextInput:
-#                    pos_hint: {"x":0.55, "top":0.7}
                     size_hint: 0.35, 0.1
                     id: stan_licznika
                     hint_text: "Stan licznika"
@@ -594,21 +597,18 @@
 #                Label:
 #                    text: "Lorem ipsum dolor sit amet"
                 TextInput:
-#                    pos_hint: {"x":0.55, "top":0.7}
                     size_hint: 0.35, 0.1
                     id: km_location
                     hint_text: "KM do miejsca zdarzenia"
                     multiline: False
                     font_size: (root.width**2 + root.height**2) / 15**4
                 Button:
-#                    pos_hint:{"x":0.15,"y":0.4}
                     size_hint: 0.35, 0.1
                     text: "Zapisz"
                     font_size: (root.width**2 + root.height**2) / 15**4
                     on_release:
                         root.submit()
                 Button:
-#                    pos_hint:{"x":0.55,"y":0.1}
                     size_hint: 0.35, 0.1
                     font_size: (root.width**2 + root.height**2) / 15**4
                     text: "Anuluj"
