@@ -25,6 +25,7 @@ class CreateReport(Screen):
         self.ids.section_com.values = db.get_heroes() + json.loads('["Dowódca sekcji"]')
         self.ids.action_com.values = db.get_heroes() + json.loads('["Dowódca akcji"]')
         self.ids.driver.values = db.get_heroes() + json.loads('["Kierowca"]')
+        self.checkbox.text = "nie"
 
     def submit(self):
         if db.find_inner_id(self.id_number.text) or self.id_number.text == "Taka L.P. już istnieje!":
@@ -36,7 +37,7 @@ class CreateReport(Screen):
                           self.driver.text, self.perpetrator.text, self.victim.text, self.section.text,
                           self.details.text,
                           self.return_date.text, self.end_time.text, self.home_time.text, self.stan_licznika.text,
-                          self.km_location.text)
+                          self.km_location.text, self.checkbox.text)
             self.clear()
             self.manager.transition.direction = "down"
             sm.current = "start"
@@ -60,6 +61,7 @@ class CreateReport(Screen):
         self.home_time.text = ""
         self.stan_licznika.text = ""
         self.km_location.text = ""
+        self.checkbox.text = ""
 
 
 class EditReport(Screen):
@@ -100,6 +102,7 @@ class EditReport(Screen):
         self.stan_licznika.text = result[17]
         self.km_location.text = result[18]
         self.modDate.text = result[19]
+        self.checkbox.text = result[20]
         global tmp_id
         tmp_id = result[1]
         self.ids.section_com.values = db.get_heroes() + json.loads('["Dowódca sekcji"]')
@@ -119,7 +122,7 @@ class EditReport(Screen):
                           self.driver.text, self.perpetrator.text, self.victim.text, self.section.text,
                           self.details.text,
                           self.return_date.text, self.end_time.text, self.home_time.text, self.stan_licznika.text,
-                          self.km_location.text)
+                          self.km_location.text, self.checkbox.text)
             EditReport.clear(self)
             self.manager.transition.direction = "right"
             sm.current = "browser"
@@ -145,6 +148,7 @@ class EditReport(Screen):
         self.stan_licznika.text = ""
         self.km_location.text = ""
         self.modDate.text = ""
+        self.checkbox.text = ""
 
     def delete(self):
         global tmp_uuid

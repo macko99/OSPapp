@@ -26,16 +26,14 @@ class DataBase:
             print(str(e))
         try:
             with open(heroes_path, 'r') as file:
-                string = str(file.read()).replace("'", '"')
-                print(string)
-                self.heroes = json.loads(string)
+                self.heroes = json.loads(str(file.read()).replace("'", '"'))
         except Exception as e:
             print(str(e))
             self.heroes = ["brak strażaków w bazie"]
 
     def put_report(self, uuid_num, id_number, dep_date, dep_time, spot_time, location, type_of_action,
                    section_com, action_com, driver, perpetrator, victim, section, details,
-                   return_date, end_time, home_time, stan_licznika, km_location):
+                   return_date, end_time, home_time, stan_licznika, km_location, completed):
         if uuid_num == "":
             uuid_num = str(uuid.uuid1())
         if section_com == "Dowódca sekcji":
@@ -49,7 +47,7 @@ class DataBase:
                        sectionCom=section_com, actionCom=action_com, driver=driver, perpetrator=perpetrator,
                        victim=victim, section=section, details=details,
                        returnDate=return_date, endTime=end_time, homeTime=home_time, stanLicznika=stan_licznika,
-                       KM=km_location, modDate=self.get_date())
+                       KM=km_location, modDate=self.get_date(), ready=completed)
         try:
             string = "{'" + uuid_num + "': " + str(self.store.get(uuid_num)) + "}"
             to_database = json.loads(string.replace("'", '"'))
@@ -117,11 +115,12 @@ class DataBase:
             stan_licznika = dane['stanLicznika']
             km_location = dane['KM']
             date = dane['modDate']
+            completed = dane['ready']
             return [item[0], id_number, dep_date, dep_time, spot_time, location, type_of_action, section_com,
                     action_com,
                     driver,
                     perpetrator, victim, section, details,
-                    return_date, end_time, home_time, stan_licznika, km_location, date]
+                    return_date, end_time, home_time, stan_licznika, km_location, date, completed]
         else:
             return -1
 

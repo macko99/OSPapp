@@ -185,6 +185,7 @@
     stan_licznika: stan_licznika
     km_location: km_location
     scroll_id: scroll_id
+    checkbox: checkbox
 
     layout_content: layout_content
     BoxLayout:
@@ -347,6 +348,20 @@
                     hint_text: "KM do miejsca zdarzenia"
                     multiline: False
                     font_size: (root.width**2 + root.height**2) / 15**4
+                GridLayout:
+                    cols: 2
+                    Label:
+                        font_size: (root.width**2 + root.height**2) / 15**4
+                        color: 0.29, 0.29, 0.29, 1
+                        text: "Kompletny?"
+#                    CheckBox:
+#                        id: checkbox
+                    Spinner:
+                        id: checkbox
+                        values: ["nie", "tak"]
+#                        background_color: color_button
+#                        color: color_font
+                        option_cls: Factory.get("MySpinnerOption")
                 Button:
                     size_hint: 0.35, 0.1
                     text: "Zapisz"
@@ -392,6 +407,7 @@
     km_location: km_location
     modDate: modDate
     scroll_id: scroll_id
+    checkbox: checkbox
 
     layout_content: layout_content
     BoxLayout:
@@ -602,6 +618,20 @@
                     hint_text: "KM do miejsca zdarzenia"
                     multiline: False
                     font_size: (root.width**2 + root.height**2) / 15**4
+                GridLayout:
+                    cols: 2
+                    Label:
+                        font_size: (root.width**2 + root.height**2) / 15**4
+                        color: 0.29, 0.29, 0.29, 1
+                        text: "Kompletny?"
+#                    CheckBox:
+#                        id: checkbox
+                    Spinner:
+                        id: checkbox
+                        values: ["nie", "tak"]
+#                        background_color: color_button
+#                        color: color_font
+                        option_cls: Factory.get("MySpinnerOption")
                 Button:
                     size_hint: 0.35, 0.1
                     text: "Zapisz"
