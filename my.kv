@@ -25,6 +25,23 @@
             text: 'Zamknij'
             on_release: root.dismiss()
 
+<deletePopout@Popup>:
+    auto_dismiss: False
+    title: "Uwaga!"
+    size: 400, 400
+    FloatLayout:
+        Label:
+            text:"Nie udało się usunąć, brak połączenia z internetem. Spróbuj później."
+            font_size: (root.width**2 + root.height**2) / 15**4
+            pos_hint: {"x":0.3, "y":0.5}
+            size_hint: 0.4, 0.2
+        Button:
+            pos_hint:{"x":0.3,"y":0.1}
+            size_hint: 0.4, 0.1
+            font_size: (root.width**2 + root.height**2) / 15**4
+            text: 'Zamknij'
+            on_release: root.dismiss()
+
 <Password>:
     password: password
     layout_content: layout_content

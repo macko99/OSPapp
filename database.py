@@ -1,4 +1,6 @@
 import datetime
+
+from kivy.factory import Factory
 from kivy.storage.jsonstore import JsonStore
 import uuid
 import json
@@ -57,14 +59,16 @@ class DataBase:
 
     def delete_report(self, uuid_num):
         if self.store.exists(uuid_num):
-            self.store.delete(uuid_num)
             try:
                 # requests.delete(url=self.url[:-5] + id_number + ".json")
                 string = '{"deleted-' + uuid_num + '": "true"}'
                 to_database = json.loads(string)
                 requests.patch(url=self.url, json=to_database)
             except Exception as e:
+                Factory.deletePopout().open()
                 print(str(e))
+            else:
+                self.store.delete(uuid_num);
         else:
             return -1
 
@@ -90,8 +94,10 @@ class DataBase:
                 to_database = json.loads(string)
                 requests.patch(url=self.url, json=to_database)
         except Exception as e:
+            Factory.deletePopout().open()
             print(str(e))
-        self.store.clear()
+        else:
+            self.store.clear()
 
     def get_report(self, id_number):
         for item in self.store.find(innerID=id_number):
