@@ -38,6 +38,12 @@ class DataBase:
                    return_date, end_time, home_time, stan_licznika, km_location):
         if uuid_num == "":
             uuid_num = str(uuid.uuid1())
+        if section_com == "Dowódca sekcji":
+            section_com = ""
+        if action_com == "Dowódca akcji":
+            action_com = ""
+        if driver == "Kierowca":
+            driver = ""
         self.store.put(uuid_num, innerID=id_number, depDate=dep_date, depTime=dep_time, spotTime=spot_time,
                        location=location, type=type_of_action,
                        sectionCom=section_com, actionCom=action_com, driver=driver, perpetrator=perpetrator,
