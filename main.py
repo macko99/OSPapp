@@ -89,9 +89,12 @@ class EditReport(Screen):
         self.spot_time.text = result[4]
         self.location.text = result[5]
         self.type_of_action.text = result[6]
-        self.section_com.text = result[7]
-        self.action_com.text = result[8]
-        self.driver.text = result[9]
+        if result[7] != "":
+            self.section_com.text = result[7]
+        if result[8] != "":
+            self.action_com.text = result[8]
+        if result[9] != "":
+            self.driver.text = result[9]
         self.perpetrator.text = result[10]
         self.victim.text = result[11]
         self.section.text = result[12]
