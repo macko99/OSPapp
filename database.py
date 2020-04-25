@@ -18,13 +18,20 @@ class DataBase:
             self.password = data[2]
         self.firebase_patch_all()
         try:
-            with open(heroes_path, 'w') as file:
-                file.write(str(requests.get(self.url).json()['heroes']))
+            string = str(requests.get(self.url).json()['heroes'])
+            if string:
+                with open(heroes_path, 'w') as file:
+                    file.write(string)
         except Exception as e:
             print(str(e))
-        with open(heroes_path, 'r') as file:
-            string = str(file.read()).replace("'", '"')
-        self.heroes = json.loads(string)
+        try:
+            with open(heroes_path, 'r') as file:
+                string = str(file.read()).replace("'", '"')
+                print(string)
+                self.heroes = json.loads(string)
+        except Exception as e:
+            print(str(e))
+            self.heroes = ["brak strażaków w bazie"]
 
     def put_report(self, uuid_num, id_number, dep_date, dep_time, spot_time, location, type_of_action,
                    section_com, action_com, driver, perpetrator, victim, section, details,
