@@ -218,7 +218,7 @@ class Password(Screen):
     layout_content = ObjectProperty(None)
 
     def delete(self):
-        if self.password.text == "admin":
+        if self.password.text == db.get_passwd():
             EditReport().delete()
             self.password.text = ""
             self.manager.transition.direction = "right"
@@ -235,7 +235,7 @@ class PasswordAll(Screen):
     layout_content = ObjectProperty(None)
 
     def delete(self):
-        if self.password.text == "admin":
+        if self.password.text == db.get_passwd():
             Browser().delete_all()
             self.password.text = ""
             self.manager.transition.direction = "right"
@@ -280,7 +280,7 @@ class OSPApp(App):
     def build(self):
         Window.bind(on_keyboard=key_input)
         global db
-        db = DataBase(App.get_running_app().storage, App.get_running_app().heroes)
+        db = DataBase(App.get_running_app().storage, App.get_running_app().heroes, App.get_running_app().passwd)
         return sm
 
     @property
@@ -290,6 +290,10 @@ class OSPApp(App):
     @property
     def heroes(self):
         return join(self.user_data_dir, 'heroes')
+
+    @property
+    def passwd(self):
+        return join(self.user_data_dir, 'passwd')
 
 
 if __name__ == "__main__":

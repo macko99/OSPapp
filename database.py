@@ -9,15 +9,14 @@ import requests
 
 class DataBase:
     url = 'https://ospapp-53708.firebaseio.com/.json?auth='
+    admin_passwd = ''
 
-    def __init__(self, path, heroes_path):
+    def __init__(self, path, heroes_path, passwd_path):
         self.path = path
         self.store = JsonStore(path)
         with open("secret", 'r') as file:
             data = file.read().split("\n")
             self.url = self.url + data[0]
-            self.username = data[1]
-            self.password = data[2]
         self.firebase_patch_all()
         try:
             string = str(requests.get(self.url).json()['heroes'])
@@ -32,6 +31,19 @@ class DataBase:
         except Exception as e:
             print(str(e))
             self.heroes = ["brak strażaków w bazie"]
+        try:
+            string = str(requests.get(self.url).json()['passwd'])
+            if string:
+                with open(passwd_path, 'w') as file:
+                    file.write(string)
+        except Exception as e:
+            print(str(e))
+        try:
+            with open(passwd_path, 'r') as file:
+                global admin_passwd
+                admin_passwd = file.readline()
+        except Exception as e:
+            print(str(e))
 
     def put_report(self, uuid_num, id_number, dep_date, dep_time, spot_time, location, type_of_action,
                    section_com, action_com, driver, perpetrator, victim, section, details,
@@ -145,3 +157,7 @@ class DataBase:
     @staticmethod
     def get_date():
         return str(datetime.datetime.now()).split(".")[0]
+
+    def get_passwd(self):
+        global admin_passwd
+        return admin_passwd
