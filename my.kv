@@ -130,7 +130,6 @@
                 app.root.current = "browser"
 
 <StartWindow>:
-#    test:test
     FloatLayout:
         canvas.before:
             Color:
@@ -189,29 +188,12 @@
             on_release:
                 root.manager.transition.direction = "up"
                 app.root.current = "browser"
-#        Button:
-#            pos_hint:{"center_x":0.5,"center_y":0.8}
-#            size_hint: 0.55, 0.10
-#            font_size: (root.width**2 + root.height**2) / 15**4
-#            text: "Przeglądaj raporty"
-#            bold: True
-#            color: 0.29, 0.29, 0.29, 1
-#            background_color: 0.85, 0.85, 0.85, 0.3
-#            text: 'Popup test'
-#            on_release: Factory.IDpopout().open()
-#        TextInput:
-#            size_hint: 0.35, 0.1
-#            id: test
-#            hint_text: "L.P."
-#            multiline: False
-#            font_size: (root.width**2 + root.height**2) / 15**4
-#            input_filter: "int"
-#            on_text:
-#                root.on_text()
 
 <CreateReport>:
     id_number: id_number
-    dep_date: dep_date
+    dep_date_d:dep_date_d
+    dep_date_m:dep_date_m
+    dep_date_y: dep_date_y
     location: location
     type_of_action: type_of_action
     section_com: section_com
@@ -221,7 +203,9 @@
     victim: victim
     section: section
     details: details
-    return_date: return_date
+    return_date_y: return_date_y
+    return_date_m: return_date_m
+    return_date_d: return_date_d
     stan_licznika: stan_licznika
     km_location: km_location
     scroll_id: scroll_id
@@ -263,12 +247,32 @@
                     hint_text: "L.P."
                     multiline: False
                     font_size: (root.width**2 + root.height**2) / 15**4
-                TextInput:
-                    size_hint: 0.35, 0.1
-                    id: dep_date
-                    hint_text: "Data wyjazdu"
-                    multiline: False
+                Label:
                     font_size: (root.width**2 + root.height**2) / 15**4
+                    color: 0.29, 0.29, 0.29, 1
+                    text: "Data wyjazdu:"
+                GridLayout:
+                    cols: 3
+                    Spinner:
+                        id: dep_date_d
+                        values: ["dzisiaj", "01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31",""]
+                        on_text: root.on_spinner_select_depdate(self.text)
+#                        background_color: color_button
+#                        color: color_font
+                        option_cls: Factory.get("MySpinnerOption")
+                    Spinner:
+                        id: dep_date_m
+                        values: ["dzisiaj","01","02","03","04","05","06","07","08","09","10","11","12",""]
+                        on_text: root.on_spinner_select_depdate(self.text)
+#                        background_color: color_button
+#                        color: color_font
+                        option_cls: Factory.get("MySpinnerOption")
+                    Spinner:
+                        id: dep_date_y
+                        on_text: root.on_spinner_select_depdate(self.text)
+#                        background_color: color_button
+#                        color: color_font
+                        option_cls: Factory.get("MySpinnerOption")
                 GridLayout:
                     cols: 3
                     Label:
@@ -277,7 +281,7 @@
                         text: "Godzina wyjazdu"
                     Spinner:
                         id: dep_time_h
-                        values: ["teraz","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24", ""]
+                        values: ["teraz","00", "01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23",""]
                         on_text: root.on_spinner_select_deptime(self.text)
 #                        background_color: color_button
 #                        color: color_font
@@ -297,7 +301,7 @@
                         text: "Na miejscu"
                     Spinner:
                         id: spot_time_h
-                        values: ["teraz", "1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24",""]
+                        values: ["teraz","00", "01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23",""]
                         on_text: root.on_spinner_select_spottime(self.text)
 #                        background_color: color_button
 #                        color: color_font
@@ -369,12 +373,32 @@
                     hint_text: "Szczegóły"
                     multiline: True
                     font_size: (root.width**2 + root.height**2) / 15**4
-                TextInput:
-                    size_hint: 0.35, 0.1
-                    id: return_date
-                    hint_text: "Data powrotu"
-                    multiline: False
+                Label:
                     font_size: (root.width**2 + root.height**2) / 15**4
+                    color: 0.29, 0.29, 0.29, 1
+                    text: "Data powrotu:"
+                GridLayout:
+                    cols: 3
+                    Spinner:
+                        id: return_date_d
+                        values: ["dzisiaj", "01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31",""]
+                        on_text: root.on_spinner_select_returndate(self.text)
+#                        background_color: color_button
+#                        color: color_font
+                        option_cls: Factory.get("MySpinnerOption")
+                    Spinner:
+                        id: return_date_m
+                        values: ["dzisiaj","01","02","03","04","05","06","07","08","09","10","11","12",""]
+                        on_text: root.on_spinner_select_returndate(self.text)
+#                        background_color: color_button
+#                        color: color_font
+                        option_cls: Factory.get("MySpinnerOption")
+                    Spinner:
+                        id: return_date_y
+                        on_text: root.on_spinner_select_returndate(self.text)
+#                        background_color: color_button
+#                        color: color_font
+                        option_cls: Factory.get("MySpinnerOption")
                 GridLayout:
                     cols: 3
                     Label:
@@ -383,7 +407,7 @@
                         text: "Godzina zakończenia"
                     Spinner:
                         id: end_time_h
-                        values: ["teraz", "1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24",""]
+                        values: ["teraz","00", "01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23",""]
                         on_text: root.on_spinner_select_endtime(self.text)
 #                        background_color: color_button
 #                        color: color_font
@@ -403,7 +427,7 @@
                         text: "Godzina w remizie"
                     Spinner:
                         id: home_time_h
-                        values: ["teraz","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24",""]
+                        values: ["teraz","00", "01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23",""]
                         on_text: root.on_spinner_select_hometime(self.text)
 #                        background_color: color_button
 #                        color: color_font
@@ -467,9 +491,9 @@
 <EditReport>:
     uuid_num: uuid_num
     id_number: id_number
-    dep_date: dep_date
-#    dep_time: dep_time
-#    spot_time: spot_time
+    dep_date_d:dep_date_d
+    dep_date_m:dep_date_m
+    dep_date_y: dep_date_y
     location: location
     type_of_action: type_of_action
     section_com: section_com
@@ -479,9 +503,9 @@
     victim: victim
     section: section
     details: details
-    return_date: return_date
-#    end_time: end_time
-#    home_time: home_time
+    return_date_y: return_date_y
+    return_date_m: return_date_m
+    return_date_d: return_date_d
     stan_licznika: stan_licznika
     km_location: km_location
     modDate: modDate
@@ -535,12 +559,32 @@
                     multiline: False
                     input_filter: "int"
                     font_size: (root.width**2 + root.height**2) / 15**4
-                TextInput:
-                    size_hint: 0.35, 0.1
-                    id: dep_date
-                    hint_text: "Data wyjazdu"
-                    multiline: False
+                Label:
                     font_size: (root.width**2 + root.height**2) / 15**4
+                    color: 0.29, 0.29, 0.29, 1
+                    text: "Data wyjazdu:"
+                GridLayout:
+                    cols: 3
+                    Spinner:
+                        id: dep_date_d
+                        values: ["dzisiaj", "01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31",""]
+                        on_text: root.on_spinner_select_depdate(self.text)
+#                        background_color: color_button
+#                        color: color_font
+                        option_cls: Factory.get("MySpinnerOption")
+                    Spinner:
+                        id: dep_date_m
+                        values: ["dzisiaj","01","02","03","04","05","06","07","08","09","10","11","12",""]
+                        on_text: root.on_spinner_select_depdate(self.text)
+#                        background_color: color_button
+#                        color: color_font
+                        option_cls: Factory.get("MySpinnerOption")
+                    Spinner:
+                        id: dep_date_y
+                        on_text: root.on_spinner_select_depdate(self.text)
+#                        background_color: color_button
+#                        color: color_font
+                        option_cls: Factory.get("MySpinnerOption")
                 GridLayout:
                     cols: 3
                     Label:
@@ -549,7 +593,7 @@
                         text: "Godzina wyjazdu"
                     Spinner:
                         id: dep_time_h
-                        values: ["teraz","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24", ""]
+                        values: ["teraz","00", "01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23",""]
                         on_text: root.on_spinner_select_deptime(self.text)
 #                        background_color: color_button
 #                        color: color_font
@@ -569,7 +613,7 @@
                         text: "Na miejscu"
                     Spinner:
                         id: spot_time_h
-                        values: ["teraz", "1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24",""]
+                        values: ["teraz","00", "01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23",""]
                         on_text: root.on_spinner_select_spottime(self.text)
 #                        background_color: color_button
 #                        color: color_font
@@ -641,12 +685,32 @@
                     hint_text: "Szczegóły"
                     multiline: True
                     font_size: (root.width**2 + root.height**2) / 15**4
-                TextInput:
-                    size_hint: 0.35, 0.1
-                    id: return_date
-                    hint_text: "Data powrotu"
-                    multiline: False
+                Label:
                     font_size: (root.width**2 + root.height**2) / 15**4
+                    color: 0.29, 0.29, 0.29, 1
+                    text: "Data powrotu:"
+                GridLayout:
+                    cols: 3
+                    Spinner:
+                        id: return_date_d
+                        values: ["dzisiaj", "01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31",""]
+                        on_text: root.on_spinner_select_returndate(self.text)
+#                        background_color: color_button
+#                        color: color_font
+                        option_cls: Factory.get("MySpinnerOption")
+                    Spinner:
+                        id: return_date_m
+                        values: ["dzisiaj","01","02","03","04","05","06","07","08","09","10","11","12",""]
+                        on_text: root.on_spinner_select_returndate(self.text)
+#                        background_color: color_button
+#                        color: color_font
+                        option_cls: Factory.get("MySpinnerOption")
+                    Spinner:
+                        id: return_date_y
+                        on_text: root.on_spinner_select_returndate(self.text)
+#                        background_color: color_button
+#                        color: color_font
+                        option_cls: Factory.get("MySpinnerOption")
                 GridLayout:
                     cols: 3
                     Label:
@@ -655,7 +719,7 @@
                         text: "Godzina zakończenia"
                     Spinner:
                         id: end_time_h
-                        values: ["teraz", "1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24",""]
+                        values: ["teraz","00", "01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23",""]
                         on_text: root.on_spinner_select_endtime(self.text)
 #                        background_color: color_button
 #                        color: color_font
@@ -675,7 +739,7 @@
                         text: "Godzina w remizie"
                     Spinner:
                         id: home_time_h
-                        values: ["teraz","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24",""]
+                        values: ["teraz","00", "01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23",""]
                         on_text: root.on_spinner_select_hometime(self.text)
 #                        background_color: color_button
 #                        color: color_font
