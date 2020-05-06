@@ -28,6 +28,7 @@ class CreateReport(Screen):
     def __init__(self, **kwargs):
         super(CreateReport, self).__init__(**kwargs)
         self.layout_content.bind(minimum_height=self.layout_content.setter('height'))
+        self.asked = False
 
     def getYears(self):
         years = []
@@ -44,6 +45,7 @@ class CreateReport(Screen):
         self.dep_date_y.values = self.getYears()
         self.return_date_y.values = self.getYears()
         self.checkbox.text = "nie"
+        self.asked = False
 
     def on_spinner_select_depdate(self, text):
         if text == "dzisiaj":
@@ -76,6 +78,11 @@ class CreateReport(Screen):
         if text == "teraz":
             self.ids.home_time_h.text = str(datetime.datetime.now().strftime("%H"))
             self.ids.home_time_m.text = str(datetime.datetime.now().strftime("%M"))
+
+    def on_spinner_select(self, text):
+        if text == "Tak" and not self.asked:
+            Factory.readyPopout().open()
+            self.asked = True
 
     def submit(self):
         if db.find_inner_id(self.id_number.text) or self.id_number.text == "Taka L.P. już istnieje!":
@@ -197,6 +204,11 @@ class EditReport(Screen):
         if text == "teraz":
             self.ids.home_time_h.text = str(datetime.datetime.now().strftime("%H"))
             self.ids.home_time_m.text = str(datetime.datetime.now().strftime("%M"))
+
+    def on_spinner_select(self, text):
+        if text == "Tak" and not self.asked:
+            Factory.readyPopout().open()
+            self.asked = True
 
     def on_enter(self):
         self.ids.scroll_id.scroll_to(self.ids.id_number)

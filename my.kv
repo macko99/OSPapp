@@ -529,6 +529,7 @@
                         background_color: color_yes_no
                         color: color_font
                         option_cls: Factory.get("MySpinnerOption")
+                        on_text: root.on_spinner_select(self.text)
                 Button:
                     size_hint: 0.35, 0.1
                     text: "Zapisz"
@@ -907,6 +908,7 @@
                         background_color: color_yes_no
                         color: color_font
                         option_cls: Factory.get("MySpinnerOption")
+                        on_text: root.on_spinner_select(self.text)
                 Button:
                     size_hint: 0.35, 0.1
                     text: "Zapisz"
