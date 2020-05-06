@@ -1,19 +1,20 @@
 #:import Factory kivy.factory.Factory
 
-#:set backg_color ( 1.0 , 0.98 , 0.94 , 1 )
-#:set color_button ( 1.0 , 0.8 , 0.47 , 1 )
-#:set color_spinner ( 0.98 , 0.62 , 0.26 , 1 )
+#:set backg_color ( 0.79 , 0.72 , 0.64 , 1 )
+#:set color_button ( 0.97 , 0.82 , 0.54 , 1 )
+#:set color_spinner ( 0.97 , 0.82 , 0.54 , 1 )
 #:set color_dropdown "atlas://data/images/defaulttheme/button_pressed"
-#:set color_font   ( 0.18 , 0.27 , 0.31 , 1 )
-#:set color_yes_no ( 1.0 , 0.43 , 0.45 , 1 )
-#:set color_popup ( 0.13 , 0.49 , 0.62 , 1 )
+#:set color_font   ( 0.18 , 0.19 , 0.26 , 1 )
+#:set color_yes_no ( 0.94 , 0.51 , 0.33 , 1 )
+#:set color_popup ( 0.94 , 0.51 , 0.33 , 1 )
+#:set color_scroll ( 0.75 , 0.75 , 0.75 , 1 )
 
 <MySpinnerOption@SpinnerOption>:
     background_normal: ''
-    background_color: color_spinner
+    background_color: color_scroll
     color: color_font
 
-#:set font_factor_4 0.5
+#:set font_factor_4 0.7
 
 <IDpopout@Popup>:
     auto_dismiss: False
@@ -30,44 +31,53 @@
             pos_hint: {"center_x":0.5, "center_y":0.6}
             size_hint: 0.6, 0.35
             halign: 'center'
+            color: color_button
         Button:
             pos_hint:{"x":0.3,"y":0.1}
             size_hint: 0.4, 0.15
-            font_size: self.height * font_factor_4
+            font_size: (root.width**2 + root.height**2) / 12**4 * font_factor_4
             text: 'Zamknij'
             on_release: root.dismiss()
 
 <deletePopout@Popup>:
     auto_dismiss: False
-    title: "Uwaga!"
+    title: ''
     size: 400, 400
+    size_hint: 0.7, 0.5
+    separator_height: 0
     FloatLayout:
         Label:
-            text:"Nie udało się usunąć, brak połączenia z internetem. Spróbuj później."
-            font_size: (root.width**2 + root.height**2) / 15**4
-            pos_hint: {"x":0.3, "y":0.5}
-            size_hint: 0.4, 0.2
+            text:"Nie udało się usunąć,\nbrak połączenia z internetem.\nSpróbuj później."
+            font_size: (root.width**2 + root.height**2) / 12**4
+            pos_hint: {"center_x":0.5, "center_y":0.6}
+            size_hint: 0.6, 0.35
+            halign: 'center'
+            color: color_button
         Button:
             pos_hint:{"x":0.3,"y":0.1}
-            size_hint: 0.4, 0.1
-            font_size: (root.width**2 + root.height**2) / 15**4
+            size_hint: 0.4, 0.15
+            font_size: (root.width**2 + root.height**2) / 12**4 * font_factor_4
             text: 'Zamknij'
             on_release: root.dismiss()
 
 <readyPopout@Popup>:
     auto_dismiss: False
-    title: "Uwaga!"
+    title: ''
     size: 400, 400
+    size_hint: 0.7, 0.5
+    separator_height: 0
     FloatLayout:
         Label:
-            text:"Czy na pewno chcesz oznaczyć raport jako kompletny?"
-            font_size: (root.width**2 + root.height**2) / 15**4
-            pos_hint: {"x":0.3, "y":0.5}
-            size_hint: 0.4, 0.2
+            text:"Czy na pewno chcesz\noznaczyć raport\njako kompletny?"
+            font_size: (root.width**2 + root.height**2) / 12**4
+            pos_hint: {"center_x":0.5, "center_y":0.6}
+            size_hint: 0.6, 0.35
+            halign: 'center'
+            color: color_button
         Button:
             pos_hint:{"x":0.3,"y":0.1}
-            size_hint: 0.4, 0.1
-            font_size: (root.width**2 + root.height**2) / 15**4
+            size_hint: 0.4, 0.15
+            font_size: (root.width**2 + root.height**2) / 12**4 * font_factor_4
             text: 'Zamknij'
             on_release: root.dismiss()
 
@@ -76,30 +86,39 @@
     layout_content: layout_content
     FloatLayout:
         id: layout_content
+        canvas.before:
+            Color:
+                rgba: backg_color
+            Rectangle:
+                pos: self.pos
+                size: self.size
         Label:
             text:"Usunąć?"
-            font_size: (root.width**2 + root.height**2) / 13**4
-            pos_hint: {"x":0.25, "y":0.8}
+            font_size: self.height * font_factor_1
+            pos_hint: {"x":0.25, "center_y":0.7}
             size_hint: 0.5, 0.2
+            color: color_font
+            bold: True
         TextInput:
             pos_hint: {"x":0.25, "top":0.6}
-            size_hint: 0.5, 0.1
+            size_hint: 0.6, 0.1
             id: password
             hint_text: "hasło"
             password: True
             multiline: False
-            font_size: (root.width**2 + root.height**2) / 15**4
+            halign: 'center'
+            font_size: self.height * font_factor_4
         Button:
-            pos_hint:{"x":0.1,"y":0.1}
+            pos_hint:{"x":0.55,"center_y":0.1}
             size_hint: 0.35, 0.1
-            font_size: (root.width**2 + root.height**2) / 15**4
+            font_size: self.height * font_factor_1
             text: "Tak"
             on_release:
                 root.delete()
         Button:
-            pos_hint:{"x":0.55,"y":0.1}
+            pos_hint:{"x":0.1,"center_y":0.1}
             size_hint: 0.35, 0.1
-            font_size: (root.width**2 + root.height**2) / 15**4
+            font_size: self.height * font_factor_1
             text: "Nie"
             on_release:
                 root.clear()
@@ -247,7 +266,7 @@
                     cols: 2
                     Label:
                         size_hint: 0.35, 0.1
-                        text: "Liczba porządkowa:"
+                        text: "L.P.:"
                         font_size: self.height * font_factor_1
                         color: color_font
                     TextInput:
