@@ -80,7 +80,7 @@ class DataBase:
                 Factory.deletePopout().open()
                 print(str(e))
             else:
-                self.store.delete(uuid_num);
+                self.store.delete(uuid_num)
         else:
             return -1
 

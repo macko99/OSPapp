@@ -449,15 +449,10 @@
                 spacing: 0, 0
                 padding: 0, 0
                 Label:
-                    text: "Edytuj raport o UUID:"
+                    text: "Edycja raportu"
                     font_size: (root.width**2 + root.height**2) / 15**4
                     color: 0.29, 0.29, 0.29, 1
                     bold: True
-                Label:
-                    id: uuid_num
-                    text: "UUID:"
-                    font_size: (root.width**2 + root.height**2) / 17**4
-                    color: 0.29, 0.29, 0.29, 1
                 Label:
                     text: "Data ostatniej modyfikacji:"
                     font_size: (root.width**2 + root.height**2) / 15**4
@@ -618,13 +613,15 @@
                 Label:
                     text: ""
                 Label:
-                    text: ""
+                    id: uuid_num
+                    text: "UUID:"
+                    font_size: (root.width**2 + root.height**2) / 17**4
+                    color: 0.29, 0.29, 0.29, 1
 
 
 <Browser>:
     name: "browser"
     id1: id1
-    del_but: del_but
     layout_content: layout_content
     cancel_but: cancel_but
     BoxLayout:
@@ -654,15 +651,6 @@
                     text: "Wybierz raport do edycji:"
                     font_size: (root.width**2 + root.height**2) / 15**4
                     color: 0.29, 0.29, 0.29, 1
-                Button:
-                    id: del_but
-                    size_hint: 0.35, 0.1
-                    font_size: (root.width**2 + root.height**2) / 15**4
-                    text: "Usuń wszystkie"
-                    color: 0.29, 0.29, 0.29, 1
-                    background_color: 0.85, 0.85, 0.85, 0.3
-                    on_release:
-                        root.try_delete()
                 Button:
                     id: cancel_but
                     size_hint: 0.35, 0.1

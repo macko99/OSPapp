@@ -79,10 +79,10 @@ class EditReport(Screen):
         input_id = input_data
 
     def on_enter(self):
-        self.ids.scroll_id.scroll_to(self.ids.uuid_num)
+        self.ids.scroll_id.scroll_to(self.ids.bl)
         global input_id
         result = db.get_report(input_id)
-        self.uuid_num.text = result[0]
+        self.uuid_num.text = "UUID: " + result[0]
         self.id_number.text = result[1]
         self.dep_date.text = result[2]
         self.dep_time.text = result[3]
@@ -155,7 +155,7 @@ class EditReport(Screen):
 
     def delete(self):
         global tmp_uuid
-        db.delete_report(tmp_uuid)
+        db.delete_report(tmp_uuid[6:])
 
     def try_delete(self):
         global tmp_uuid
@@ -187,7 +187,10 @@ class Browser(Screen):
             button_type = not button_type
 
         if reports:
-            self.ids.layout_content.add_widget(self.ids.del_but)
+            button = Button(text="Usuń wszystkie", id="del_but", )
+            # self.ids.layout_content.add_widget(self.ids.del_but)
+            button.bind(on_release=self.try_delete)
+            self.ids.layout_content.add_widget(button)
         else:
             label = Label(text="Brak raportów", id="test_id", bold=True, color=[0.29, 0.29, 0.29, 1], font_size=60)
             self.ids.layout_content.add_widget(label)
@@ -206,7 +209,7 @@ class Browser(Screen):
     def delete_all(self):
         db.delete_all()
 
-    def try_delete(self):
+    def try_delete(self, instance):
         self.manager.transition.direction = "left"
         sm.current = "passwordAll"
 
@@ -216,6 +219,9 @@ class Browser(Screen):
 
 class Password(Screen):
     layout_content = ObjectProperty(None)
+
+    def on_enter(self):
+        self.password.text = ""
 
     def delete(self):
         if self.password.text == db.get_passwd():
@@ -233,6 +239,9 @@ class Password(Screen):
 
 class PasswordAll(Screen):
     layout_content = ObjectProperty(None)
+
+    def on_enter(self):
+        self.password.text = ""
 
     def delete(self):
         if self.password.text == db.get_passwd():
