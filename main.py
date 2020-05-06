@@ -87,7 +87,8 @@ class CreateReport(Screen):
     def submit(self):
         if db.find_inner_id(self.id_number.text) or self.id_number.text == "Taka L.P. już istnieje!":
             Factory.IDpopout().open()
-            self.id_number.text = "Taka L.P. już istnieje!"
+            self.id_number.text = ""
+            self.ids.scroll_id.scroll_to(self.ids.id_number)
         else:
             if self.ids.dep_time_h.text != "" and self.ids.dep_time_m.text != "":
                 dep_time = self.ids.dep_time_h.text + ":" + self.ids.dep_time_m.text
@@ -157,11 +158,14 @@ class EditReport(Screen):
     input_id = ""
     tmp_id = ""
     tmp_uuid = ""
+    result = []
 
     def __init__(self, **kwargs):
         super(EditReport, self).__init__(**kwargs)
         self.layout_content.bind(minimum_height=self.layout_content.setter('height'))
-        self.asked = False
+        self.asked = True
+        self.dep_date_y.values = self.getYears()
+        self.return_date_y.values = self.getYears()
 
     def getYears(self):
         years = []
@@ -171,8 +175,9 @@ class EditReport(Screen):
         return years
 
     def start(self, input_data):
-        global input_id
-        input_id = input_data
+        global result
+        result = db.get_report(input_data)
+
 
     def on_spinner_select_depdate(self, text):
         if text == "dzisiaj":
@@ -213,8 +218,7 @@ class EditReport(Screen):
 
     def on_enter(self):
         self.ids.scroll_id.scroll_to(self.ids.id_number)
-        global input_id
-        result = db.get_report(input_id)
+        global result
         self.uuid_num.text = "UUID: " + result[0]
         self.id_number.text = result[1]
         if result[2] != "":
@@ -253,21 +257,23 @@ class EditReport(Screen):
         self.km_location.text = result[18]
         self.modDate.text = result[19][:10]+"\n"+result[19][10:]
         self.checkbox.text = result[20]
+        if result[20] == "Tak":
+            self.asked = True
+        else:
+            self.asked = False
         global tmp_id
         tmp_id = result[1]
-        self.ids.section_com.values = db.get_heroes() + json.loads('["Dowódca sekcji"]')
         self.ids.action_com.values = db.get_heroes() + json.loads('["Dowódca akcji"]')
         self.ids.driver.values = db.get_heroes() + json.loads('["Kierowca"]')
-        self.dep_date_y.values = self.getYears()
-        self.return_date_y.values = self.getYears()
-        self.asked = False
+        self.ids.section_com.values = db.get_heroes() + json.loads('["Dowódca sekcji"]')
 
     def submit(self):
         global tmp_id
         if (self.id_number.text != tmp_id and db.find_inner_id(
                 self.id_number.text)) or self.id_number.text == "Taka L.P. już istnieje!":
             Factory.IDpopout().open()
-            self.id_number.text = "Taka L.P. już istnieje!"
+            self.id_number.text = ""
+            self.ids.scroll_id.scroll_to(self.ids.id_number)
         else:
             if self.ids.dep_time_h.text != "" and self.ids.dep_time_m.text != "":
                 dep_time = self.ids.dep_time_h.text + ":" + self.ids.dep_time_m.text
@@ -367,7 +373,7 @@ class Browser(Screen):
                             background_normal='',
                             background_color=color_choose_btn[button_type],
                             font_size=self.layout_content.width * button_font_size_factor)
-            button.bind(on_press=self.on_press)
+            button.bind(on_release=self.on_press)
             self.ids.layout_content.add_widget(button)
             button_type = not button_type
 
