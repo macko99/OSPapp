@@ -1,11 +1,13 @@
 from __future__ import unicode_literals
 
+import datetime
 import json
 from os.path import join
 from kivy.core.window import Window
 from kivy.factory import Factory
 from kivy.uix.button import Button
 from kivy.uix.label import Label
+
 from database import DataBase
 from kivy.app import App
 from kivy.lang import Builder
@@ -19,6 +21,7 @@ class CreateReport(Screen):
     def __init__(self, **kwargs):
         super(CreateReport, self).__init__(**kwargs)
         self.layout_content.bind(minimum_height=self.layout_content.setter('height'))
+        # self.currentTime = datetime.datetime.now()
 
     def on_enter(self, *args):
         self.ids.scroll_id.scroll_to(self.ids.id_number)
@@ -27,16 +30,52 @@ class CreateReport(Screen):
         self.ids.driver.values = db.get_heroes() + json.loads('["Kierowca"]')
         self.checkbox.text = "nie"
 
+    def on_spinner_select_deptime(self, text):
+        if text == "teraz":
+            self.ids.dep_time_h.text = str(datetime.datetime.now().strftime("%H"))
+            self.ids.dep_time_m.text = str(datetime.datetime.now().strftime("%M"))
+
+    def on_spinner_select_spottime(self, text):
+        if text == "teraz":
+            self.ids.spot_time_h.text = str(datetime.datetime.now().strftime("%H"))
+            self.ids.spot_time_m.text = str(datetime.datetime.now().strftime("%M"))
+
+    def on_spinner_select_endtime(self, text):
+        if text == "teraz":
+            self.ids.end_time_h.text = str(datetime.datetime.now().strftime("%H"))
+            self.ids.end_time_m.text = str(datetime.datetime.now().strftime("%M"))
+
+    def on_spinner_select_hometime(self, text):
+        if text == "teraz":
+            self.ids.home_time_h.text = str(datetime.datetime.now().strftime("%H"))
+            self.ids.home_time_m.text = str(datetime.datetime.now().strftime("%M"))
+
     def submit(self):
         if db.find_inner_id(self.id_number.text) or self.id_number.text == "Taka L.P. już istnieje!":
             Factory.IDpopout().open()
             self.id_number.text = "Taka L.P. już istnieje!"
         else:
-            db.put_report("", self.id_number.text, self.dep_date.text, self.dep_time.text, self.spot_time.text,
+            if self.ids.dep_time_h.text != "" and self.ids.dep_time_m.text != "":
+                dep_time = self.ids.dep_time_h.text + ":" + self.ids.dep_time_m.text
+            else:
+                dep_time = ""
+            if self.ids.spot_time_h.text != "" and self.ids.spot_time_m.text != "":
+                spot_time = self.ids.spot_time_h.text + ":" + self.ids.spot_time_m.text
+            else:
+                spot_time = ""
+            if self.ids.end_time_h.text != "" and self.ids.end_time_m.text != "":
+                end_time = self.ids.end_time_h.text + ":" + self.ids.end_time_m.text
+            else:
+                end_time = ""
+            if self.ids.home_time_h.text != "" and self.ids.home_time_m.text != "":
+                home_time = self.ids.dep_time_h.text + ":" + self.ids.dep_time_m.text
+            else:
+                home_time = ""
+            db.put_report("", self.id_number.text, self.dep_date.text, dep_time, spot_time,
                           self.location.text, self.type_of_action.text, self.section_com.text, self.action_com.text,
                           self.driver.text, self.perpetrator.text, self.victim.text, self.section.text,
                           self.details.text,
-                          self.return_date.text, self.end_time.text, self.home_time.text, self.stan_licznika.text,
+                          self.return_date.text, end_time, home_time, self.stan_licznika.text,
                           self.km_location.text, self.checkbox.text)
             self.clear()
             self.manager.transition.direction = "down"
@@ -45,8 +84,10 @@ class CreateReport(Screen):
     def clear(self):
         self.id_number.text = ""
         self.dep_date.text = ""
-        self.dep_time.text = ""
-        self.spot_time.text = ""
+        self.ids.dep_time_h.text = ""
+        self.ids.dep_time_m.text = ""
+        self.ids.spot_time_h.text = ""
+        self.ids.spot_time_m.text = ""
         self.location.text = ""
         self.type_of_action.text = ""
         self.section_com.text = "Dowódca sekcji"
@@ -57,8 +98,10 @@ class CreateReport(Screen):
         self.section.text = ""
         self.details.text = ""
         self.return_date.text = ""
-        self.end_time.text = ""
-        self.home_time.text = ""
+        self.ids.end_time_h.text = ""
+        self.ids.home_time_h.text = ""
+        self.ids.end_time_m.text = ""
+        self.ids.home_time_m.text = ""
         self.stan_licznika.text = ""
         self.km_location.text = ""
         self.checkbox.text = ""
@@ -78,15 +121,39 @@ class EditReport(Screen):
         global input_id
         input_id = input_data
 
+    def on_spinner_select_deptime(self, text):
+        if text == "teraz":
+            self.ids.dep_time_h.text = str(datetime.datetime.now().strftime("%H"))
+            self.ids.dep_time_m.text = str(datetime.datetime.now().strftime("%M"))
+
+    def on_spinner_select_spottime(self, text):
+        if text == "teraz":
+            self.ids.spot_time_h.text = str(datetime.datetime.now().strftime("%H"))
+            self.ids.spot_time_m.text = str(datetime.datetime.now().strftime("%M"))
+
+    def on_spinner_select_endtime(self, text):
+        if text == "teraz":
+            self.ids.end_time_h.text = str(datetime.datetime.now().strftime("%H"))
+            self.ids.end_time_m.text = str(datetime.datetime.now().strftime("%M"))
+
+    def on_spinner_select_hometime(self, text):
+        if text == "teraz":
+            self.ids.home_time_h.text = str(datetime.datetime.now().strftime("%H"))
+            self.ids.home_time_m.text = str(datetime.datetime.now().strftime("%M"))
+
     def on_enter(self):
-        self.ids.scroll_id.scroll_to(self.ids.bl)
+        self.ids.scroll_id.scroll_to(self.ids.id_number)
         global input_id
         result = db.get_report(input_id)
         self.uuid_num.text = "UUID: " + result[0]
         self.id_number.text = result[1]
         self.dep_date.text = result[2]
-        self.dep_time.text = result[3]
-        self.spot_time.text = result[4]
+        if result[3] != "":
+            self.ids.dep_time_h.text = str(result[3]).split(":")[0]
+            self.ids.dep_time_m.text = str(result[3]).split(":")[1]
+        if result[4] != "":
+            self.ids.spot_time_h.text = str(result[4]).split(":")[0]
+            self.ids.spot_time_m.text = str(result[4]).split(":")[1]
         self.location.text = result[5]
         self.type_of_action.text = result[6]
         if result[7] != "":
@@ -100,8 +167,12 @@ class EditReport(Screen):
         self.section.text = result[12]
         self.details.text = result[13]
         self.return_date.text = result[14]
-        self.end_time.text = result[15]
-        self.home_time.text = result[16]
+        if result[15] != "":
+            self.ids.end_time_h.text = str(result[15]).split(":")[0]
+            self.ids.end_time_m.text = str(result[15]).split(":")[1]
+        if result[16] != "":
+            self.ids.home_time_h.text = str(result[16]).split(":")[0]
+            self.ids.home_time_m.text = str(result[16]).split(":")[1]
         self.stan_licznika.text = result[17]
         self.km_location.text = result[18]
         self.modDate.text = result[19]
@@ -119,12 +190,28 @@ class EditReport(Screen):
             Factory.IDpopout().open()
             self.id_number.text = "Taka L.P. już istnieje!"
         else:
-            db.put_report(self.uuid_num.text, self.id_number.text, self.dep_date.text, self.dep_time.text,
-                          self.spot_time.text,
+            if self.ids.dep_time_h.text != "" and self.ids.dep_time_m.text != "":
+                dep_time = self.ids.dep_time_h.text + ":" + self.ids.dep_time_m.text
+            else:
+                dep_time = ""
+            if self.ids.spot_time_h.text != "" and self.ids.spot_time_m.text != "":
+                spot_time = self.ids.spot_time_h.text + ":" + self.ids.spot_time_m.text
+            else:
+                spot_time = ""
+            if self.ids.end_time_h.text != "" and self.ids.end_time_m.text != "":
+                end_time = self.ids.end_time_h.text + ":" + self.ids.end_time_m.text
+            else:
+                end_time = ""
+            if self.ids.home_time_h.text != "" and self.ids.home_time_m.text != "":
+                home_time = self.ids.dep_time_h.text + ":" + self.ids.dep_time_m.text
+            else:
+                home_time = ""
+            db.put_report(self.uuid_num.text[6:], self.id_number.text, self.dep_date.text, dep_time,
+                          spot_time,
                           self.location.text, self.type_of_action.text, self.section_com.text, self.action_com.text,
                           self.driver.text, self.perpetrator.text, self.victim.text, self.section.text,
                           self.details.text,
-                          self.return_date.text, self.end_time.text, self.home_time.text, self.stan_licznika.text,
+                          self.return_date.text, end_time, home_time, self.stan_licznika.text,
                           self.km_location.text, self.checkbox.text)
             EditReport.clear(self)
             self.manager.transition.direction = "right"
@@ -134,8 +221,10 @@ class EditReport(Screen):
         self.uuid_num.text = ""
         self.id_number.text = ""
         self.dep_date.text = ""
-        self.dep_time.text = ""
-        self.spot_time.text = ""
+        self.ids.dep_time_h.text = ""
+        self.ids.dep_time_m.text = ""
+        self.ids.spot_time_h.text = ""
+        self.ids.spot_time_m.text = ""
         self.location.text = ""
         self.type_of_action.text = ""
         self.section_com.text = "Dowódca sekcji"
@@ -146,8 +235,10 @@ class EditReport(Screen):
         self.section.text = ""
         self.details.text = ""
         self.return_date.text = ""
-        self.end_time.text = ""
-        self.home_time.text = ""
+        self.ids.end_time_h.text = ""
+        self.ids.home_time_h.text = ""
+        self.ids.end_time_m.text = ""
+        self.ids.home_time_m.text = ""
         self.stan_licznika.text = ""
         self.km_location.text = ""
         self.modDate.text = ""
@@ -188,7 +279,6 @@ class Browser(Screen):
 
         if reports:
             button = Button(text="Usuń wszystkie", id="del_but", )
-            # self.ids.layout_content.add_widget(self.ids.del_but)
             button.bind(on_release=self.try_delete)
             self.ids.layout_content.add_widget(button)
         else:
@@ -258,6 +348,17 @@ class PasswordAll(Screen):
 
 
 class StartWindow(Screen):
+    # def on_enter(self):
+    #     textinput = self.test
+    #     textinput.bind(text=self.on_text)
+    #     # textinput.bind()
+    #
+    # def on_text(self, instance, value):
+    #     print('The widget', instance, 'have:', value)
+    #
+    # def insert_text(self, substring, from_undo=False):
+    #     s = substring.upper()
+    #     return super(StartWindow, self).insert_text(s, from_undo=from_undo)
     pass
 
 

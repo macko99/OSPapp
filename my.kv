@@ -130,6 +130,7 @@
                 app.root.current = "browser"
 
 <StartWindow>:
+#    test:test
     FloatLayout:
         canvas.before:
             Color:
@@ -198,12 +199,19 @@
 #            background_color: 0.85, 0.85, 0.85, 0.3
 #            text: 'Popup test'
 #            on_release: Factory.IDpopout().open()
+#        TextInput:
+#            size_hint: 0.35, 0.1
+#            id: test
+#            hint_text: "L.P."
+#            multiline: False
+#            font_size: (root.width**2 + root.height**2) / 15**4
+#            input_filter: "int"
+#            on_text:
+#                root.on_text()
 
 <CreateReport>:
     id_number: id_number
     dep_date: dep_date
-    dep_time: dep_time
-    spot_time: spot_time
     location: location
     type_of_action: type_of_action
     section_com: section_com
@@ -214,8 +222,6 @@
     section: section
     details: details
     return_date: return_date
-    end_time: end_time
-    home_time: home_time
     stan_licznika: stan_licznika
     km_location: km_location
     scroll_id: scroll_id
@@ -253,6 +259,7 @@
                 TextInput:
                     size_hint: 0.35, 0.1
                     id: id_number
+                    input_filter: "int"
                     hint_text: "L.P."
                     multiline: False
                     font_size: (root.width**2 + root.height**2) / 15**4
@@ -262,18 +269,46 @@
                     hint_text: "Data wyjazdu"
                     multiline: False
                     font_size: (root.width**2 + root.height**2) / 15**4
-                TextInput:
-                    size_hint: 0.35, 0.1
-                    id: dep_time
-                    hint_text: "Godzina wyjazdu"
-                    multiline: False
-                    font_size: (root.width**2 + root.height**2) / 15**4
-                TextInput:
-                    size_hint: 0.35, 0.1
-                    id: spot_time
-                    hint_text: "Na miejscu"
-                    multiline: False
-                    font_size: (root.width**2 + root.height**2) / 15**4
+                GridLayout:
+                    cols: 3
+                    Label:
+                        font_size: (root.width**2 + root.height**2) / 15**4
+                        color: 0.29, 0.29, 0.29, 1
+                        text: "Godzina wyjazdu"
+                    Spinner:
+                        id: dep_time_h
+                        values: ["teraz","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24", ""]
+                        on_text: root.on_spinner_select_deptime(self.text)
+#                        background_color: color_button
+#                        color: color_font
+                        option_cls: Factory.get("MySpinnerOption")
+                    Spinner:
+                        id: dep_time_m
+                        values: ["teraz","00", "05","10","15","20","25","30","35","40","45","50","55", ""]
+                        on_text: root.on_spinner_select_deptime(self.text)
+#                        background_color: color_button
+#                        color: color_font
+                        option_cls: Factory.get("MySpinnerOption")
+                GridLayout:
+                    cols: 3
+                    Label:
+                        font_size: (root.width**2 + root.height**2) / 15**4
+                        color: 0.29, 0.29, 0.29, 1
+                        text: "Na miejscu"
+                    Spinner:
+                        id: spot_time_h
+                        values: ["teraz", "1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24",""]
+                        on_text: root.on_spinner_select_spottime(self.text)
+#                        background_color: color_button
+#                        color: color_font
+                        option_cls: Factory.get("MySpinnerOption")
+                    Spinner:
+                        id: spot_time_m
+                        values: ["teraz","00", "05","10","15","20","25","30","35","40","45","50","55",""]
+                        on_text: root.on_spinner_select_spottime(self.text)
+#                        background_color: color_button
+#                        color: color_font
+                        option_cls: Factory.get("MySpinnerOption")
                 TextInput:
                     size_hint: 0.35, 0.1
                     id: location
@@ -340,22 +375,51 @@
                     hint_text: "Data powrotu"
                     multiline: False
                     font_size: (root.width**2 + root.height**2) / 15**4
-                TextInput:
-                    size_hint: 0.35, 0.1
-                    id: end_time
-                    hint_text: "Godzina zakończenia"
-                    multiline: False
-                    font_size: (root.width**2 + root.height**2) / 15**4
-                TextInput:
-                    size_hint: 0.35, 0.1
-                    id: home_time
-                    hint_text: "Godzina w remizie"
-                    multiline: False
-                    font_size: (root.width**2 + root.height**2) / 15**4
+                GridLayout:
+                    cols: 3
+                    Label:
+                        font_size: (root.width**2 + root.height**2) / 15**4
+                        color: 0.29, 0.29, 0.29, 1
+                        text: "Godzina zakończenia"
+                    Spinner:
+                        id: end_time_h
+                        values: ["teraz", "1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24",""]
+                        on_text: root.on_spinner_select_endtime(self.text)
+#                        background_color: color_button
+#                        color: color_font
+                        option_cls: Factory.get("MySpinnerOption")
+                    Spinner:
+                        id: end_time_m
+                        values: ["teraz","00", "05","10","15","20","25","30","35","40","45","50","55",""]
+                        on_text: root.on_spinner_select_endtime(self.text)
+#                        background_color: color_button
+#                        color: color_font
+                        option_cls: Factory.get("MySpinnerOption")
+                GridLayout:
+                    cols: 3
+                    Label:
+                        font_size: (root.width**2 + root.height**2) / 15**4
+                        color: 0.29, 0.29, 0.29, 1
+                        text: "Godzina w remizie"
+                    Spinner:
+                        id: home_time_h
+                        values: ["teraz","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24",""]
+                        on_text: root.on_spinner_select_hometime(self.text)
+#                        background_color: color_button
+#                        color: color_font
+                        option_cls: Factory.get("MySpinnerOption")
+                    Spinner:
+                        id: home_time_m
+                        values: ["teraz","00", "05","10","15","20","25","30","35","40","45","50","55",""]
+                        on_text: root.on_spinner_select_hometime(self.text)
+#                        background_color: color_button
+#                        color: color_font
+                        option_cls: Factory.get("MySpinnerOption")
                 TextInput:
                     size_hint: 0.35, 0.1
                     id: stan_licznika
                     hint_text: "Stan licznika"
+                    input_filter: "int"
                     multiline: False
                     font_size: (root.width**2 + root.height**2) / 15**4
                 TextInput:
@@ -363,6 +427,7 @@
                     id: km_location
                     hint_text: "KM do miejsca zdarzenia"
                     multiline: False
+                    input_filter: "int"
                     font_size: (root.width**2 + root.height**2) / 15**4
                 GridLayout:
                     cols: 2
@@ -403,8 +468,8 @@
     uuid_num: uuid_num
     id_number: id_number
     dep_date: dep_date
-    dep_time: dep_time
-    spot_time: spot_time
+#    dep_time: dep_time
+#    spot_time: spot_time
     location: location
     type_of_action: type_of_action
     section_com: section_com
@@ -415,8 +480,8 @@
     section: section
     details: details
     return_date: return_date
-    end_time: end_time
-    home_time: home_time
+#    end_time: end_time
+#    home_time: home_time
     stan_licznika: stan_licznika
     km_location: km_location
     modDate: modDate
@@ -468,6 +533,7 @@
                     id: id_number
                     hint_text: "L.P."
                     multiline: False
+                    input_filter: "int"
                     font_size: (root.width**2 + root.height**2) / 15**4
                 TextInput:
                     size_hint: 0.35, 0.1
@@ -475,23 +541,51 @@
                     hint_text: "Data wyjazdu"
                     multiline: False
                     font_size: (root.width**2 + root.height**2) / 15**4
-                TextInput:
-                    size_hint: 0.35, 0.1
-                    id: dep_time
-                    hint_text: "Godzina wyjazdu"
-                    multiline: False
-                    font_size: (root.width**2 + root.height**2) / 15**4
-                TextInput:
-                    size_hint: 0.35, 0.1
-                    id: spot_time
-                    hint_text: "na miejscu"
-                    multiline: False
-                    font_size: (root.width**2 + root.height**2) / 15**4
+                GridLayout:
+                    cols: 3
+                    Label:
+                        font_size: (root.width**2 + root.height**2) / 15**4
+                        color: 0.29, 0.29, 0.29, 1
+                        text: "Godzina wyjazdu"
+                    Spinner:
+                        id: dep_time_h
+                        values: ["teraz","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24", ""]
+                        on_text: root.on_spinner_select_deptime(self.text)
+#                        background_color: color_button
+#                        color: color_font
+                        option_cls: Factory.get("MySpinnerOption")
+                    Spinner:
+                        id: dep_time_m
+                        values: ["teraz","00", "05","10","15","20","25","30","35","40","45","50","55", ""]
+                        on_text: root.on_spinner_select_deptime(self.text)
+#                        background_color: color_button
+#                        color: color_font
+                        option_cls: Factory.get("MySpinnerOption")
+                GridLayout:
+                    cols: 3
+                    Label:
+                        font_size: (root.width**2 + root.height**2) / 15**4
+                        color: 0.29, 0.29, 0.29, 1
+                        text: "Na miejscu"
+                    Spinner:
+                        id: spot_time_h
+                        values: ["teraz", "1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24",""]
+                        on_text: root.on_spinner_select_spottime(self.text)
+#                        background_color: color_button
+#                        color: color_font
+                        option_cls: Factory.get("MySpinnerOption")
+                    Spinner:
+                        id: spot_time_m
+                        values: ["teraz","00", "05","10","15","20","25","30","35","40","45","50","55",""]
+                        on_text: root.on_spinner_select_spottime(self.text)
+#                        background_color: color_button
+#                        color: color_font
+                        option_cls: Factory.get("MySpinnerOption")
                 TextInput:
                     size_hint: 0.35, 0.1
                     id: location
                     hint_text: "Miejsce zdarzenia"
-                    multiline: False
+                    multiline: True
                     font_size: (root.width**2 + root.height**2) / 15**4
                 TextInput:
                     size_hint: 0.35, 0.1
@@ -539,13 +633,13 @@
                     size_hint: 0.35, 0.1
                     id: section
                     hint_text: "Sekcja"
-                    multiline: False
+                    multiline: True
                     font_size: (root.width**2 + root.height**2) / 15**4
                 TextInput:
                     size_hint: 0.35, 0.1
                     id: details
                     hint_text: "Szczegóły"
-                    multiline: False
+                    multiline: True
                     font_size: (root.width**2 + root.height**2) / 15**4
                 TextInput:
                     size_hint: 0.35, 0.1
@@ -553,22 +647,51 @@
                     hint_text: "Data powrotu"
                     multiline: False
                     font_size: (root.width**2 + root.height**2) / 15**4
-                TextInput:
-                    size_hint: 0.35, 0.1
-                    id: end_time
-                    hint_text: "Godzina zakończenia"
-                    multiline: False
-                    font_size: (root.width**2 + root.height**2) / 15**4
-                TextInput:
-                    size_hint: 0.35, 0.1
-                    id: home_time
-                    hint_text: "Godzina w remizie"
-                    multiline: False
-                    font_size: (root.width**2 + root.height**2) / 15**4
+                GridLayout:
+                    cols: 3
+                    Label:
+                        font_size: (root.width**2 + root.height**2) / 15**4
+                        color: 0.29, 0.29, 0.29, 1
+                        text: "Godzina zakończenia"
+                    Spinner:
+                        id: end_time_h
+                        values: ["teraz", "1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24",""]
+                        on_text: root.on_spinner_select_endtime(self.text)
+#                        background_color: color_button
+#                        color: color_font
+                        option_cls: Factory.get("MySpinnerOption")
+                    Spinner:
+                        id: end_time_m
+                        values: ["teraz","00", "05","10","15","20","25","30","35","40","45","50","55",""]
+                        on_text: root.on_spinner_select_endtime(self.text)
+#                        background_color: color_button
+#                        color: color_font
+                        option_cls: Factory.get("MySpinnerOption")
+                GridLayout:
+                    cols: 3
+                    Label:
+                        font_size: (root.width**2 + root.height**2) / 15**4
+                        color: 0.29, 0.29, 0.29, 1
+                        text: "Godzina w remizie"
+                    Spinner:
+                        id: home_time_h
+                        values: ["teraz","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24",""]
+                        on_text: root.on_spinner_select_hometime(self.text)
+#                        background_color: color_button
+#                        color: color_font
+                        option_cls: Factory.get("MySpinnerOption")
+                    Spinner:
+                        id: home_time_m
+                        values: ["teraz","00", "05","10","15","20","25","30","35","40","45","50","55",""]
+                        on_text: root.on_spinner_select_hometime(self.text)
+#                        background_color: color_button
+#                        color: color_font
+                        option_cls: Factory.get("MySpinnerOption")
                 TextInput:
                     size_hint: 0.35, 0.1
                     id: stan_licznika
                     hint_text: "Stan licznika"
+                    input_filter: "int"
                     multiline: False
                     font_size: (root.width**2 + root.height**2) / 15**4
                 TextInput:
@@ -576,6 +699,7 @@
                     id: km_location
                     hint_text: "KM do miejsca zdarzenia"
                     multiline: False
+                    input_filter: "int"
                     font_size: (root.width**2 + root.height**2) / 15**4
                 GridLayout:
                     cols: 2
