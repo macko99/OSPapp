@@ -14,6 +14,13 @@ from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.properties import ObjectProperty
 
+backg_color = (1.0, 0.98, 0.94, 1)
+color_button = (1.0, 0.8, 0.47, 1)
+color_dropdown = (1.0, 0.75, 0.34, 1)
+color_font = (0.18, 0.27, 0.31, 1)
+color_choose_btn = [(0.81, 0.81, 0.81, 1), (0.93, 0.94, 0.95, 1)]
+color_yes_no = (1.0, 0.43, 0.45, 1)
+
 
 class CreateReport(Screen):
     layout_content = ObjectProperty(None)
@@ -21,12 +28,12 @@ class CreateReport(Screen):
     def __init__(self, **kwargs):
         super(CreateReport, self).__init__(**kwargs)
         self.layout_content.bind(minimum_height=self.layout_content.setter('height'))
-        # self.currentTime = datetime.datetime.now()
 
     def getYears(self):
         years = []
         for i in range(int(datetime.datetime.now().strftime("%Y"))-2, int(datetime.datetime.now().strftime("%Y"))+3):
             years.append(str(i))
+        years.append("dzisiaj")
         return years
 
     def on_enter(self, *args):
@@ -152,6 +159,7 @@ class EditReport(Screen):
         years = []
         for i in range(int(datetime.datetime.now().strftime("%Y"))-2, int(datetime.datetime.now().strftime("%Y"))+3):
             years.append(str(i))
+        years.append("dzisiaj")
         return years
 
     def start(self, input_data):
@@ -230,7 +238,7 @@ class EditReport(Screen):
             self.ids.home_time_m.text = str(result[16]).split(":")[1]
         self.stan_licznika.text = result[17]
         self.km_location.text = result[18]
-        self.modDate.text = result[19]
+        self.modDate.text = result[19][:10]+"\n"+result[19][10:]
         self.checkbox.text = result[20]
         global tmp_id
         tmp_id = result[1]
@@ -336,22 +344,31 @@ class Browser(Screen):
         self.ids.layout_content.add_widget(self.ids.id1)
         reports = db.get_all_friendly()
 
-        button_colors = [[1.75, 1.75, 1.75, 1], [2.01, 2.01, 2.01, 1]]
+        button_font_size_factor = 1 / 28
         button_type = 0
 
         for report in reports:
-            button = Button(text=str(report), id=str(report).split(" ")[0], color=[0.29, 0.29, 0.29, 1],
-                            background_color=button_colors[button_type])
+            button = Button(text=str(report), id=str(report).split(" ")[0],
+                            color=color_font,
+                            background_normal='',
+                            background_color=color_choose_btn[button_type],
+                            font_size=self.height * button_font_size_factor)
             button.bind(on_press=self.on_press)
             self.ids.layout_content.add_widget(button)
             button_type = not button_type
 
         if reports:
-            button = Button(text="Usuń wszystkie", id="del_but", )
+            button = Button(text="Usuń wszystkie", id="del_but",
+                            font_size=self.height * button_font_size_factor,
+                            background_normal='',
+                            background_color=color_button,
+                            color=color_font)
             button.bind(on_release=self.try_delete)
             self.ids.layout_content.add_widget(button)
         else:
-            label = Label(text="Brak raportów", id="test_id", bold=True, color=[0.29, 0.29, 0.29, 1], font_size=60)
+            label = Label(text="Brak raportów", id="test_id", bold=True,
+                          color=color_font,
+                          font_size=self.height * button_font_size_factor)
             self.ids.layout_content.add_widget(label)
 
         self.ids.layout_content.add_widget(self.ids.cancel_but)
