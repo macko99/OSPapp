@@ -161,6 +161,7 @@ class EditReport(Screen):
     def __init__(self, **kwargs):
         super(EditReport, self).__init__(**kwargs)
         self.layout_content.bind(minimum_height=self.layout_content.setter('height'))
+        self.asked = False
 
     def getYears(self):
         years = []
@@ -259,6 +260,7 @@ class EditReport(Screen):
         self.ids.driver.values = db.get_heroes() + json.loads('["Kierowca"]')
         self.dep_date_y.values = self.getYears()
         self.return_date_y.values = self.getYears()
+        self.asked = False
 
     def submit(self):
         global tmp_id
