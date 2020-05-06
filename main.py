@@ -14,12 +14,12 @@ from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.properties import ObjectProperty
 
-backg_color = (1.0, 0.98, 0.94, 1)
-color_button = (1.0, 0.8, 0.47, 1)
-color_dropdown = (1.0, 0.75, 0.34, 1)
-color_font = (0.18, 0.27, 0.31, 1)
+backg_color = ( 0.88 , 0.98 , 0.99 , 1 )
+color_button = ( 0.6 , 0.76 , 0.85 , 1 )
+color_dropdown = ( 0.75 , 0.75 , 0.75 , 1 )
+color_font = ( 0.16 , 0.2 , 0.25 , 1 )
 color_choose_btn = [(0.81, 0.81, 0.81, 1), (0.93, 0.94, 0.95, 1)]
-color_yes_no = (1.0, 0.43, 0.45, 1)
+color_yes_no = ( 0.93 , 0.42 , 0.3 , 1 )
 
 
 class CreateReport(Screen):
@@ -44,7 +44,7 @@ class CreateReport(Screen):
         self.ids.driver.values = db.get_heroes() + json.loads('["Kierowca"]')
         self.dep_date_y.values = self.getYears()
         self.return_date_y.values = self.getYears()
-        self.checkbox.text = "nie"
+        self.checkbox.text = "Nie"
         self.asked = False
 
     def on_spinner_select_depdate(self, text):
@@ -366,14 +366,14 @@ class Browser(Screen):
                             color=color_font,
                             background_normal='',
                             background_color=color_choose_btn[button_type],
-                            font_size=self.height * button_font_size_factor)
+                            font_size=self.layout_content.width * button_font_size_factor)
             button.bind(on_press=self.on_press)
             self.ids.layout_content.add_widget(button)
             button_type = not button_type
 
         if reports:
             button = Button(text="Usuń wszystkie", id="del_but",
-                            font_size=self.height * button_font_size_factor,
+                            font_size=self.layout_content.width * button_font_size_factor,
                             background_normal='',
                             background_color=color_button,
                             color=color_font)
@@ -382,7 +382,7 @@ class Browser(Screen):
         else:
             label = Label(text="Brak raportów", id="test_id", bold=True,
                           color=color_font,
-                          font_size=self.height * button_font_size_factor)
+                          font_size=self.layout_content.width * button_font_size_factor)
             self.ids.layout_content.add_widget(label)
 
         self.ids.layout_content.add_widget(self.ids.cancel_but)

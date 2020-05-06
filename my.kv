@@ -1,19 +1,22 @@
 #:import Factory kivy.factory.Factory
 
-#:set backg_color ( 1.0 , 0.98 , 0.94 , 1 )
-#:set color_button ( 1.0 , 0.8 , 0.47 , 1 )
-#:set color_spinner ( 0.98 , 0.62 , 0.26 , 1 )
+#:set backg_color ( 0.88 , 0.98 , 0.99 , 1 )
+#:set color_button ( 0.6 , 0.76 , 0.85 , 1 )
+#:set color_spinner ( 0.6 , 0.76 , 0.85 , 1 )
 #:set color_dropdown "atlas://data/images/defaulttheme/button_pressed"
-#:set color_font   ( 0.18 , 0.27 , 0.31 , 1 )
-#:set color_yes_no ( 1.0 , 0.43 , 0.45 , 1 )
-#:set color_popup ( 0.13 , 0.49 , 0.62 , 1 )
+#:set color_font   ( 0.16 , 0.2 , 0.25 , 1 )
+#:set color_yes_no ( 0.93 , 0.42 , 0.3 , 1 )
+#:set color_popup ( 0.94 , 0.51 , 0.33 , 1 )
+#:set color_scroll ( 0.75 , 0.75 , 0.75 , 1 )
+
+#:set font_factor_1 0.04
+#:set font_factor_3 0.7
+#:set font_factor_4 0.1
 
 <MySpinnerOption@SpinnerOption>:
     background_normal: ''
-    background_color: color_spinner
+    background_color: color_scroll
     color: color_font
-
-#:set font_factor_4 0.5
 
 <IDpopout@Popup>:
     auto_dismiss: False
@@ -30,44 +33,53 @@
             pos_hint: {"center_x":0.5, "center_y":0.6}
             size_hint: 0.6, 0.35
             halign: 'center'
+            color: color_button
         Button:
             pos_hint:{"x":0.3,"y":0.1}
             size_hint: 0.4, 0.15
-            font_size: self.height * font_factor_4
+            font_size: (root.width**2 + root.height**2) / 12**4 * font_factor_3
             text: 'Zamknij'
             on_release: root.dismiss()
 
 <deletePopout@Popup>:
     auto_dismiss: False
-    title: "Uwaga!"
+    title: ''
     size: 400, 400
+    size_hint: 0.7, 0.5
+    separator_height: 0
     FloatLayout:
         Label:
-            text:"Nie udało się usunąć, brak połączenia z internetem. Spróbuj później."
-            font_size: (root.width**2 + root.height**2) / 15**4
-            pos_hint: {"x":0.3, "y":0.5}
-            size_hint: 0.4, 0.2
+            text:"Nie udało się usunąć,\nbrak połączenia z internetem.\nSpróbuj później."
+            font_size: (root.width**2 + root.height**2) / 12**4
+            pos_hint: {"center_x":0.5, "center_y":0.6}
+            size_hint: 0.6, 0.35
+            halign: 'center'
+            color: color_button
         Button:
             pos_hint:{"x":0.3,"y":0.1}
-            size_hint: 0.4, 0.1
-            font_size: (root.width**2 + root.height**2) / 15**4
+            size_hint: 0.4, 0.15
+            font_size: (root.width**2 + root.height**2) / 12**4 * font_factor_3
             text: 'Zamknij'
             on_release: root.dismiss()
 
 <readyPopout@Popup>:
     auto_dismiss: False
-    title: "Uwaga!"
+    title: ''
     size: 400, 400
+    size_hint: 0.7, 0.5
+    separator_height: 0
     FloatLayout:
         Label:
-            text:"Czy na pewno chcesz oznaczyć raport jako kompletny?"
-            font_size: (root.width**2 + root.height**2) / 15**4
-            pos_hint: {"x":0.3, "y":0.5}
-            size_hint: 0.4, 0.2
+            text:"Czy na pewno chcesz\noznaczyć raport\njako kompletny?"
+            font_size: (root.width**2 + root.height**2) / 12**4
+            pos_hint: {"center_x":0.5, "center_y":0.6}
+            size_hint: 0.6, 0.35
+            halign: 'center'
+            color: color_button
         Button:
             pos_hint:{"x":0.3,"y":0.1}
-            size_hint: 0.4, 0.1
-            font_size: (root.width**2 + root.height**2) / 15**4
+            size_hint: 0.4, 0.15
+            font_size: (root.width**2 + root.height**2) / 12**4 * font_factor_3
             text: 'Zamknij'
             on_release: root.dismiss()
 
@@ -76,30 +88,39 @@
     layout_content: layout_content
     FloatLayout:
         id: layout_content
+        canvas.before:
+            Color:
+                rgba: backg_color
+            Rectangle:
+                pos: self.pos
+                size: self.size
         Label:
             text:"Usunąć?"
-            font_size: (root.width**2 + root.height**2) / 13**4
-            pos_hint: {"x":0.25, "y":0.8}
-            size_hint: 0.5, 0.2
+            font_size: root.width * font_factor_1
+            pos_hint: {"x":0.25, "center_y":0.7}
+            size_hint: 0.5, 0.3
+            color: color_font
+            bold: True
         TextInput:
-            pos_hint: {"x":0.25, "top":0.6}
-            size_hint: 0.5, 0.1
+            pos_hint: {"center_x":0.5, "center_y":0.5}
+            size_hint: 0.6, 0.1
             id: password
             hint_text: "hasło"
             password: True
             multiline: False
-            font_size: (root.width**2 + root.height**2) / 15**4
+            halign: 'center'
+            font_size: root.width * font_factor_4
         Button:
-            pos_hint:{"x":0.1,"y":0.1}
+            pos_hint:{"x":0.55,"center_y":0.2}
             size_hint: 0.35, 0.1
-            font_size: (root.width**2 + root.height**2) / 15**4
+            font_size: root.width * font_factor_4
             text: "Tak"
             on_release:
                 root.delete()
         Button:
-            pos_hint:{"x":0.55,"y":0.1}
+            pos_hint:{"x":0.1,"center_y":0.2}
             size_hint: 0.35, 0.1
-            font_size: (root.width**2 + root.height**2) / 15**4
+            font_size: root.width * font_factor_4
             text: "Nie"
             on_release:
                 root.clear()
@@ -111,30 +132,39 @@
     layout_content: layout_content
     FloatLayout:
         id: layout_content
+        canvas.before:
+            Color:
+                rgba: backg_color
+            Rectangle:
+                pos: self.pos
+                size: self.size
         Label:
             text:"Usunąć wszystkie?"
-            font_size: (root.width**2 + root.height**2) / 13**4
-            pos_hint: {"x":0.25, "y":0.8}
-            size_hint: 0.5, 0.2
+            font_size: root.width * font_factor_1
+            pos_hint: {"x":0.25, "center_y":0.7}
+            size_hint: 0.5, 0.3
+            color: color_font
+            bold: True
         TextInput:
-            pos_hint: {"x":0.25, "top":0.6}
-            size_hint: 0.5, 0.1
+            pos_hint: {"center_x":0.5, "center_y":0.5}
+            size_hint: 0.6, 0.1
             id: password
-            password: True
             hint_text: "hasło"
+            password: True
             multiline: False
-            font_size: (root.width**2 + root.height**2) / 15**4
+            halign: 'center'
+            font_size: root.width * font_factor_4
         Button:
-            pos_hint:{"x":0.1,"y":0.1}
+            pos_hint:{"x":0.55,"center_y":0.2}
             size_hint: 0.35, 0.1
-            font_size: (root.width**2 + root.height**2) / 15**4
+            font_size: root.width * font_factor_4
             text: "Tak"
             on_release:
                 root.delete()
         Button:
-            pos_hint:{"x":0.55,"y":0.1}
+            pos_hint:{"x":0.1,"center_y":0.2}
             size_hint: 0.35, 0.1
-            font_size: (root.width**2 + root.height**2) / 15**4
+            font_size: root.width * font_factor_4
             text: "Nie"
             on_release:
                 root.clear()
@@ -151,7 +181,7 @@
                 size: self.size
         Label:
             text:"Raporty OSP"
-            font_size: self.height /2.2
+            font_size: self.width /5
             pos_hint: {"x":0.25, "y":0.8}
             size_hint: 0.5, 0.2
             color: color_font
@@ -163,7 +193,7 @@
         Button:
             pos_hint:{"center_x":0.5,"center_y":0.5}
             size_hint: 0.75, 0.10
-            font_size: self.height /2
+            font_size: self.width /15
             text: "Nowy raport"
             bold: True
             color: color_font
@@ -179,7 +209,7 @@
         Button:
             pos_hint:{"center_x":0.5,"center_y":0.15}
             size_hint: 0.75, 0.10
-            font_size: self.height /2
+            font_size: self.width /15
             text: "Przeglądaj raporty"
             bold: True
             color: color_font
@@ -189,7 +219,6 @@
                 root.manager.transition.direction = "up"
                 app.root.current = "browser"
 
-#:set font_factor_1 0.32
 
 <CreateReport>:
     id_number: id_number
@@ -240,15 +269,15 @@
                 padding: 0.1, 0.1
                 Label:
                     text: "Podaj szczegóły raportu"
-                    font_size: self.height/2
+                    font_size: root.width/12
                     color: color_font
                     bold: True
                 GridLayout:
                     cols: 2
                     Label:
                         size_hint: 0.35, 0.1
-                        text: "Liczba porządkowa:"
-                        font_size: self.height * font_factor_1
+                        text: "L.P.:"
+                        font_size: root.width * font_factor_1
                         color: color_font
                     TextInput:
                         id: id_number
@@ -257,12 +286,12 @@
                         hint_text: "L.P."
                         halign: 'center'
                         multiline: False
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                 GridLayout:
                     cols: 4
                     spacing: [2,0]
                     Label:
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                         color: color_font
                         halign: 'center'
                         text: "Data\nwyjazdu:"
@@ -273,7 +302,7 @@
                         background_normal: ''
                         background_color: color_spinner
                         color: color_font
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                         option_cls: Factory.get("MySpinnerOption")
                     Spinner:
                         id: dep_date_m
@@ -282,7 +311,7 @@
                         background_normal: ''
                         background_color: color_spinner
                         color: color_font
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                         option_cls: Factory.get("MySpinnerOption")
                     Spinner:
                         id: dep_date_y
@@ -290,7 +319,7 @@
                         background_normal: ''
                         background_color: color_spinner
                         color: color_font
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                         option_cls: Factory.get("MySpinnerOption")
                 GridLayout:
                     spacing: [3,3]
@@ -298,7 +327,7 @@
                     Label:
                         color: color_font
                         text: "Godzina\nwyjazdu"
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                         halign: 'center'
                     Spinner:
                         id: dep_time_h
@@ -307,7 +336,7 @@
                         background_normal: ''
                         background_color: color_spinner
                         color: color_font
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                         option_cls: Factory.get("MySpinnerOption")
                     Spinner:
                         id: dep_time_m
@@ -316,13 +345,13 @@
                         background_normal: ''
                         background_color: color_spinner
                         color: color_font
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                         option_cls: Factory.get("MySpinnerOption")
                 GridLayout:
                     cols: 3
                     spacing: [3,3]
                     Label:
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                         color: color_font
                         text: "Na miejscu"
                         halign: 'center'
@@ -333,7 +362,7 @@
                         background_normal: ''
                         background_color: color_spinner
                         color: color_font
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                         option_cls: Factory.get("MySpinnerOption")
                     Spinner:
                         id: spot_time_m
@@ -342,20 +371,20 @@
                         background_normal: ''
                         background_color: color_spinner
                         color: color_font
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                         option_cls: Factory.get("MySpinnerOption")
                 TextInput:
                     size_hint: 0.35, 0.1
                     id: location
                     hint_text: "Miejsce zdarzenia"
                     multiline: True
-                    font_size: self.height * font_factor_1
+                    font_size: root.width * font_factor_1
                 TextInput:
                     size_hint: 0.35, 0.1
                     id: type_of_action
                     hint_text: "Rodzaj zdarzenia"
                     multiline: False
-                    font_size: self.height * font_factor_1
+                    font_size: root.width * font_factor_1
                 Spinner:
                     id: section_com
                     text: "Dowódca sekcji"
@@ -364,7 +393,7 @@
                     background_normal: ''
                     background_color: color_spinner
                     color: color_font
-                    font_size: self.height * font_factor_1
+                    font_size: root.width * font_factor_1
                     option_cls: Factory.get("MySpinnerOption")
                 Spinner:
                     id: action_com
@@ -374,7 +403,7 @@
                     background_normal: ''
                     background_color: color_spinner
                     color: color_font
-                    font_size: self.height * font_factor_1
+                    font_size: root.width * font_factor_1
                     option_cls: Factory.get("MySpinnerOption")
                 Spinner:
                     id: driver
@@ -384,37 +413,37 @@
                     background_normal: ''
                     background_color: color_spinner
                     color: color_font
-                    font_size: self.height * font_factor_1
+                    font_size: root.width * font_factor_1
                     option_cls: Factory.get("MySpinnerOption")
                 TextInput:
                     size_hint: 0.35, 0.1
                     id: perpetrator
                     hint_text: "Sprawca"
                     multiline: False
-                    font_size: self.height * font_factor_1
+                    font_size: root.width * font_factor_1
                 TextInput:
                     size_hint: 0.35, 0.1
                     id: victim
                     hint_text: "Poszkodowany"
                     multiline: False
-                    font_size: self.height * font_factor_1
+                    font_size: root.width * font_factor_1
                 TextInput:
                     size_hint: 0.35, 0.1
                     id: section
                     hint_text: "Sekcja"
                     multiline: True
-                    font_size: self.height * font_factor_1
+                    font_size: root.width * font_factor_1
                 TextInput:
                     size_hint: 0.35, 0.1
                     id: details
                     hint_text: "Szczegóły"
                     multiline: True
-                    font_size: self.height * font_factor_1
+                    font_size: root.width * font_factor_1
                 GridLayout:
                     cols: 4
                     spacing: [2,0]
                     Label:
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                         color: color_font
                         text: "Data\npowrotu:"
                         halign: 'center'
@@ -425,7 +454,7 @@
                         background_normal: ''
                         background_color: color_spinner
                         color: color_font
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                         option_cls: Factory.get("MySpinnerOption")
                     Spinner:
                         id: return_date_m
@@ -434,7 +463,7 @@
                         background_normal: ''
                         background_color: color_spinner
                         color: color_font
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                         option_cls: Factory.get("MySpinnerOption")
                     Spinner:
                         id: return_date_y
@@ -442,13 +471,13 @@
                         background_normal: ''
                         background_color: color_spinner
                         color: color_font
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                         option_cls: Factory.get("MySpinnerOption")
                 GridLayout:
                     cols: 3
                     spacing: [3,3]
                     Label:
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                         color: color_font
                         text: "Godzina\nzakończenia"
                         halign: 'center'
@@ -459,7 +488,7 @@
                         background_normal: ''
                         background_color: color_spinner
                         color: color_font
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                         option_cls: Factory.get("MySpinnerOption")
                     Spinner:
                         id: end_time_m
@@ -468,13 +497,13 @@
                         background_normal: ''
                         background_color: color_spinner
                         color: color_font
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                         option_cls: Factory.get("MySpinnerOption")
                 GridLayout:
                     cols: 3
                     spacing: [3,3]
                     Label:
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                         color: color_font
                         text: "Godzina\nw remizie"
                         halign: 'center'
@@ -485,7 +514,7 @@
                         background_normal: ''
                         background_color: color_spinner
                         color: color_font
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                         option_cls: Factory.get("MySpinnerOption")
                     Spinner:
                         id: home_time_m
@@ -494,7 +523,7 @@
                         background_normal: ''
                         background_color: color_spinner
                         color: color_font
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                         option_cls: Factory.get("MySpinnerOption")
                 GridLayout:
                     cols: 2
@@ -505,7 +534,7 @@
                         hint_text: "Stan licznika"
                         input_filter: "int"
                         multiline: False
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                         color: color_font
                     TextInput:
                         size_hint: 0.35, 0.1
@@ -513,17 +542,17 @@
                         hint_text: "KM do miejsca zdarzenia"
                         multiline: False
                         input_filter: "int"
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                         color: color_font
                 GridLayout:
                     cols: 2
                     Label:
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                         color: color_font
                         text: "Kompletny?"
                     Spinner:
                         id: checkbox
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                         values: ["Nie", "Tak"]
                         background_normal: ''
                         background_color: color_yes_no
@@ -536,7 +565,7 @@
                     color: color_font
                     background_normal: ''
                     background_color: color_button
-                    font_size: self.height * font_factor_1
+                    font_size: root.width * font_factor_1
                     on_release:
                         root.submit()
                 Button:
@@ -545,7 +574,7 @@
                     color: color_font
                     background_normal: ''
                     background_color: color_button
-                    font_size: self.height * font_factor_1
+                    font_size: root.width * font_factor_1
                     on_release:
                         root.clear()
                         root.manager.transition.direction = "up"
@@ -606,20 +635,20 @@
                 padding: 0.1, 0.1
                 Label:
                     text: "Edycja raportu"
-                    font_size: self.height/2
+                    font_size: root.width/12
                     color: color_font
                     bold: True
                 GridLayout:
                     cols: 2
                     Label:
                         text: "Data ostatniej\nmodyfikacji:"
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                         color: color_font
                         bold: True
                         halign: 'center'
                     Label:
                         id: modDate
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                         color: color_font
                         halign: 'center'
                 GridLayout:
@@ -627,7 +656,7 @@
                     Label:
                         size_hint: 0.35, 0.1
                         text: "L.P.:"
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                         color: color_font
                     TextInput:
                         id: id_number
@@ -636,12 +665,12 @@
                         hint_text: "L.P."
                         halign: 'center'
                         multiline: False
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                 GridLayout:
                     cols: 4
                     spacing: [2,0]
                     Label:
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                         color: color_font
                         halign: 'center'
                         text: "Data\nwyjazdu:"
@@ -652,7 +681,7 @@
                         background_normal: ''
                         background_color: color_spinner
                         color: color_font
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                         option_cls: Factory.get("MySpinnerOption")
                     Spinner:
                         id: dep_date_m
@@ -661,7 +690,7 @@
                         background_normal: ''
                         background_color: color_spinner
                         color: color_font
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                         option_cls: Factory.get("MySpinnerOption")
                     Spinner:
                         id: dep_date_y
@@ -669,7 +698,7 @@
                         background_normal: ''
                         background_color: color_spinner
                         color: color_font
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                         option_cls: Factory.get("MySpinnerOption")
                 GridLayout:
                     spacing: [3,3]
@@ -677,7 +706,7 @@
                     Label:
                         color: color_font
                         text: "Godzina\nwyjazdu"
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                         halign: 'center'
                     Spinner:
                         id: dep_time_h
@@ -686,7 +715,7 @@
                         background_normal: ''
                         background_color: color_spinner
                         color: color_font
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                         option_cls: Factory.get("MySpinnerOption")
                     Spinner:
                         id: dep_time_m
@@ -695,13 +724,13 @@
                         background_normal: ''
                         background_color: color_spinner
                         color: color_font
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                         option_cls: Factory.get("MySpinnerOption")
                 GridLayout:
                     cols: 3
                     spacing: [3,3]
                     Label:
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                         color: color_font
                         text: "Na miejscu"
                         halign: 'center'
@@ -712,7 +741,7 @@
                         background_normal: ''
                         background_color: color_spinner
                         color: color_font
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                         option_cls: Factory.get("MySpinnerOption")
                     Spinner:
                         id: spot_time_m
@@ -721,20 +750,20 @@
                         background_normal: ''
                         background_color: color_spinner
                         color: color_font
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                         option_cls: Factory.get("MySpinnerOption")
                 TextInput:
                     size_hint: 0.35, 0.1
                     id: location
                     hint_text: "Miejsce zdarzenia"
                     multiline: True
-                    font_size: self.height * font_factor_1
+                    font_size: root.width * font_factor_1
                 TextInput:
                     size_hint: 0.35, 0.1
                     id: type_of_action
                     hint_text: "Rodzaj zdarzenia"
                     multiline: False
-                    font_size: self.height * font_factor_1
+                    font_size: root.width * font_factor_1
                 Spinner:
                     id: section_com
                     text: "Dowódca sekcji"
@@ -743,7 +772,7 @@
                     background_normal: ''
                     background_color: color_spinner
                     color: color_font
-                    font_size: self.height * font_factor_1
+                    font_size: root.width * font_factor_1
                     option_cls: Factory.get("MySpinnerOption")
                 Spinner:
                     id: action_com
@@ -753,7 +782,7 @@
                     background_normal: ''
                     background_color: color_spinner
                     color: color_font
-                    font_size: self.height * font_factor_1
+                    font_size: root.width * font_factor_1
                     option_cls: Factory.get("MySpinnerOption")
                 Spinner:
                     id: driver
@@ -763,37 +792,37 @@
                     background_normal: ''
                     background_color: color_spinner
                     color: color_font
-                    font_size: self.height * font_factor_1
+                    font_size: root.width * font_factor_1
                     option_cls: Factory.get("MySpinnerOption")
                 TextInput:
                     size_hint: 0.35, 0.1
                     id: perpetrator
                     hint_text: "Sprawca"
                     multiline: False
-                    font_size: self.height * font_factor_1
+                    font_size: root.width * font_factor_1
                 TextInput:
                     size_hint: 0.35, 0.1
                     id: victim
                     hint_text: "Poszkodowany"
                     multiline: False
-                    font_size: self.height * font_factor_1
+                    font_size: root.width * font_factor_1
                 TextInput:
                     size_hint: 0.35, 0.1
                     id: section
                     hint_text: "Sekcja"
                     multiline: True
-                    font_size: self.height * font_factor_1
+                    font_size: root.width * font_factor_1
                 TextInput:
                     size_hint: 0.35, 0.1
                     id: details
                     hint_text: "Szczegóły"
                     multiline: True
-                    font_size: self.height * font_factor_1
+                    font_size: root.width * font_factor_1
                 GridLayout:
                     cols: 4
                     spacing: [2,0]
                     Label:
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                         color: color_font
                         text: "Data\npowrotu:"
                         halign: 'center'
@@ -804,7 +833,7 @@
                         background_normal: ''
                         background_color: color_spinner
                         color: color_font
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                         option_cls: Factory.get("MySpinnerOption")
                     Spinner:
                         id: return_date_m
@@ -813,7 +842,7 @@
                         background_normal: ''
                         background_color: color_spinner
                         color: color_font
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                         option_cls: Factory.get("MySpinnerOption")
                     Spinner:
                         id: return_date_y
@@ -821,13 +850,13 @@
                         background_normal: ''
                         background_color: color_spinner
                         color: color_font
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                         option_cls: Factory.get("MySpinnerOption")
                 GridLayout:
                     cols: 3
                     spacing: [3,3]
                     Label:
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                         color: color_font
                         text: "Godzina\nzakończenia"
                         halign: 'center'
@@ -838,7 +867,7 @@
                         background_normal: ''
                         background_color: color_spinner
                         color: color_font
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                         option_cls: Factory.get("MySpinnerOption")
                     Spinner:
                         id: end_time_m
@@ -847,13 +876,13 @@
                         background_normal: ''
                         background_color: color_spinner
                         color: color_font
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                         option_cls: Factory.get("MySpinnerOption")
                 GridLayout:
                     cols: 3
                     spacing: [3,3]
                     Label:
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                         color: color_font
                         text: "Godzina\nw remizie"
                         halign: 'center'
@@ -864,7 +893,7 @@
                         background_normal: ''
                         background_color: color_spinner
                         color: color_font
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                         option_cls: Factory.get("MySpinnerOption")
                     Spinner:
                         id: home_time_m
@@ -873,7 +902,7 @@
                         background_normal: ''
                         background_color: color_spinner
                         color: color_font
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                         option_cls: Factory.get("MySpinnerOption")
                 GridLayout:
                     cols: 2
@@ -884,7 +913,7 @@
                         hint_text: "Stan licznika"
                         input_filter: "int"
                         multiline: False
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                         color: color_font
                     TextInput:
                         size_hint: 0.35, 0.1
@@ -892,17 +921,17 @@
                         hint_text: "KM do miejsca zdarzenia"
                         multiline: False
                         input_filter: "int"
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                         color: color_font
                 GridLayout:
                     cols: 2
                     Label:
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                         color: color_font
                         text: "Kompletny?"
                     Spinner:
                         id: checkbox
-                        font_size: self.height * font_factor_1
+                        font_size: root.width * font_factor_1
                         values: ["Nie", "Tak"]
                         background_normal: ''
                         background_color: color_yes_no
@@ -915,7 +944,7 @@
                     color: color_font
                     background_normal: ''
                     background_color: color_button
-                    font_size: self.height * font_factor_1
+                    font_size: root.width * font_factor_1
                     on_release:
                         root.submit()
                 Button:
@@ -924,7 +953,7 @@
                     color: color_font
                     background_normal: ''
                     background_color: color_button
-                    font_size: self.height * font_factor_1
+                    font_size: root.width * font_factor_1
                     on_release:
                         root.clear()
                         root.manager.transition.direction = "right"
@@ -935,7 +964,7 @@
                     color: color_font
                     background_normal: ''
                     background_color: color_button
-                    font_size: self.height * font_factor_1
+                    font_size: root.width * font_factor_1
                     text: "Usuń"
                     on_release:
                         root.try_delete()
@@ -944,10 +973,9 @@
                 Label:
                     id: uuid_num
                     text: "UUID:"
-                    font_size: self.height * font_factor_1 /3
+                    font_size: root.width * font_factor_1 /3
                     color: color_font
 
-#:set font_factor_3 0.38
 
 <Browser>:
     name: "browser"
@@ -979,11 +1007,11 @@
                 Label:
                     id: id1
                     text: "Wybierz raport do edycji:"
-                    font_size: self.height /1.8
+                    font_size: root.width /16
                     color: color_font
                 Button:
                     id: cancel_but
-                    font_size: self.height * font_factor_3
+                    font_size: root.width /28
                     text: "Anuluj"
                     color: color_font
                     background_normal: ''
