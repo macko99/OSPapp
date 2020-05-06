@@ -14,12 +14,13 @@ from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.properties import ObjectProperty
 
-backg_color = ( 1.0 , 0.98 , 0.94 , 1 )
-color_button = ( 1.0 , 0.8 , 0.47 , 1 )
-color_dropdown = ( 1.0 , 0.75 , 0.34 , 1 )
-color_font = ( 0.18 , 0.27 , 0.31 , 1 )
-color_choose_btn = [( 0.81 , 0.81 , 0.81 , 1 ), ( 0.93 , 0.94 , 0.95 , 1 )]
-color_yes_no = ( 1.0 , 0.43 , 0.45 , 1 )
+backg_color = (1.0, 0.98, 0.94, 1)
+color_button = (1.0, 0.8, 0.47, 1)
+color_dropdown = (1.0, 0.75, 0.34, 1)
+color_font = (0.18, 0.27, 0.31, 1)
+color_choose_btn = [(0.81, 0.81, 0.81, 1), (0.93, 0.94, 0.95, 1)]
+color_yes_no = (1.0, 0.43, 0.45, 1)
+
 
 class CreateReport(Screen):
     layout_content = ObjectProperty(None)
@@ -27,12 +28,13 @@ class CreateReport(Screen):
     def __init__(self, **kwargs):
         super(CreateReport, self).__init__(**kwargs)
         self.layout_content.bind(minimum_height=self.layout_content.setter('height'))
-        # self.currentTime = datetime.datetime.now()
+        self.asked = False
 
     def getYears(self):
         years = []
         for i in range(int(datetime.datetime.now().strftime("%Y"))-2, int(datetime.datetime.now().strftime("%Y"))+3):
             years.append(str(i))
+        years.append("dzisiaj")
         return years
 
     def on_enter(self, *args):
@@ -43,6 +45,7 @@ class CreateReport(Screen):
         self.dep_date_y.values = self.getYears()
         self.return_date_y.values = self.getYears()
         self.checkbox.text = "nie"
+        self.asked = False
 
     def on_spinner_select_depdate(self, text):
         if text == "dzisiaj":
@@ -75,6 +78,11 @@ class CreateReport(Screen):
         if text == "teraz":
             self.ids.home_time_h.text = str(datetime.datetime.now().strftime("%H"))
             self.ids.home_time_m.text = str(datetime.datetime.now().strftime("%M"))
+
+    def on_spinner_select(self, text):
+        if text == "Tak" and not self.asked:
+            Factory.readyPopout().open()
+            self.asked = True
 
     def submit(self):
         if db.find_inner_id(self.id_number.text) or self.id_number.text == "Taka L.P. już istnieje!":
@@ -158,6 +166,7 @@ class EditReport(Screen):
         years = []
         for i in range(int(datetime.datetime.now().strftime("%Y"))-2, int(datetime.datetime.now().strftime("%Y"))+3):
             years.append(str(i))
+        years.append("dzisiaj")
         return years
 
     def start(self, input_data):
@@ -195,6 +204,11 @@ class EditReport(Screen):
         if text == "teraz":
             self.ids.home_time_h.text = str(datetime.datetime.now().strftime("%H"))
             self.ids.home_time_m.text = str(datetime.datetime.now().strftime("%M"))
+
+    def on_spinner_select(self, text):
+        if text == "Tak" and not self.asked:
+            Factory.readyPopout().open()
+            self.asked = True
 
     def on_enter(self):
         self.ids.scroll_id.scroll_to(self.ids.id_number)
@@ -432,17 +446,6 @@ class PasswordAll(Screen):
 
 
 class StartWindow(Screen):
-    # def on_enter(self):
-    #     textinput = self.test
-    #     textinput.bind(text=self.on_text)
-    #     # textinput.bind()
-    #
-    # def on_text(self, instance, value):
-    #     print('The widget', instance, 'have:', value)
-    #
-    # def insert_text(self, substring, from_undo=False):
-    #     s = substring.upper()
-    #     return super(StartWindow, self).insert_text(s, from_undo=from_undo)
     pass
 
 
