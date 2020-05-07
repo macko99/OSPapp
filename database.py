@@ -12,6 +12,7 @@ class DataBase:
     admin_passwd = ''
 
     def __init__(self, path, heroes_path, passwd_path):
+        print("init db")
         self.path = path
         self.store = JsonStore(path)
         with open("secret", 'r') as file:

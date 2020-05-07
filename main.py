@@ -164,8 +164,6 @@ class EditReport(Screen):
         super(EditReport, self).__init__(**kwargs)
         self.layout_content.bind(minimum_height=self.layout_content.setter('height'))
         self.asked = True
-        self.dep_date_y.values = self.getYears()
-        self.return_date_y.values = self.getYears()
 
     def getYears(self):
         years = []
@@ -177,44 +175,6 @@ class EditReport(Screen):
     def start(self, input_data):
         global result
         result = db.get_report(input_data)
-
-
-    def on_spinner_select_depdate(self, text):
-        if text == "dzisiaj":
-            self.dep_date_d.text = str(datetime.datetime.now().strftime("%d"))
-            self.dep_date_m.text = str(datetime.datetime.now().strftime("%m"))
-            self.dep_date_y.text = str(datetime.datetime.now().strftime("%Y"))
-
-    def on_spinner_select_returndate(self, text):
-        if text == "dzisiaj":
-            self.return_date_d.text = str(datetime.datetime.now().strftime("%d"))
-            self.return_date_m.text = str(datetime.datetime.now().strftime("%m"))
-            self.return_date_y.text = str(datetime.datetime.now().strftime("%Y"))
-
-    def on_spinner_select_deptime(self, text):
-        if text == "teraz":
-            self.ids.dep_time_h.text = str(datetime.datetime.now().strftime("%H"))
-            self.ids.dep_time_m.text = str(datetime.datetime.now().strftime("%M"))
-
-    def on_spinner_select_spottime(self, text):
-        if text == "teraz":
-            self.ids.spot_time_h.text = str(datetime.datetime.now().strftime("%H"))
-            self.ids.spot_time_m.text = str(datetime.datetime.now().strftime("%M"))
-
-    def on_spinner_select_endtime(self, text):
-        if text == "teraz":
-            self.ids.end_time_h.text = str(datetime.datetime.now().strftime("%H"))
-            self.ids.end_time_m.text = str(datetime.datetime.now().strftime("%M"))
-
-    def on_spinner_select_hometime(self, text):
-        if text == "teraz":
-            self.ids.home_time_h.text = str(datetime.datetime.now().strftime("%H"))
-            self.ids.home_time_m.text = str(datetime.datetime.now().strftime("%M"))
-
-    def on_spinner_select(self, text):
-        if text == "Tak" and not self.asked:
-            Factory.readyPopout().open()
-            self.asked = True
 
     def on_enter(self):
         self.ids.scroll_id.scroll_to(self.ids.id_number)
@@ -266,6 +226,45 @@ class EditReport(Screen):
         self.ids.action_com.values = db.get_heroes() + json.loads('["Dowódca akcji"]')
         self.ids.driver.values = db.get_heroes() + json.loads('["Kierowca"]')
         self.ids.section_com.values = db.get_heroes() + json.loads('["Dowódca sekcji"]')
+        self.dep_date_y.values = self.getYears()
+        self.return_date_y.values = self.getYears()
+
+    def on_spinner_select_depdate(self, text):
+        if text == "dzisiaj":
+            self.dep_date_d.text = str(datetime.datetime.now().strftime("%d"))
+            self.dep_date_m.text = str(datetime.datetime.now().strftime("%m"))
+            self.dep_date_y.text = str(datetime.datetime.now().strftime("%Y"))
+
+    def on_spinner_select_returndate(self, text):
+        if text == "dzisiaj":
+            self.return_date_d.text = str(datetime.datetime.now().strftime("%d"))
+            self.return_date_m.text = str(datetime.datetime.now().strftime("%m"))
+            self.return_date_y.text = str(datetime.datetime.now().strftime("%Y"))
+
+    def on_spinner_select_deptime(self, text):
+        if text == "teraz":
+            self.ids.dep_time_h.text = str(datetime.datetime.now().strftime("%H"))
+            self.ids.dep_time_m.text = str(datetime.datetime.now().strftime("%M"))
+
+    def on_spinner_select_spottime(self, text):
+        if text == "teraz":
+            self.ids.spot_time_h.text = str(datetime.datetime.now().strftime("%H"))
+            self.ids.spot_time_m.text = str(datetime.datetime.now().strftime("%M"))
+
+    def on_spinner_select_endtime(self, text):
+        if text == "teraz":
+            self.ids.end_time_h.text = str(datetime.datetime.now().strftime("%H"))
+            self.ids.end_time_m.text = str(datetime.datetime.now().strftime("%M"))
+
+    def on_spinner_select_hometime(self, text):
+        if text == "teraz":
+            self.ids.home_time_h.text = str(datetime.datetime.now().strftime("%H"))
+            self.ids.home_time_m.text = str(datetime.datetime.now().strftime("%M"))
+
+    def on_spinner_select(self, text):
+        if text == "Tak" and not self.asked:
+            Factory.readyPopout().open()
+            self.asked = True
 
     def submit(self):
         global tmp_id
@@ -306,7 +305,7 @@ class EditReport(Screen):
                           self.details.text,
                           return_date, end_time, home_time, self.stan_licznika.text,
                           self.km_location.text, self.checkbox.text)
-            EditReport.clear(self)
+            self.clear()
             self.manager.transition.direction = "right"
             sm.current = "browser"
 
@@ -394,7 +393,7 @@ class Browser(Screen):
         self.ids.layout_content.add_widget(self.ids.cancel_but)
 
     def on_press(self, instance):
-        EditReport().start(str(instance.id))
+        ed.start(str(instance.id))
         self.manager.transition.direction = "left"
         sm.current = "edit"
 
@@ -421,7 +420,7 @@ class Password(Screen):
 
     def delete(self):
         if self.password.text == db.get_passwd():
-            EditReport().delete()
+            ed.delete()
             self.password.text = ""
             self.manager.transition.direction = "right"
             sm.current = "browser"
@@ -464,11 +463,14 @@ class WindowManager(ScreenManager):
 Builder.load_file("my.kv")
 sm = WindowManager()
 global db
+global ed
+ed = EditReport(name="edit")
 screens = [StartWindow(name="start"), CreateReport(name="create"), Browser(name="browser"), Password(name="password"),
-           EditReport(name="edit"), PasswordAll(name="passwordAll")]
+           ed, PasswordAll(name="passwordAll")]
 for screen in screens:
     sm.add_widget(screen)
 sm.current = "start"
+
 
 
 def key_input(window, key, scancode, codepoint, modifier):
