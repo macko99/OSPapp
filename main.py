@@ -14,12 +14,12 @@ from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.properties import ObjectProperty
 
-backg_color = ( 0.88 , 0.98 , 0.99 , 1 )
-color_button = ( 0.6 , 0.76 , 0.85 , 1 )
-color_dropdown = ( 0.75 , 0.75 , 0.75 , 1 )
-color_font = ( 0.16 , 0.2 , 0.25 , 1 )
+backg_color = (0.88, 0.98, 0.99, 1)
+color_button = (0.6, 0.76, 0.85, 1)
+color_dropdown = (0.75, 0.75, 0.75, 1)
+color_font = (0.16, 0.2, 0.25, 1)
 color_choose_btn = [(0.81, 0.81, 0.81, 1), (0.93, 0.94, 0.95, 1)]
-color_yes_no = ( 0.93 , 0.42 , 0.3 , 1 )
+color_yes_no = (0.93, 0.42, 0.3, 1)
 
 
 class CreateReport(Screen):
@@ -32,7 +32,8 @@ class CreateReport(Screen):
 
     def getYears(self):
         years = []
-        for i in range(int(datetime.datetime.now().strftime("%Y"))-2, int(datetime.datetime.now().strftime("%Y"))+3):
+        for i in range(int(datetime.datetime.now().strftime("%Y")) - 2,
+                       int(datetime.datetime.now().strftime("%Y")) + 3):
             years.append(str(i))
         years.append("dzisiaj")
         return years
@@ -84,12 +85,37 @@ class CreateReport(Screen):
             Factory.readyPopout().open()
             self.asked = True
 
+    def date_validator(self, date_str):
+        day, month, year = date_str.split('.')
+        try:
+            datetime.datetime(int(year), int(month), int(day))
+        except ValueError:
+            return False
+        else:
+            return True
+
     def submit(self):
         if db.find_inner_id(self.id_number.text) or self.id_number.text == "Taka L.P. już istnieje!":
             Factory.IDpopout().open()
             self.id_number.text = ""
             self.ids.scroll_id.scroll_to(self.ids.id_number)
         else:
+            if self.dep_date_d.text != "" and self.dep_date_m.text != "" and self.dep_date_y.text != "":
+                dep_date = self.dep_date_d.text + "." + self.dep_date_m.text + "." + self.dep_date_y.text
+                if not self.date_validator(dep_date):
+                    Factory.datePopout().open()
+                    self.ids.scroll_id.scroll_to(self.dep_date_d)
+                    return
+            else:
+                dep_date = ""
+            if self.return_date_d.text != "" and self.return_date_m.text != "" and self.return_date_y.text != "":
+                return_date = self.return_date_d.text + "." + self.return_date_m.text + "." + self.return_date_y.text
+                if not self.date_validator(return_date):
+                    Factory.datePopout().open()
+                    self.ids.scroll_id.scroll_to(self.return_date_d)
+                    return
+            else:
+                return_date = ""
             if self.ids.dep_time_h.text != "" and self.ids.dep_time_m.text != "":
                 dep_time = self.ids.dep_time_h.text + ":" + self.ids.dep_time_m.text
             else:
@@ -106,14 +132,6 @@ class CreateReport(Screen):
                 home_time = self.ids.dep_time_h.text + ":" + self.ids.dep_time_m.text
             else:
                 home_time = ""
-            if self.dep_date_d.text != "" and self.dep_date_m.text != "" and self.dep_date_y.text != "":
-                dep_date = self.dep_date_d.text + "." + self.dep_date_m.text + "." + self.dep_date_y.text
-            else:
-                dep_date = ""
-            if self.return_date_d.text != "" and self.return_date_m.text != "" and self.return_date_y.text != "":
-                return_date = self.dep_date_d.text + "." + self.dep_date_m.text + "." + self.dep_date_y.text
-            else:
-                return_date = ""
             db.put_report("", self.id_number.text, dep_date, dep_time, spot_time,
                           self.location.text, self.type_of_action.text, self.section_com.text, self.action_com.text,
                           self.driver.text, self.perpetrator.text, self.victim.text, self.section.text,
@@ -167,7 +185,8 @@ class EditReport(Screen):
 
     def getYears(self):
         years = []
-        for i in range(int(datetime.datetime.now().strftime("%Y"))-2, int(datetime.datetime.now().strftime("%Y"))+3):
+        for i in range(int(datetime.datetime.now().strftime("%Y")) - 2,
+                       int(datetime.datetime.now().strftime("%Y")) + 3):
             years.append(str(i))
         years.append("dzisiaj")
         return years
@@ -215,7 +234,7 @@ class EditReport(Screen):
             self.ids.home_time_m.text = str(result[16]).split(":")[1]
         self.stan_licznika.text = result[17]
         self.km_location.text = result[18]
-        self.modDate.text = result[19][:10]+"\n"+result[19][10:]
+        self.modDate.text = result[19][:10] + "\n" + result[19][10:]
         self.checkbox.text = result[20]
         if result[20] == "Tak":
             self.asked = True
@@ -228,6 +247,15 @@ class EditReport(Screen):
         self.ids.section_com.values = db.get_heroes() + json.loads('["Dowódca sekcji"]')
         self.dep_date_y.values = self.getYears()
         self.return_date_y.values = self.getYears()
+
+    def date_validator(self, date_str):
+        day, month, year = date_str.split('.')
+        try:
+            datetime.datetime(int(year), int(month), int(day))
+        except ValueError:
+            return False
+        else:
+            return True
 
     def on_spinner_select_depdate(self, text):
         if text == "dzisiaj":
@@ -274,6 +302,22 @@ class EditReport(Screen):
             self.id_number.text = ""
             self.ids.scroll_id.scroll_to(self.ids.id_number)
         else:
+            if self.dep_date_d.text != "" and self.dep_date_m.text != "" and self.dep_date_y.text != "":
+                dep_date = self.dep_date_d.text + "." + self.dep_date_m.text + "." + self.dep_date_y.text
+                if not self.date_validator(dep_date):
+                    Factory.datePopout().open()
+                    self.ids.scroll_id.scroll_to(self.dep_date_d)
+                    return
+            else:
+                dep_date = ""
+            if self.return_date_d.text != "" and self.return_date_m.text != "" and self.return_date_y.text != "":
+                return_date = self.return_date_d.text + "." + self.return_date_m.text + "." + self.return_date_y.text
+                if not self.date_validator(return_date):
+                    Factory.datePopout().open()
+                    self.ids.scroll_id.scroll_to(self.return_date_d)
+                    return
+            else:
+                return_date = ""
             if self.ids.dep_time_h.text != "" and self.ids.dep_time_m.text != "":
                 dep_time = self.ids.dep_time_h.text + ":" + self.ids.dep_time_m.text
             else:
@@ -290,14 +334,6 @@ class EditReport(Screen):
                 home_time = self.ids.dep_time_h.text + ":" + self.ids.dep_time_m.text
             else:
                 home_time = ""
-            if self.dep_date_d.text != "" and self.dep_date_m.text != "" and self.dep_date_y.text != "":
-                dep_date = self.dep_date_d.text + "." + self.dep_date_m.text + "." + self.dep_date_y.text
-            else:
-                dep_date = ""
-            if self.return_date_d.text != "" and self.return_date_m.text != "" and self.return_date_y.text != "":
-                return_date = self.dep_date_d.text + "." + self.dep_date_m.text + "." + self.dep_date_y.text
-            else:
-                return_date = ""
             db.put_report(self.uuid_num.text[6:], self.id_number.text, dep_date, dep_time,
                           spot_time,
                           self.location.text, self.type_of_action.text, self.section_com.text, self.action_com.text,
@@ -470,7 +506,6 @@ screens = [StartWindow(name="start"), CreateReport(name="create"), Browser(name=
 for screen in screens:
     sm.add_widget(screen)
 sm.current = "start"
-
 
 
 def key_input(window, key, scancode, codepoint, modifier):
