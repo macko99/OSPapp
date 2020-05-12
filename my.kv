@@ -65,6 +65,29 @@
             text: 'Zamknij'
             on_release: root.dismiss()
 
+<date2Popout@Popup>:
+    auto_dismiss: False
+    title: ''
+    size: 400, 400
+    size_hint: 0.6, 0.6
+    separator_height: 0
+    FloatLayout:
+        background_normal: ''
+        background_color: color_popup
+        Label:
+            text:"Data powrotu nie może być\nwcześniejsza od daty wyjazdu!"
+            font_size: (root.width**2 + root.height**2) / 12**4
+            pos_hint: {"center_x":0.5, "center_y":0.6}
+            size_hint: 0.6, 0.35
+            halign: 'center'
+            color: color_button
+        Button:
+            pos_hint:{"x":0.3,"y":0.1}
+            size_hint: 0.4, 0.15
+            font_size: (root.width**2 + root.height**2) / 12**4 * font_factor_3
+            text: 'Zamknij'
+            on_release: root.dismiss()
+
 <deletePopout@Popup>:
     auto_dismiss: False
     title: ''

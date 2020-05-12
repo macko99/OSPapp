@@ -94,6 +94,17 @@ class CreateReport(Screen):
         else:
             return True
 
+    def date_follower(self, str1, str2):
+        day1, month1, year1 = str1.split('.')
+        day2, month2, year2 = str2.split('.')
+        try:
+            date1 = datetime.datetime(int(year1), int(month1), int(day1))
+            date2 = datetime.datetime(int(year2), int(month2), int(day2))
+        except ValueError:
+            return False
+        else:
+            return date1 <= date2
+
     def submit(self):
         if db.find_inner_id(self.id_number.text) or self.id_number.text == "Taka L.P. już istnieje!":
             Factory.IDpopout().open()
@@ -116,6 +127,11 @@ class CreateReport(Screen):
                     return
             else:
                 return_date = ""
+            if dep_date != "" and return_date != "":
+                if not self.date_follower(dep_date, return_date):
+                    Factory.date2Popout().open()
+                    self.ids.scroll_id.scroll_to(self.return_date_d)
+                    return
             if self.ids.dep_time_h.text != "" and self.ids.dep_time_m.text != "":
                 dep_time = self.ids.dep_time_h.text + ":" + self.ids.dep_time_m.text
             else:
@@ -129,7 +145,7 @@ class CreateReport(Screen):
             else:
                 end_time = ""
             if self.ids.home_time_h.text != "" and self.ids.home_time_m.text != "":
-                home_time = self.ids.dep_time_h.text + ":" + self.ids.dep_time_m.text
+                home_time = self.ids.home_time_h.text + ":" + self.ids.home_time_m.text
             else:
                 home_time = ""
             db.put_report("", self.id_number.text, dep_date, dep_time, spot_time,
@@ -257,6 +273,17 @@ class EditReport(Screen):
         else:
             return True
 
+    def date_follower(self, str1, str2):
+        day1, month1, year1 = str1.split('.')
+        day2, month2, year2 = str2.split('.')
+        try:
+            date1 = datetime.datetime(int(year1), int(month1), int(day1))
+            date2 = datetime.datetime(int(year2), int(month2), int(day2))
+        except ValueError:
+            return False
+        else:
+            return date1 <= date2
+
     def on_spinner_select_depdate(self, text):
         if text == "dzisiaj":
             self.dep_date_d.text = str(datetime.datetime.now().strftime("%d"))
@@ -318,6 +345,11 @@ class EditReport(Screen):
                     return
             else:
                 return_date = ""
+            if dep_date != "" and return_date != "":
+                if not self.date_follower(dep_date, return_date):
+                    Factory.date2Popout().open()
+                    self.ids.scroll_id.scroll_to(self.return_date_d)
+                    return
             if self.ids.dep_time_h.text != "" and self.ids.dep_time_m.text != "":
                 dep_time = self.ids.dep_time_h.text + ":" + self.ids.dep_time_m.text
             else:
@@ -331,7 +363,7 @@ class EditReport(Screen):
             else:
                 end_time = ""
             if self.ids.home_time_h.text != "" and self.ids.home_time_m.text != "":
-                home_time = self.ids.dep_time_h.text + ":" + self.ids.dep_time_m.text
+                home_time = self.ids.home_time_h.text + ":" + self.ids.home_time_m.text
             else:
                 home_time = ""
             db.put_report(self.uuid_num.text[6:], self.id_number.text, dep_date, dep_time,
