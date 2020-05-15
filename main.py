@@ -506,6 +506,7 @@ class Login(Screen):
     def on_enter(self):
         self.clear()
         Factory.changePopout().open()
+        self.osp.text = "Obecna: " + db.get_user()
 
     def change(self):
         if self.password.text != "" and self.user.text != "":

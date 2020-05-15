@@ -202,6 +202,7 @@
 <Login>:
     password: password
     user: user
+    osp: osp
     layout_content: layout_content
     FloatLayout:
         id: layout_content
@@ -211,6 +212,14 @@
             Rectangle:
                 pos: self.pos
                 size: self.size
+        Label:
+            text:"current osp"
+            font_size: root.width * font_factor_4 / 2
+            pos_hint: {"x":0.25, "center_y":0.90}
+            size_hint: 0.5, 0.3
+            color: color_font
+            bold: False
+            id: osp
         Label:
             text:"Zmienić jednostkę OSP?"
             font_size: root.width * font_factor_4

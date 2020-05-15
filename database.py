@@ -166,6 +166,9 @@ class DataBase:
     def get_date():
         return str(datetime.datetime.now()).split(".")[0]
 
+    def get_user(self):
+        return self.user
+
     def get_passwd(self):
         global admin_passwd
         return admin_passwd
