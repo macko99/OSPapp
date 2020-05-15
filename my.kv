@@ -130,6 +130,128 @@
             text: 'OK'
             on_release: root.dismiss()
 
+<userPopout@Popup>:
+    auto_dismiss: False
+    title: ''
+    size: 400, 400
+    size_hint: 0.6, 0.6
+    separator_height: 0
+    FloatLayout:
+        background_normal: ''
+        background_color: color_popup
+        Label:
+            text:"Błędne OSP lub hasło!"
+            font_size: (root.width**2 + root.height**2) / 12**4
+            pos_hint: {"center_x":0.5, "center_y":0.6}
+            size_hint: 0.6, 0.35
+            halign: 'center'
+            color: color_button
+        Button:
+            pos_hint:{"x":0.3,"y":0.1}
+            size_hint: 0.4, 0.15
+            font_size: (root.width**2 + root.height**2) / 12**4 * font_factor_3
+            text: 'Zamknij'
+            on_release: root.dismiss()
+
+<connectionPopout@Popup>:
+    auto_dismiss: False
+    title: ''
+    size: 400, 400
+    size_hint: 0.6, 0.6
+    separator_height: 0
+    FloatLayout:
+        background_normal: ''
+        background_color: color_popup
+        Label:
+            text:"Błąd połączenia z bazą!"
+            font_size: (root.width**2 + root.height**2) / 12**4
+            pos_hint: {"center_x":0.5, "center_y":0.6}
+            size_hint: 0.6, 0.35
+            halign: 'center'
+            color: color_button
+        Button:
+            pos_hint:{"x":0.3,"y":0.1}
+            size_hint: 0.4, 0.15
+            font_size: (root.width**2 + root.height**2) / 12**4 * font_factor_3
+            text: 'Zamknij'
+            on_release: root.dismiss()
+
+<changePopout@Popup>:
+    auto_dismiss: False
+    title: ''
+    size: 400, 400
+    size_hint: 0.6, 0.6
+    separator_height: 0
+    FloatLayout:
+        background_normal: ''
+        background_color: color_popup
+        Label:
+            text:"Czy na pewno zmienić OSP?\n Wymaże to lokalne raporty."
+            font_size: (root.width**2 + root.height**2) / 12**4
+            pos_hint: {"center_x":0.5, "center_y":0.6}
+            size_hint: 0.6, 0.35
+            halign: 'center'
+            color: color_button
+        Button:
+            pos_hint:{"x":0.3,"y":0.1}
+            size_hint: 0.4, 0.15
+            font_size: (root.width**2 + root.height**2) / 12**4 * font_factor_3
+            text: 'Rozumiem'
+            on_release: root.dismiss()
+
+<Login>:
+    password: password
+    user: user
+    layout_content: layout_content
+    FloatLayout:
+        id: layout_content
+        canvas.before:
+            Color:
+                rgba: backg_color
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        Label:
+            text:"Zmienić jednostkę OSP?"
+            font_size: root.width * font_factor_4
+            pos_hint: {"x":0.25, "center_y":0.8}
+            size_hint: 0.5, 0.3
+            color: color_font
+            bold: True
+        TextInput:
+            pos_hint: {"center_x":0.5, "center_y":0.60}
+            size_hint: 0.6, 0.1
+            id: user
+            hint_text: "OSP"
+            multiline: False
+            halign: 'center'
+            font_size: root.width * font_factor_4
+        TextInput:
+            pos_hint: {"center_x":0.5, "center_y":0.45}
+            size_hint: 0.6, 0.1
+            id: password
+            hint_text: "hasło"
+            password: True
+            multiline: False
+            halign: 'center'
+            font_size: root.width * font_factor_4
+        Button:
+            pos_hint:{"x":0.55,"center_y":0.2}
+            size_hint: 0.35, 0.1
+            font_size: root.width * font_factor_4
+            text: "Tak"
+            on_release:
+                root.change()
+        Button:
+            pos_hint:{"x":0.1,"center_y":0.2}
+            size_hint: 0.35, 0.1
+            font_size: root.width * font_factor_4
+            text: "Nie"
+            on_release:
+                root.clear()
+                root.manager.transition.direction = "right"
+                app.root.current = "start"
+
 <Password>:
     password: password
     layout_content: layout_content
@@ -265,6 +387,18 @@
             on_release:
                 root.manager.transition.direction = "up"
                 app.root.current = "browser"
+        Button:
+            pos_hint:{"center_x":0.1,"center_y":0.95}
+            size_hint: 0.15, 0.05
+            font_size: self.width /8
+            text: "Zmień OSP"
+            bold: False
+            color: color_font
+            background_normal: ''
+            background_color: color_button
+            on_release:
+                root.manager.transition.direction = "left"
+                app.root.current = "login"
 
 
 <CreateReport>:

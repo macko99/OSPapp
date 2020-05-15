@@ -1,4 +1,5 @@
 import datetime
+import sys
 
 from kivy.factory import Factory
 from kivy.storage.jsonstore import JsonStore
@@ -8,15 +9,22 @@ import requests
 
 
 class DataBase:
-    url = 'https://ospapp-53708.firebaseio.com/.json?auth='
+    base_url = 'https://osptest-3ddc5.firebaseio.com/'
+    url = ''
+    secret = ''
     admin_passwd = ''
 
     def __init__(self, path, heroes_path, passwd_path):
+        self.heroes_path = heroes_path
+        self.passwd_path = passwd_path
         self.path = path
         self.store = JsonStore(path)
+        with open("login", 'r') as file:
+            self.user = file.read().split("\n")[0]
         with open("secret", 'r') as file:
-            data = file.read().split("\n")
-            self.url = self.url + data[0]
+            self.secret = file.read().split("\n")[0]
+        self.url = self.base_url + self.user + self.secret
+
         self.firebase_patch_all()
         try:
             string = str(requests.get(self.url).json()['heroes'])
@@ -161,3 +169,50 @@ class DataBase:
     def get_passwd(self):
         global admin_passwd
         return admin_passwd
+
+    def changeOSP(self, user, password):
+        global user_passwd
+        with open("login", 'r') as file:
+            OLDuser = file.read().split("\n")[0]
+        if user != OLDuser:
+            try:
+                user_passwd = str(requests.get(self.base_url + "passwd/" + user + self.secret).json())
+            except Exception as e:
+                print(str(e))
+                return -2
+            if user_passwd == "None" or password != user_passwd:
+                return -1
+
+            self.url = self.base_url + user + self.secret
+            try:
+                string = str(requests.get(self.url).json()['heroes'])
+                with open(self.heroes_path, 'w') as file:
+                    file.write(string)
+            except Exception as e:
+                print(str(e))
+                with open(self.heroes_path, 'w') as file:
+                    file.write("")
+            try:
+                with open(self.heroes_path, 'r') as file:
+                    self.heroes = json.loads(str(file.read()).replace("'", '"'))
+            except Exception as e:
+                print(str(e))
+                self.heroes = ["brak strażaków w bazie"]
+            try:
+                string = str(requests.get(self.url).json()['passwd'])
+                with open(self.passwd_path, 'w') as file:
+                    file.write(string)
+            except Exception as e:
+                print(str(e))
+                self.url = self.base_url + self.user + self.secret
+                return -2
+            try:
+                with open(self.passwd_path, 'r') as file:
+                    global admin_passwd
+                    admin_passwd = file.readline()
+            except Exception as e:
+                print(str(e))
+            self.store.clear()
+            with open("login", 'w') as file:
+                file.write(user)
+        return 0

@@ -500,6 +500,36 @@ class Password(Screen):
         self.password.text = ""
 
 
+class Login(Screen):
+    layout_content = ObjectProperty(None)
+
+    def on_enter(self):
+        self.clear()
+        Factory.changePopout().open()
+
+    def change(self):
+        if self.password.text != "" and self.user.text != "":
+            res = db.changeOSP(self.user.text, self.password.text)
+            self.clear()
+            if res == -1:
+                Factory.userPopout().open()
+            elif res == -2:
+                Factory.connectionPopout().open()
+                self.manager.transition.direction = "right"
+                sm.current = "start"
+            else:
+                self.manager.transition.direction = "right"
+                sm.current = "start"
+        elif self.user.text == "":
+            self.ids.user.hint_text = "podaj OSP!"
+        else:
+            self.ids.password.hint_text = "podaj hasło!"
+
+    def clear(self):
+        self.user.text = ""
+        self.password.text = ""
+
+
 class PasswordAll(Screen):
     layout_content = ObjectProperty(None)
 
@@ -534,7 +564,7 @@ global db
 global ed
 ed = EditReport(name="edit")
 screens = [StartWindow(name="start"), CreateReport(name="create"), Browser(name="browser"), Password(name="password"),
-           ed, PasswordAll(name="passwordAll")]
+           ed, PasswordAll(name="passwordAll"), Login(name="login")]
 for screen in screens:
     sm.add_widget(screen)
 sm.current = "start"
