@@ -40,9 +40,11 @@ class CreateReport(Screen):
 
     def on_enter(self, *args):
         self.ids.scroll_id.scroll_to(self.ids.id_number)
-        self.ids.section_com.values = db.get_heroes() + json.loads('["Dowódca sekcji"]')
-        self.ids.action_com.values = db.get_heroes() + json.loads('["Dowódca akcji"]')
-        self.ids.driver.values = db.get_heroes() + json.loads('["Kierowca"]')
+        self.ids.section_com.values = db.get_sectionComm() + json.loads('["Dowódca sekcji"]')
+        self.ids.action_com.values = db.get_actionComm() + json.loads('["Dowódca akcji"]')
+        self.ids.driver.values = db.get_driver() + json.loads('["Kierowca"]')
+        self.type_of_action.values = db.get_types() + json.loads('["Rodzaj zdarzenia"]')
+        self.section_chooser.values = db.get_heroes() + json.loads('["Wybierz osoby z sekcji (pole powyżej)"]')
         self.dep_date_y.values = self.getYears()
         self.return_date_y.values = self.getYears()
         self.checkbox.text = "Nie"
@@ -84,6 +86,13 @@ class CreateReport(Screen):
         if text == "Tak" and not self.asked:
             Factory.readyPopout().open()
             self.asked = True
+
+    def on_spinner_chooser(self, text):
+        if text != "Wybierz osoby z sekcji (pole powyżej)":
+            if self.section.text == "":
+                self.section.text = self.section.text + text
+            else:
+                self.section.text = self.section.text + ", " + text
 
     def date_validator(self, date_str):
         day, month, year = date_str.split('.')
@@ -152,7 +161,7 @@ class CreateReport(Screen):
                           self.location.text, self.type_of_action.text, self.section_com.text, self.action_com.text,
                           self.driver.text, self.perpetrator.text, self.victim.text, self.section.text,
                           self.details.text, return_date, end_time, home_time, self.stan_licznika.text,
-                          self.km_location.text, self.checkbox.text)
+                          self.km_location.text, self.checkbox.text, self.truck_num.text)
             self.clear()
             self.manager.transition.direction = "down"
             sm.current = "start"
@@ -167,7 +176,7 @@ class CreateReport(Screen):
         self.ids.spot_time_h.text = ""
         self.ids.spot_time_m.text = ""
         self.location.text = ""
-        self.type_of_action.text = ""
+        self.type_of_action.text = "Rodzaj zdarzenia"
         self.section_com.text = "Dowódca sekcji"
         self.action_com.text = "Dowódca akcji"
         self.driver.text = "Kierowca"
@@ -185,6 +194,8 @@ class CreateReport(Screen):
         self.stan_licznika.text = ""
         self.km_location.text = ""
         self.checkbox.text = ""
+        self.truck_num.text = ""
+        self.section_chooser.text = "Wybierz osoby z sekcji (pole powyżej)"
 
 
 class EditReport(Screen):
@@ -227,7 +238,8 @@ class EditReport(Screen):
             self.ids.spot_time_h.text = str(result[4]).split(":")[0]
             self.ids.spot_time_m.text = str(result[4]).split(":")[1]
         self.location.text = result[5]
-        self.type_of_action.text = result[6]
+        if result[6] != "":
+            self.type_of_action.text = result[6]
         if result[7] != "":
             self.section_com.text = result[7]
         if result[8] != "":
@@ -258,9 +270,12 @@ class EditReport(Screen):
             self.asked = False
         global tmp_id
         tmp_id = result[1]
-        self.ids.action_com.values = db.get_heroes() + json.loads('["Dowódca akcji"]')
-        self.ids.driver.values = db.get_heroes() + json.loads('["Kierowca"]')
-        self.ids.section_com.values = db.get_heroes() + json.loads('["Dowódca sekcji"]')
+        self.truck_num.text = result[21]
+        self.ids.section_com.values = db.get_sectionComm() + json.loads('["Dowódca sekcji"]')
+        self.ids.action_com.values = db.get_actionComm() + json.loads('["Dowódca akcji"]')
+        self.ids.driver.values = db.get_driver() + json.loads('["Kierowca"]')
+        self.type_of_action.values = db.get_types() + json.loads('["Rodzaj zdarzenia"]')
+        self.section_chooser.values = db.get_heroes() + json.loads('["Wybierz osoby z sekcji (pole powyżej)"]')
         self.dep_date_y.values = self.getYears()
         self.return_date_y.values = self.getYears()
 
@@ -321,6 +336,13 @@ class EditReport(Screen):
             Factory.readyPopout().open()
             self.asked = True
 
+    def on_spinner_chooser(self, text):
+        if text != "Wybierz osoby z sekcji (pole powyżej)":
+            if self.section.text == "":
+                self.section.text = self.section.text + text
+            else:
+                self.section.text = self.section.text + ", " + text
+
     def submit(self):
         global tmp_id
         if (self.id_number.text != tmp_id and db.find_inner_id(
@@ -372,7 +394,7 @@ class EditReport(Screen):
                           self.driver.text, self.perpetrator.text, self.victim.text, self.section.text,
                           self.details.text,
                           return_date, end_time, home_time, self.stan_licznika.text,
-                          self.km_location.text, self.checkbox.text)
+                          self.km_location.text, self.checkbox.text, self.truck_num.text)
             self.clear()
             self.manager.transition.direction = "right"
             sm.current = "browser"
@@ -388,7 +410,7 @@ class EditReport(Screen):
         self.ids.spot_time_h.text = ""
         self.ids.spot_time_m.text = ""
         self.location.text = ""
-        self.type_of_action.text = ""
+        self.type_of_action.text = "Rodzaj zdarzenia"
         self.section_com.text = "Dowódca sekcji"
         self.action_com.text = "Dowódca akcji"
         self.driver.text = "Kierowca"
@@ -407,6 +429,8 @@ class EditReport(Screen):
         self.km_location.text = ""
         self.modDate.text = ""
         self.checkbox.text = ""
+        self.truck_num.text = ""
+        self.section_chooser.text = "Wybierz osoby z sekcji (pole powyżej)"
 
     def delete(self):
         global tmp_uuid
@@ -585,12 +609,17 @@ class OSPApp(App):
     def build(self):
         Window.bind(on_keyboard=key_input)
         global db
-        db = DataBase(App.get_running_app().storage, App.get_running_app().heroes, App.get_running_app().passwd)
+        db = DataBase(App.get_running_app().storage, App.get_running_app().heroes, App.get_running_app().passwd,
+                      App.get_running_app().types)
         return sm
 
     @property
     def storage(self):
         return join(self.user_data_dir, 'storage.json')
+
+    @property
+    def types(self):
+        return join(self.user_data_dir, 'types')
 
     @property
     def heroes(self):

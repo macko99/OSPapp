@@ -1,5 +1,4 @@
 import datetime
-import sys
 
 from kivy.factory import Factory
 from kivy.storage.jsonstore import JsonStore
@@ -14,7 +13,7 @@ class DataBase:
     secret = ''
     admin_passwd = ''
 
-    def __init__(self, path, heroes_path, passwd_path):
+    def __init__(self, path, heroes_path, passwd_path, types_path):
         self.heroes_path = heroes_path
         self.passwd_path = passwd_path
         self.path = path
@@ -32,30 +31,43 @@ class DataBase:
                 with open(heroes_path, 'w') as file:
                     file.write(string)
         except Exception as e:
-            print(str(e))
+            print(str(e) + str(1))
         try:
             with open(heroes_path, 'r') as file:
                 self.heroes = json.loads(str(file.read()).replace("'", '"'))
         except Exception as e:
-            print(str(e))
+            print(str(e)+ str(2))
             self.heroes = ["brak strażaków w bazie"]
+        try:
+            string = str(requests.get(self.url).json()['types'])
+            if string:
+                with open(types_path, 'w') as file:
+                    file.write(string)
+        except Exception as e:
+            print(str(e) + str(3))
+        try:
+            with open(types_path, 'r') as file:
+                self.types = json.loads(str(file.read()).replace("'", '"'))
+        except Exception as e:
+            print(str(e) + str(4))
+            self.types = ["brak rodzajów w bazie"]
         try:
             string = str(requests.get(self.url).json()['passwd'])
             if string:
                 with open(passwd_path, 'w') as file:
                     file.write(string)
         except Exception as e:
-            print(str(e))
+            print(str(e) + str(5))
         try:
             with open(passwd_path, 'r') as file:
                 global admin_passwd
                 admin_passwd = file.readline()
         except Exception as e:
-            print(str(e))
+            print(str(e) + str(6))
 
     def put_report(self, uuid_num, id_number, dep_date, dep_time, spot_time, location, type_of_action,
                    section_com, action_com, driver, perpetrator, victim, section, details,
-                   return_date, end_time, home_time, stan_licznika, km_location, completed):
+                   return_date, end_time, home_time, stan_licznika, km_location, completed, truck_num):
         if uuid_num == "":
             uuid_num = str(uuid.uuid1())
         if section_com == "Dowódca sekcji":
@@ -64,12 +76,14 @@ class DataBase:
             action_com = ""
         if driver == "Kierowca":
             driver = ""
+        if type_of_action == "Rodzaj zdarzenia":
+            type_of_action = ""
         self.store.put(uuid_num, innerID=id_number, depDate=dep_date, depTime=dep_time, spotTime=spot_time,
                        location=location, type=type_of_action,
                        sectionCom=section_com, actionCom=action_com, driver=driver, perpetrator=perpetrator,
                        victim=victim, section=section, details=details,
                        returnDate=return_date, endTime=end_time, homeTime=home_time, stanLicznika=stan_licznika,
-                       KM=km_location, modDate=self.get_date(), ready=completed)
+                       KM=km_location, modDate=self.get_date(), ready=completed, truck=truck_num)
         try:
             string = "{'" + uuid_num + "': " + str(self.store.get(uuid_num)) + "}"
             to_database = json.loads(string.replace("'", '"'))
@@ -93,7 +107,19 @@ class DataBase:
             return -1
 
     def get_heroes(self):
-        return self.heroes
+        return self.heroes.get("all")
+
+    def get_driver(self):
+        return self.heroes.get("driver")
+
+    def get_sectionComm(self):
+        return self.heroes.get("section")
+
+    def get_actionComm(self):
+        return self.heroes.get("action")
+
+    def get_types(self):
+        return self.types
 
     def firebase_patch_all(self):
         try:
@@ -142,11 +168,12 @@ class DataBase:
             km_location = dane['KM']
             date = dane['modDate']
             completed = dane['ready']
+            truck_num = dane['truck']
             return [item[0], id_number, dep_date, dep_time, spot_time, location, type_of_action, section_com,
                     action_com,
                     driver,
                     perpetrator, victim, section, details,
-                    return_date, end_time, home_time, stan_licznika, km_location, date, completed]
+                    return_date, end_time, home_time, stan_licznika, km_location, date, completed, truck_num]
         else:
             return -1
 

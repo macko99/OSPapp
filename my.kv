@@ -431,6 +431,8 @@
     km_location: km_location
     scroll_id: scroll_id
     checkbox: checkbox
+    truck_num: truck_num
+    section_chooser: section_chooser
 
     layout_content: layout_content
     BoxLayout:
@@ -474,6 +476,20 @@
                         size_hint: 0.35, 0.1
                         input_filter: "int"
                         hint_text: "L.P."
+                        halign: 'center'
+                        multiline: False
+                        font_size: root.width * font_factor_1
+                GridLayout:
+                    cols: 2
+                    Label:
+                        size_hint: 0.35, 0.1
+                        text: "Zastęp:"
+                        font_size: root.width * font_factor_1
+                        color: color_font
+                    TextInput:
+                        id: truck_num
+                        size_hint: 0.35, 0.1
+                        hint_text: "Numer wozu"
                         halign: 'center'
                         multiline: False
                         font_size: root.width * font_factor_1
@@ -575,12 +591,16 @@
                     hint_text: "Miejsce zdarzenia"
                     multiline: False
                     font_size: root.width * font_factor_1
-                TextInput:
-                    size_hint: 0.35, 0.1
+                Spinner:
                     id: type_of_action
-                    hint_text: "Rodzaj zdarzenia:"
-                    multiline: False
+                    text: "Rodzaj zdarzenia"
+                    size_hint: 0.35, 0.1
+                    size: 100, 44
+                    background_normal: ''
+                    background_color: color_spinner
+                    color: color_font
                     font_size: root.width * font_factor_1
+                    option_cls: Factory.get("MySpinnerOption")
                 Spinner:
                     id: section_com
                     text: "Dowódca sekcji"
@@ -626,9 +646,20 @@
                 TextInput:
                     size_hint: 0.35, 0.1
                     id: section
-                    hint_text: "Sekcja:"
+                    hint_text: "Sekcja: (wybierz poniżej)"
                     multiline: True
                     font_size: root.width * font_factor_1
+                Spinner:
+                    id: section_chooser
+                    text:"Wybierz osoby z sekcji (pole powyżej)"
+                    size_hint: 0.35, 0.1
+                    size: 100, 44
+                    background_normal: ''
+                    background_color: color_spinner
+                    on_text: root.on_spinner_chooser(self.text)
+                    color: color_font
+                    font_size: root.width * font_factor_1
+                    option_cls: Factory.get("MySpinnerOption")
                 TextInput:
                     size_hint: 0.35, 0.1
                     id: details
@@ -809,6 +840,8 @@
     modDate: modDate
     scroll_id: scroll_id
     checkbox: checkbox
+    truck_num: truck_num
+    section_chooser: section_chooser
 
     layout_content: layout_content
     BoxLayout:
@@ -865,6 +898,20 @@
                         size_hint: 0.35, 0.1
                         input_filter: "int"
                         hint_text: "L.P."
+                        halign: 'center'
+                        multiline: False
+                        font_size: root.width * font_factor_1
+                GridLayout:
+                    cols: 2
+                    Label:
+                        size_hint: 0.35, 0.1
+                        text: "Zastęp:"
+                        font_size: root.width * font_factor_1
+                        color: color_font
+                    TextInput:
+                        id: truck_num
+                        size_hint: 0.35, 0.1
+                        hint_text: "Numer wozu"
                         halign: 'center'
                         multiline: False
                         font_size: root.width * font_factor_1
@@ -966,12 +1013,16 @@
                     hint_text: "Miejsce zdarzenia:"
                     multiline: False
                     font_size: root.width * font_factor_1
-                TextInput:
-                    size_hint: 0.35, 0.1
+                Spinner:
                     id: type_of_action
-                    hint_text: "Rodzaj zdarzenia:"
-                    multiline: False
+                    text: "Rodzaj zdarzenia"
+                    size_hint: 0.35, 0.1
+                    size: 100, 44
+                    background_normal: ''
+                    background_color: color_spinner
+                    color: color_font
                     font_size: root.width * font_factor_1
+                    option_cls: Factory.get("MySpinnerOption")
                 Spinner:
                     id: section_com
                     text: "Dowódca sekcji"
@@ -1020,6 +1071,17 @@
                     hint_text: "Sekcja:"
                     multiline: True
                     font_size: root.width * font_factor_1
+                Spinner:
+                    id: section_chooser
+                    text:"Wybierz osoby z sekcji (pole powyżej)"
+                    size_hint: 0.35, 0.1
+                    size: 100, 44
+                    background_normal: ''
+                    background_color: color_spinner
+                    on_text: root.on_spinner_chooser(self.text)
+                    color: color_font
+                    font_size: root.width * font_factor_1
+                    option_cls: Factory.get("MySpinnerOption")
                 TextInput:
                     size_hint: 0.35, 0.1
                     id: details
