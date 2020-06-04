@@ -153,6 +153,29 @@
             text: 'Zamknij'
             on_release: root.dismiss()
 
+<updatePopout@Popup>:
+    auto_dismiss: False
+    title: ''
+    size: 400, 400
+    size_hint: 0.7, 0.5
+    separator_height: 0
+    FloatLayout:
+        background_normal: ''
+        background_color: color_popup
+        Label:
+            text:"Wymgana aktualiacja! Nie zmieniono jednostki."
+            font_size: (root.width**2 + root.height**2) / 12**4
+            pos_hint: {"center_x":0.5, "center_y":0.6}
+            size_hint: 0.6, 0.35
+            halign: 'center'
+            color: color_button
+        Button:
+            pos_hint:{"x":0.3,"y":0.1}
+            size_hint: 0.4, 0.15
+            font_size: (root.width**2 + root.height**2) / 12**4 * font_factor_3
+            text: 'Zamknij'
+            on_release: root.dismiss()
+
 <connectionPopout@Popup>:
     auto_dismiss: False
     title: ''
@@ -408,6 +431,12 @@
             on_release:
                 root.manager.transition.direction = "left"
                 app.root.current = "login"
+        Label:
+            text:"Maciej Kozub, Tomasz Zachwieja @ AGH 2020"
+            font_size: self.width /25
+            pos_hint: {"center_x":0.5, "center_y":0.03}
+            size_hint: 0.5, 0.2
+            color: color_spinner
 
 
 <CreateReport>:
@@ -474,7 +503,6 @@
                     TextInput:
                         id: id_number
                         size_hint: 0.35, 0.1
-                        input_filter: "int"
                         hint_text: "L.P."
                         halign: 'center'
                         multiline: False
@@ -896,7 +924,6 @@
                     TextInput:
                         id: id_number
                         size_hint: 0.35, 0.1
-                        input_filter: "int"
                         hint_text: "L.P."
                         halign: 'center'
                         multiline: False

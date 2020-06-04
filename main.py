@@ -536,13 +536,15 @@ class Login(Screen):
         if self.password.text != "" and self.user.text != "":
             res = db.changeOSP(self.user.text, self.password.text)
             self.clear()
-            if res == -1:
+            if res == -1: #bad password
                 Factory.userPopout().open()
-            elif res == -2:
+            elif res == -2:     # no connection
                 Factory.connectionPopout().open()
                 self.manager.transition.direction = "right"
                 sm.current = "start"
-            else:
+            elif res == -3: #update!
+                Factory.updatePopout().open()
+            else:       # all good
                 self.manager.transition.direction = "right"
                 sm.current = "start"
         elif self.user.text == "":
@@ -578,23 +580,6 @@ class PasswordAll(Screen):
 class StartWindow(Screen):
     pass
 
-
-class WindowManager(ScreenManager):
-    pass
-
-
-Builder.load_file("my.kv")
-sm = WindowManager()
-global db
-global ed
-ed = EditReport(name="edit")
-screens = [StartWindow(name="start"), CreateReport(name="create"), Browser(name="browser"), Password(name="password"),
-           ed, PasswordAll(name="passwordAll"), Login(name="login")]
-for screen in screens:
-    sm.add_widget(screen)
-sm.current = "start"
-
-
 def key_input(window, key, scancode, codepoint, modifier):
     if key == 27:
         if sm.current != "start":
@@ -602,6 +587,19 @@ def key_input(window, key, scancode, codepoint, modifier):
         return True
     else:
         return False
+
+
+Builder.load_file("my.kv")
+global db
+
+global ed
+ed = EditReport(name="edit")
+sm = ScreenManager()
+screens = [StartWindow(name="start"), CreateReport(name="create"), Browser(name="browser"), Password(name="password"),
+           ed, PasswordAll(name="passwordAll"), Login(name="login")]
+for screen in screens:
+    sm.add_widget(screen)
+sm.current = "start"
 
 
 class OSPApp(App):

@@ -209,9 +209,11 @@ class DataBase:
                 user_passwd = str(requests.get(self.base_url + "passwd/" + user + self.secret).json())
             except Exception as e:
                 print(str(e))
-                return -2
+                return -2   #no connection
+            if user_passwd == "UPDATE":
+                return -3   #update neeeded
             if user_passwd == "None" or password != user_passwd:
-                return -1
+                return -1   #wrong password
 
             self.url = self.base_url + user + self.secret
             try:
