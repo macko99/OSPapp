@@ -30,6 +30,11 @@ class CreateReport(Screen):
         self.layout_content.bind(minimum_height=self.layout_content.setter('height'))
         self.asked = False
 
+    def dismissYes(self):
+        self.clear()
+        self.manager.transition.direction = "up"
+        sm.current = "start"
+
     def getYears(self):
         years = []
         for i in range(int(datetime.datetime.now().strftime("%Y")) - 2,
@@ -43,7 +48,7 @@ class CreateReport(Screen):
         self.ids.section_com.values = db.get_sectionComm() + json.loads('["Dowódca sekcji"]')
         self.ids.action_com.values = db.get_actionComm() + json.loads('["Dowódca akcji"]')
         self.ids.driver.values = db.get_driver() + json.loads('["Kierowca"]')
-        self.type_of_action.values = db.get_types() + json.loads('["Rodzaj zdarzenia"]')
+        self.truck_num.values = db.get_trucks() + json.loads('["Numer wozu"]')
         self.section_chooser.values = db.get_heroes() + json.loads('["Wybierz osoby z sekcji (pole powyżej)"]')
         self.dep_date_y.values = self.getYears()
         self.return_date_y.values = self.getYears()
@@ -157,11 +162,16 @@ class CreateReport(Screen):
                 home_time = self.ids.home_time_h.text + ":" + self.ids.home_time_m.text
             else:
                 home_time = ""
-            db.put_report("", self.id_number.text, dep_date, dep_time, spot_time,
-                          self.location.text, self.type_of_action.text, self.section_com.text, self.action_com.text,
-                          self.driver.text, self.perpetrator.text, self.victim.text, self.section.text,
-                          self.details.text, return_date, end_time, home_time, self.stan_licznika.text,
-                          self.km_location.text, self.checkbox.text, self.truck_num.text)
+            result = db.put_report("", self.id_number.text, dep_date, dep_time, spot_time,
+                                   self.location.text, self.type_of_action.text, self.section_com.text,
+                                   self.action_com.text,
+                                   self.driver.text, self.perpetrator.text, self.victim.text, self.section.text,
+                                   self.details.text, return_date, end_time, home_time, self.stan_licznika.text,
+                                   self.km_location.text, self.checkbox.text, self.truck_num.text)
+            if result == 0:
+                Factory.saveAndUploadOKPopout().open()
+            else:
+                Factory.saveOKPopout().open()
             self.clear()
             self.manager.transition.direction = "down"
             sm.current = "start"
@@ -176,7 +186,7 @@ class CreateReport(Screen):
         self.ids.spot_time_h.text = ""
         self.ids.spot_time_m.text = ""
         self.location.text = ""
-        self.type_of_action.text = "Rodzaj zdarzenia"
+        self.type_of_action.text = ""
         self.section_com.text = "Dowódca sekcji"
         self.action_com.text = "Dowódca akcji"
         self.driver.text = "Kierowca"
@@ -194,7 +204,7 @@ class CreateReport(Screen):
         self.stan_licznika.text = ""
         self.km_location.text = ""
         self.checkbox.text = ""
-        self.truck_num.text = ""
+        self.truck_num.text = "Numer wozu"
         self.section_chooser.text = "Wybierz osoby z sekcji (pole powyżej)"
 
 
@@ -218,6 +228,11 @@ class EditReport(Screen):
         years.append("dzisiaj")
         return years
 
+    def dismissYes(self):
+        self.clear()
+        self.manager.transition.direction = "up"
+        sm.current = "start"
+
     def start(self, input_data):
         global result
         result = db.get_report(input_data)
@@ -238,8 +253,7 @@ class EditReport(Screen):
             self.ids.spot_time_h.text = str(result[4]).split(":")[0]
             self.ids.spot_time_m.text = str(result[4]).split(":")[1]
         self.location.text = result[5]
-        if result[6] != "":
-            self.type_of_action.text = result[6]
+        self.type_of_action.text = result[6]
         if result[7] != "":
             self.section_com.text = result[7]
         if result[8] != "":
@@ -270,11 +284,12 @@ class EditReport(Screen):
             self.asked = False
         global tmp_id
         tmp_id = result[1]
-        self.truck_num.text = result[21]
+        if result[21] != "":
+            self.truck_num.text = result[21]
         self.ids.section_com.values = db.get_sectionComm() + json.loads('["Dowódca sekcji"]')
         self.ids.action_com.values = db.get_actionComm() + json.loads('["Dowódca akcji"]')
         self.ids.driver.values = db.get_driver() + json.loads('["Kierowca"]')
-        self.type_of_action.values = db.get_types() + json.loads('["Rodzaj zdarzenia"]')
+        self.truck_num.values = db.get_trucks() + json.loads('["Numer wozu"]')
         self.section_chooser.values = db.get_heroes() + json.loads('["Wybierz osoby z sekcji (pole powyżej)"]')
         self.dep_date_y.values = self.getYears()
         self.return_date_y.values = self.getYears()
@@ -388,13 +403,18 @@ class EditReport(Screen):
                 home_time = self.ids.home_time_h.text + ":" + self.ids.home_time_m.text
             else:
                 home_time = ""
-            db.put_report(self.uuid_num.text[6:], self.id_number.text, dep_date, dep_time,
-                          spot_time,
-                          self.location.text, self.type_of_action.text, self.section_com.text, self.action_com.text,
-                          self.driver.text, self.perpetrator.text, self.victim.text, self.section.text,
-                          self.details.text,
-                          return_date, end_time, home_time, self.stan_licznika.text,
-                          self.km_location.text, self.checkbox.text, self.truck_num.text)
+            result = db.put_report(self.uuid_num.text[6:], self.id_number.text, dep_date, dep_time,
+                                   spot_time,
+                                   self.location.text, self.type_of_action.text, self.section_com.text,
+                                   self.action_com.text,
+                                   self.driver.text, self.perpetrator.text, self.victim.text, self.section.text,
+                                   self.details.text,
+                                   return_date, end_time, home_time, self.stan_licznika.text,
+                                   self.km_location.text, self.checkbox.text, self.truck_num.text)
+            if result == 0:
+                Factory.saveAndUploadOKPopout().open()
+            else:
+                Factory.saveOKPopout().open()
             self.clear()
             self.manager.transition.direction = "right"
             sm.current = "browser"
@@ -410,7 +430,7 @@ class EditReport(Screen):
         self.ids.spot_time_h.text = ""
         self.ids.spot_time_m.text = ""
         self.location.text = ""
-        self.type_of_action.text = "Rodzaj zdarzenia"
+        self.type_of_action.text = ""
         self.section_com.text = "Dowódca sekcji"
         self.action_com.text = "Dowódca akcji"
         self.driver.text = "Kierowca"
@@ -429,7 +449,7 @@ class EditReport(Screen):
         self.km_location.text = ""
         self.modDate.text = ""
         self.checkbox.text = ""
-        self.truck_num.text = ""
+        self.truck_num.text = "Numer wozu"
         self.section_chooser.text = "Wybierz osoby z sekcji (pole powyżej)"
 
     def delete(self):
@@ -536,15 +556,15 @@ class Login(Screen):
         if self.password.text != "" and self.user.text != "":
             res = db.changeOSP(self.user.text, self.password.text)
             self.clear()
-            if res == -1: #bad password
+            if res == -1:  # bad password
                 Factory.userPopout().open()
-            elif res == -2:     # no connection
+            elif res == -2:  # no connection
                 Factory.connectionPopout().open()
                 self.manager.transition.direction = "right"
                 sm.current = "start"
-            elif res == -3: #update!
+            elif res == -3:  # update!
                 Factory.updatePopout().open()
-            else:       # all good
+            else:  # all good
                 self.manager.transition.direction = "right"
                 sm.current = "start"
         elif self.user.text == "":
@@ -580,9 +600,12 @@ class PasswordAll(Screen):
 class StartWindow(Screen):
     pass
 
+
 def key_input(window, key, scancode, codepoint, modifier):
     if key == 27:
-        if sm.current != "start":
+        if sm.current == "edit" or sm.current == "create":
+            Factory.dismissPopout().open()
+        elif sm.current != "start":
             sm.current = "start"
         return True
     else:
@@ -592,10 +615,10 @@ def key_input(window, key, scancode, codepoint, modifier):
 Builder.load_file("my.kv")
 global db
 
-global ed
+cr = CreateReport(name="create")
 ed = EditReport(name="edit")
 sm = ScreenManager()
-screens = [StartWindow(name="start"), CreateReport(name="create"), Browser(name="browser"), Password(name="password"),
+screens = [StartWindow(name="start"), cr, Browser(name="browser"), Password(name="password"),
            ed, PasswordAll(name="passwordAll"), Login(name="login")]
 for screen in screens:
     sm.add_widget(screen)
@@ -603,12 +626,16 @@ sm.current = "start"
 
 
 class OSPApp(App):
+    create = cr
+    edit = ed
+    database = ''
 
     def build(self):
         Window.bind(on_keyboard=key_input)
         global db
         db = DataBase(App.get_running_app().storage, App.get_running_app().heroes, App.get_running_app().passwd,
-                      App.get_running_app().types)
+                      App.get_running_app().trucks)
+        self.database = db
         return sm
 
     @property
@@ -616,8 +643,8 @@ class OSPApp(App):
         return join(self.user_data_dir, 'storage.json')
 
     @property
-    def types(self):
-        return join(self.user_data_dir, 'types')
+    def trucks(self):
+        return join(self.user_data_dir, 'trucks')
 
     @property
     def heroes(self):

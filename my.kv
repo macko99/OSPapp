@@ -42,6 +42,39 @@
             text: 'Zamknij'
             on_release: root.dismiss()
 
+<dismissPopout@Popup>:
+    auto_dismiss: False
+    title: ''
+    size: 400, 400
+    size_hint: 0.7, 0.5
+    separator_height: 0
+    FloatLayout:
+        background_normal: ''
+        background_color: color_popup
+        Label:
+            text:"Anulować edycję raportu?"
+            font_size: (root.width**2 + root.height**2) / 12**4
+            pos_hint: {"center_x":0.5, "center_y":0.6}
+            size_hint: 0.6, 0.35
+            halign: 'center'
+            color: color_button
+        Button:
+            pos_hint:{"x":0.15,"y":0.1}
+            size_hint: 0.3, 0.15
+            font_size: (root.width**2 + root.height**2) / 12**4 * font_factor_3
+            text: 'Tak'
+            on_release:
+                app.create.dismissYes()
+                app.edit.dismissYes()
+                root.dismiss()
+        Button:
+            pos_hint:{"x":0.55,"y":0.1}
+            size_hint: 0.3, 0.15
+            font_size: (root.width**2 + root.height**2) / 12**4 * font_factor_3
+            text: 'Nie'
+            on_release:
+                root.dismiss()
+
 <datePopout@Popup>:
     auto_dismiss: False
     title: ''
@@ -130,6 +163,69 @@
             text: 'OK'
             on_release: root.dismiss()
 
+<saveAndUploadOKPopout@Popup>:
+    auto_dismiss: False
+    title: ''
+    size: 400, 400
+    size_hint: 0.7, 0.5
+    separator_height: 0
+    FloatLayout:
+        Label:
+            text:"Raport zapisany i wysłany\ndo bazy danych!"
+            font_size: (root.width**2 + root.height**2) / 12**4
+            pos_hint: {"center_x":0.5, "center_y":0.6}
+            size_hint: 0.6, 0.35
+            halign: 'center'
+            color: color_button
+        Button:
+            pos_hint:{"x":0.3,"y":0.1}
+            size_hint: 0.4, 0.15
+            font_size: (root.width**2 + root.height**2) / 12**4 * font_factor_3
+            text: 'OK'
+            on_release: root.dismiss()
+
+<saveOKPopout@Popup>:
+    auto_dismiss: False
+    title: ''
+    size: 400, 400
+    size_hint: 0.7, 0.5
+    separator_height: 0
+    FloatLayout:
+        Label:
+            text:"Raport zapisany!"
+            font_size: (root.width**2 + root.height**2) / 12**4
+            pos_hint: {"center_x":0.5, "center_y":0.6}
+            size_hint: 0.6, 0.35
+            halign: 'center'
+            color: color_button
+        Button:
+            pos_hint:{"x":0.3,"y":0.1}
+            size_hint: 0.4, 0.15
+            font_size: (root.width**2 + root.height**2) / 12**4 * font_factor_3
+            text: 'OK'
+            on_release: root.dismiss()
+
+<updateOK@Popup>:
+    auto_dismiss: False
+    title: ''
+    size: 400, 400
+    size_hint: 0.7, 0.5
+    separator_height: 0
+    FloatLayout:
+        Label:
+            text:"Aktualizacja udana!"
+            font_size: (root.width**2 + root.height**2) / 12**4
+            pos_hint: {"center_x":0.5, "center_y":0.6}
+            size_hint: 0.6, 0.35
+            halign: 'center'
+            color: color_button
+        Button:
+            pos_hint:{"x":0.3,"y":0.1}
+            size_hint: 0.4, 0.15
+            font_size: (root.width**2 + root.height**2) / 12**4 * font_factor_3
+            text: 'OK'
+            on_release: root.dismiss()
+
 <userPopout@Popup>:
     auto_dismiss: False
     title: ''
@@ -163,7 +259,7 @@
         background_normal: ''
         background_color: color_popup
         Label:
-            text:"Wymgana aktualiacja! Nie zmieniono jednostki."
+            text:"Wymgana aktualiacja!\nNie zmieniono jednostki."
             font_size: (root.width**2 + root.height**2) / 12**4
             pos_hint: {"center_x":0.5, "center_y":0.6}
             size_hint: 0.6, 0.35
@@ -431,6 +527,17 @@
             on_release:
                 root.manager.transition.direction = "left"
                 app.root.current = "login"
+        Button:
+            pos_hint:{"center_x":0.1,"center_y":0.88}
+            size_hint: 0.15, 0.05
+            font_size: self.width /8
+            text: "Aktualizuj"
+            bold: False
+            color: color_font
+            background_normal: ''
+            background_color: color_button
+            on_release:
+                app.database.updateDataFromDB()
         Label:
             text:"Maciej Kozub, Tomasz Zachwieja @ AGH 2020"
             font_size: self.width /25
@@ -514,13 +621,16 @@
                         text: "Zastęp:"
                         font_size: root.width * font_factor_1
                         color: color_font
-                    TextInput:
+                    Spinner:
                         id: truck_num
+                        text: "Numer wozu"
                         size_hint: 0.35, 0.1
-                        hint_text: "Numer wozu"
-                        halign: 'center'
-                        multiline: False
+                        size: 100, 44
+                        background_normal: ''
+                        background_color: color_spinner
+                        color: color_font
                         font_size: root.width * font_factor_1
+                        option_cls: Factory.get("MySpinnerOption")
                 GridLayout:
                     cols: 4
                     spacing: [2,0]
@@ -578,7 +688,7 @@
                         option_cls: Factory.get("MySpinnerOption")
                     Spinner:
                         id: dep_time_m
-                        values: ["teraz","00", "05","10","15","20","25","30","35","40","45","50","55", ""]
+                        values: ['teraz','00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56', '57', '58', '59', '']
                         on_text: root.on_spinner_select_deptime(self.text)
                         background_normal: ''
                         background_color: color_spinner
@@ -606,7 +716,7 @@
                         option_cls: Factory.get("MySpinnerOption")
                     Spinner:
                         id: spot_time_m
-                        values: ["teraz","00", "05","10","15","20","25","30","35","40","45","50","55",""]
+                        values: ['teraz','00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56', '57', '58', '59', '']
                         on_text: root.on_spinner_select_spottime(self.text)
                         background_normal: ''
                         background_color: color_spinner
@@ -619,16 +729,12 @@
                     hint_text: "Miejsce zdarzenia"
                     multiline: False
                     font_size: root.width * font_factor_1
-                Spinner:
-                    id: type_of_action
-                    text: "Rodzaj zdarzenia"
+                TextInput:
                     size_hint: 0.35, 0.1
-                    size: 100, 44
-                    background_normal: ''
-                    background_color: color_spinner
-                    color: color_font
+                    id: type_of_action
+                    hint_text: "Rodzaj zdarzenia:"
+                    multiline: False
                     font_size: root.width * font_factor_1
-                    option_cls: Factory.get("MySpinnerOption")
                 Spinner:
                     id: section_com
                     text: "Dowódca sekcji"
@@ -751,7 +857,7 @@
                         option_cls: Factory.get("MySpinnerOption")
                     Spinner:
                         id: end_time_m
-                        values: ["teraz","00", "05","10","15","20","25","30","35","40","45","50","55",""]
+                        values: ['teraz','00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56', '57', '58', '59', '']
                         on_text: root.on_spinner_select_endtime(self.text)
                         background_normal: ''
                         background_color: color_spinner
@@ -779,7 +885,7 @@
                         option_cls: Factory.get("MySpinnerOption")
                     Spinner:
                         id: home_time_m
-                        values: ["teraz","00", "05","10","15","20","25","30","35","40","45","50","55",""]
+                        values: ['teraz','00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56', '57', '58', '59', '']
                         on_text: root.on_spinner_select_hometime(self.text)
                         background_normal: ''
                         background_color: color_spinner
@@ -837,9 +943,7 @@
                     background_color: color_button_2
                     font_size: root.width * font_factor_1
                     on_release:
-                        root.clear()
-                        root.manager.transition.direction = "up"
-                        app.root.current = "start"
+                        Factory.dismissPopout().open()
                 Label:
                     text: ""
                 Label:
@@ -935,13 +1039,16 @@
                         text: "Zastęp:"
                         font_size: root.width * font_factor_1
                         color: color_font
-                    TextInput:
+                    Spinner:
                         id: truck_num
+                        text: "Numer wozu"
                         size_hint: 0.35, 0.1
-                        hint_text: "Numer wozu"
-                        halign: 'center'
-                        multiline: False
+                        size: 100, 44
+                        background_normal: ''
+                        background_color: color_spinner
+                        color: color_font
                         font_size: root.width * font_factor_1
+                        option_cls: Factory.get("MySpinnerOption")
                 GridLayout:
                     cols: 4
                     spacing: [2,0]
@@ -999,7 +1106,7 @@
                         option_cls: Factory.get("MySpinnerOption")
                     Spinner:
                         id: dep_time_m
-                        values: ["teraz","00", "05","10","15","20","25","30","35","40","45","50","55", ""]
+                        values: ['teraz','00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56', '57', '58', '59', '']
                         on_text: root.on_spinner_select_deptime(self.text)
                         background_normal: ''
                         background_color: color_spinner
@@ -1027,7 +1134,7 @@
                         option_cls: Factory.get("MySpinnerOption")
                     Spinner:
                         id: spot_time_m
-                        values: ["teraz","00", "05","10","15","20","25","30","35","40","45","50","55",""]
+                        values: ['teraz','00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56', '57', '58', '59', '']
                         on_text: root.on_spinner_select_spottime(self.text)
                         background_normal: ''
                         background_color: color_spinner
@@ -1040,16 +1147,12 @@
                     hint_text: "Miejsce zdarzenia:"
                     multiline: False
                     font_size: root.width * font_factor_1
-                Spinner:
-                    id: type_of_action
-                    text: "Rodzaj zdarzenia"
+                TextInput:
                     size_hint: 0.35, 0.1
-                    size: 100, 44
-                    background_normal: ''
-                    background_color: color_spinner
-                    color: color_font
+                    id: type_of_action
+                    hint_text: "Rodzaj zdarzenia:"
+                    multiline: False
                     font_size: root.width * font_factor_1
-                    option_cls: Factory.get("MySpinnerOption")
                 Spinner:
                     id: section_com
                     text: "Dowódca sekcji"
@@ -1172,7 +1275,7 @@
                         option_cls: Factory.get("MySpinnerOption")
                     Spinner:
                         id: end_time_m
-                        values: ["teraz","00", "05","10","15","20","25","30","35","40","45","50","55",""]
+                        values: ['teraz','00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56', '57', '58', '59', '']
                         on_text: root.on_spinner_select_endtime(self.text)
                         background_normal: ''
                         background_color: color_spinner
@@ -1200,7 +1303,7 @@
                         option_cls: Factory.get("MySpinnerOption")
                     Spinner:
                         id: home_time_m
-                        values: ["teraz","00", "05","10","15","20","25","30","35","40","45","50","55",""]
+                        values: ['teraz','00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56', '57', '58', '59', '']
                         on_text: root.on_spinner_select_hometime(self.text)
                         background_normal: ''
                         background_color: color_spinner
@@ -1258,9 +1361,7 @@
                     background_color: color_button_2
                     font_size: root.width * font_factor_1
                     on_release:
-                        root.clear()
-                        root.manager.transition.direction = "right"
-                        app.root.current = "browser"
+                        Factory.dismissPopout().open()
                 Button:
                     id: del_but
                     size_hint: 0.35, 0.1

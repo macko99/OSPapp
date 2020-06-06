@@ -13,9 +13,10 @@ class DataBase:
     secret = ''
     admin_passwd = ''
 
-    def __init__(self, path, heroes_path, passwd_path, types_path):
+    def __init__(self, path, heroes_path, passwd_path, trucks_path):
         self.heroes_path = heroes_path
         self.passwd_path = passwd_path
+        self.trucks_path = trucks_path
         self.path = path
         self.store = JsonStore(path)
         with open("login", 'r') as file:
@@ -25,45 +26,56 @@ class DataBase:
         self.url = self.base_url + self.user + self.secret
 
         self.firebase_patch_all()
+        self.updateDataCore()
+
+    def updateDataCore(self):
         try:
             string = str(requests.get(self.url).json()['heroes'])
             if string:
-                with open(heroes_path, 'w') as file:
+                with open(self.heroes_path, 'w') as file:
                     file.write(string)
         except Exception as e:
             print(str(e) + str(1))
         try:
-            with open(heroes_path, 'r') as file:
+            with open(self.heroes_path, 'r') as file:
                 self.heroes = json.loads(str(file.read()).replace("'", '"'))
         except Exception as e:
-            print(str(e)+ str(2))
+            print(str(e) + str(2))
             self.heroes = ["brak strażaków w bazie"]
         try:
-            string = str(requests.get(self.url).json()['types'])
+            string = str(requests.get(self.url).json()['trucks'])
             if string:
-                with open(types_path, 'w') as file:
+                with open(self.trucks_path, 'w') as file:
                     file.write(string)
         except Exception as e:
             print(str(e) + str(3))
         try:
-            with open(types_path, 'r') as file:
-                self.types = json.loads(str(file.read()).replace("'", '"'))
+            with open(self.trucks_path, 'r') as file:
+                self.trucks = json.loads(str(file.read()).replace("'", '"'))
         except Exception as e:
             print(str(e) + str(4))
-            self.types = ["brak rodzajów w bazie"]
+            self.trucks = ["brak zastepów w bazie"]
         try:
             string = str(requests.get(self.url).json()['passwd'])
             if string:
-                with open(passwd_path, 'w') as file:
+                with open(self.passwd_path, 'w') as file:
                     file.write(string)
         except Exception as e:
             print(str(e) + str(5))
         try:
-            with open(passwd_path, 'r') as file:
+            with open(self.passwd_path, 'r') as file:
                 global admin_passwd
                 admin_passwd = file.readline()
         except Exception as e:
             print(str(e) + str(6))
+
+    def updateDataFromDB(self):
+        result = self.firebase_patch_all()
+        if result == -1:
+            Factory.connectionPopout().open()
+        else:
+            self.updateDataCore()
+            Factory.updateOK().open()
 
     def put_report(self, uuid_num, id_number, dep_date, dep_time, spot_time, location, type_of_action,
                    section_com, action_com, driver, perpetrator, victim, section, details,
@@ -76,8 +88,8 @@ class DataBase:
             action_com = ""
         if driver == "Kierowca":
             driver = ""
-        if type_of_action == "Rodzaj zdarzenia":
-            type_of_action = ""
+        if truck_num == "Zastęp":
+            truck_num = ""
         self.store.put(uuid_num, innerID=id_number, depDate=dep_date, depTime=dep_time, spotTime=spot_time,
                        location=location, type=type_of_action,
                        sectionCom=section_com, actionCom=action_com, driver=driver, perpetrator=perpetrator,
@@ -90,6 +102,9 @@ class DataBase:
             requests.patch(url=self.url, json=to_database)
         except Exception as e:
             print(str(e))
+            return -1
+        else:
+            return 0
 
     def delete_report(self, uuid_num):
         if self.store.exists(uuid_num):
@@ -118,8 +133,8 @@ class DataBase:
     def get_actionComm(self):
         return self.heroes.get("action")
 
-    def get_types(self):
-        return self.types
+    def get_trucks(self):
+        return self.trucks
 
     def firebase_patch_all(self):
         try:
@@ -129,6 +144,9 @@ class DataBase:
                 requests.patch(url=self.url, json=to_database)
         except Exception as e:
             print(str(e))
+            return -1
+        else:
+            return 0
 
     def delete_all(self):
         string_all = ""
@@ -230,6 +248,18 @@ class DataBase:
             except Exception as e:
                 print(str(e))
                 self.heroes = ["brak strażaków w bazie"]
+            try:
+                string = str(requests.get(self.url).json()['trucks'])
+                with open(self.trucks_path, 'w') as file:
+                    file.write(string)
+            except Exception as e:
+                print(str(e))
+            try:
+                with open(self.trucks_path, 'r') as file:
+                    self.trucks = json.loads(str(file.read()).replace("'", '"'))
+            except Exception as e:
+                print(str(e))
+                self.trucks = ["brak zastepów w bazie"]
             try:
                 string = str(requests.get(self.url).json()['passwd'])
                 with open(self.passwd_path, 'w') as file:
