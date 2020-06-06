@@ -539,9 +539,17 @@
             on_release:
                 app.database.updateDataFromDB()
         Label:
+            id: us
             text:"Maciej Kozub, Tomasz Zachwieja @ AGH 2020"
             font_size: self.width /25
             pos_hint: {"center_x":0.5, "center_y":0.03}
+            size_hint: 0.5, 0.2
+            color: color_spinner
+        Label:
+            id: ver
+            text:"Version: "
+            font_size: self.width /25
+            pos_hint: {"center_x":0.5, "center_y":0.01}
             size_hint: 0.5, 0.2
             color: color_spinner
 

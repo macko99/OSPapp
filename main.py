@@ -21,6 +21,8 @@ color_font = (0.16, 0.2, 0.25, 1)
 color_choose_btn = [(0.81, 0.81, 0.81, 1), (0.93, 0.94, 0.95, 1)]
 color_yes_no = (0.93, 0.42, 0.3, 1)
 
+version = "1.0"
+
 
 class CreateReport(Screen):
     layout_content = ObjectProperty(None)
@@ -598,7 +600,11 @@ class PasswordAll(Screen):
 
 
 class StartWindow(Screen):
-    pass
+
+    def __init__(self, **kwargs):
+        global db
+        super().__init__(**kwargs)
+        self.ids.ver.text = self.ids.ver.text + version
 
 
 def key_input(window, key, scancode, codepoint, modifier):
@@ -634,7 +640,7 @@ class OSPApp(App):
         Window.bind(on_keyboard=key_input)
         global db
         db = DataBase(App.get_running_app().storage, App.get_running_app().heroes, App.get_running_app().passwd,
-                      App.get_running_app().trucks)
+                      App.get_running_app().trucks, version)
         self.database = db
         return sm
 

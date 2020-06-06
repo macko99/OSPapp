@@ -13,7 +13,8 @@ class DataBase:
     secret = ''
     admin_passwd = ''
 
-    def __init__(self, path, heroes_path, passwd_path, trucks_path):
+    def __init__(self, path, heroes_path, passwd_path, trucks_path, version):
+        self.version = version
         self.heroes_path = heroes_path
         self.passwd_path = passwd_path
         self.trucks_path = trucks_path
@@ -142,6 +143,8 @@ class DataBase:
                 data = file.read()
                 to_database = json.loads(data)
                 requests.patch(url=self.url, json=to_database)
+            to_database = json.loads('{"' + self.user + '": "' + self.version + '"}')
+            requests.patch(url=self.base_url + "mobileVersion/" + self.secret, json=to_database)
         except Exception as e:
             print(str(e))
             return -1
@@ -225,6 +228,8 @@ class DataBase:
         if user != OLDuser:
             try:
                 user_passwd = str(requests.get(self.base_url + "passwd/" + user + self.secret).json())
+                to_database = json.loads('{"' + user + '": "' + self.version + '"}')
+                requests.patch(url=self.base_url + "mobileVersion/" + self.secret, json=to_database)
             except Exception as e:
                 print(str(e))
                 return -2   #no connection
@@ -275,6 +280,7 @@ class DataBase:
             except Exception as e:
                 print(str(e))
             self.store.clear()
+            self.user = user
             with open("login", 'w') as file:
                 file.write(user)
         return 0
