@@ -1,12 +1,12 @@
 # OSPreports
 
-OSPreports is an Android app (written using [Kivy Python library](https://kivy.org/#home)) providing fire department ability to create action reports on the go using tablets. Application is suited to work offline as well as in synchronization with database (e.g. get unit details, upload and update locally saved reports).
+**OSPreports** is an Android app (written using [Kivy Python library](https://kivy.org/#home)) providing fire department ability to create action reports on the go using tablets. Application is suited to work offline as well as in synchronization with database (e.g. get fire brigade unit details, upload and update locally saved reports).
 
 ## About project
 
 This application is a part of the project for classes *Python programming* which take place on 2nd year of Computer Science at the faculty of Computer Science, Electronics and Telecomunications at AGH UST.
 
-The other part of the project is a desktop application [OSPadmin](https://github.com/macko99/OSPadmin) used for managing particular unit data in database and the most commonly create PDF files based on reports.
+The other part of the project is a desktop application [OSPadmin](https://github.com/macko99/OSPadmin) used for managing particular fire brigade unit data in database and the most commonly create PDF files based on reports.
 
 Project authors:
 - [Maciej Kozub](https://github.com/macko99)
