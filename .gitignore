@@ -1,6 +1,8 @@
 /venv/*
 /bin/*
 /.buildozer/*
-/secret
+/data/secret
 /.idea/*
 /libs/*
+/buildozer/*
+/buildozer.spec

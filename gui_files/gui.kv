@@ -1,6 +1,6 @@
 #:import Factory kivy.factory.Factory
 
-#:set backg_color ( 0.88 , 0.98 , 0.99 , 1 )
+#:set bg_color ( 0.88 , 0.98 , 0.99 , 1 )
 #:set color_button ( 0.6 , 0.76 , 0.85 , 1 )
 #:set color_button_2 ( 0.24 , 0.35 , 0.5 , 1 )
 #:set color_spinner ( 0.6 , 0.76 , 0.85 , 1 )
@@ -64,8 +64,8 @@
             font_size: (root.width**2 + root.height**2) / 12**4 * font_factor_3
             text: 'Tak'
             on_release:
-                app.create.dismissYes()
-                app.edit.dismissYes()
+                app.create.dismiss_confirmed()
+                app.edit.dismiss_confirmed()
                 root.dismiss()
         Button:
             pos_hint:{"x":0.55,"y":0.1}
@@ -327,7 +327,7 @@
         id: layout_content
         canvas.before:
             Color:
-                rgba: backg_color
+                rgba: bg_color
             Rectangle:
                 pos: self.pos
                 size: self.size
@@ -387,7 +387,7 @@
         id: layout_content
         canvas.before:
             Color:
-                rgba: backg_color
+                rgba: bg_color
             Rectangle:
                 pos: self.pos
                 size: self.size
@@ -431,7 +431,7 @@
         id: layout_content
         canvas.before:
             Color:
-                rgba: backg_color
+                rgba: bg_color
             Rectangle:
                 pos: self.pos
                 size: self.size
@@ -472,7 +472,7 @@
     FloatLayout:
         canvas.before:
             Color:
-                rgba: backg_color
+                rgba: bg_color
             Rectangle:
                 pos: self.pos
                 size: self.size
@@ -484,7 +484,7 @@
             color: color_font
             bold: True
         Image:
-            source: 'truck1.png'
+            source: 'gui_files/truck1.png'
             pos_hint: {"center_x":0.5, "center_y":0.65}
             size_hint: 0.3, 0.3
         Button:
@@ -500,7 +500,7 @@
                 root.manager.transition.direction = "down"
                 app.root.current = "create"
         Image:
-            source: 'list2.png'
+            source: 'gui_files/list2.png'
             pos_hint: {"center_x":0.5, "center_y":0.31}
             size_hint: 0.3, 0.2
         Button:
@@ -537,7 +537,7 @@
             background_normal: ''
             background_color: color_button
             on_release:
-                app.database.updateDataFromDB()
+                app.database.update_reports_data()
         Label:
             id: us
             text:"Maciej Kozub, Tomasz Zachwieja @ AGH 2020"
@@ -571,7 +571,7 @@
     return_date_y: return_date_y
     return_date_m: return_date_m
     return_date_d: return_date_d
-    stan_licznika: stan_licznika
+    meter_reading: meter_reading
     km_location: km_location
     scroll_id: scroll_id
     checkbox: checkbox
@@ -582,7 +582,7 @@
     BoxLayout:
         canvas.before:
             Color:
-                rgba: backg_color
+                rgba: bg_color
             Rectangle:
                 pos: self.pos
                 size: self.size
@@ -905,7 +905,7 @@
                     spacing: [2,0]
                     TextInput:
                         size_hint: 0.35, 0.1
-                        id: stan_licznika
+                        id: meter_reading
                         hint_text: "Stan licznika:"
                         input_filter: "int"
                         multiline: False
@@ -937,7 +937,7 @@
                 Button:
                     size_hint: 0.35, 0.1
                     text: "Zapisz"
-                    color: backg_color
+                    color: bg_color
                     background_normal: ''
                     background_color: color_button_2
                     font_size: root.width * font_factor_1
@@ -946,7 +946,7 @@
                 Button:
                     size_hint: 0.35, 0.1
                     text: "Anuluj"
-                    color: backg_color
+                    color: bg_color
                     background_normal: ''
                     background_color: color_button_2
                     font_size: root.width * font_factor_1
@@ -975,7 +975,7 @@
     return_date_y: return_date_y
     return_date_m: return_date_m
     return_date_d: return_date_d
-    stan_licznika: stan_licznika
+    meter_reading: meter_reading
     km_location: km_location
     modDate: modDate
     scroll_id: scroll_id
@@ -987,7 +987,7 @@
     BoxLayout:
         canvas.before:
             Color:
-                rgba: backg_color
+                rgba: bg_color
             Rectangle:
                 pos: self.pos
                 size: self.size
@@ -1323,7 +1323,7 @@
                     spacing: [2,0]
                     TextInput:
                         size_hint: 0.35, 0.1
-                        id: stan_licznika
+                        id: meter_reading
                         hint_text: "Stan licznika:"
                         input_filter: "int"
                         multiline: False
@@ -1355,7 +1355,7 @@
                 Button:
                     size_hint: 0.35, 0.1
                     text: "Zapisz"
-                    color: backg_color
+                    color: bg_color
                     background_normal: ''
                     background_color: color_button_2
                     font_size: root.width * font_factor_1
@@ -1364,7 +1364,7 @@
                 Button:
                     size_hint: 0.35, 0.1
                     text: "Anuluj"
-                    color: backg_color
+                    color: bg_color
                     background_normal: ''
                     background_color: color_button_2
                     font_size: root.width * font_factor_1
@@ -1397,7 +1397,7 @@
     BoxLayout:
         canvas.before:
             Color:
-                rgba: backg_color
+                rgba: bg_color
             Rectangle:
                 pos: self.pos
                 size: self.size

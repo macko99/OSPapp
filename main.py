@@ -7,14 +7,13 @@ from kivy.core.window import Window
 from kivy.factory import Factory
 from kivy.uix.button import Button
 from kivy.uix.label import Label
-
 from database import DataBase
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.properties import ObjectProperty
 
-backg_color = (0.88, 0.98, 0.99, 1)
+bg_color = (0.88, 0.98, 0.99, 1)
 color_button = (0.6, 0.76, 0.85, 1)
 color_dropdown = (0.75, 0.75, 0.75, 1)
 color_font = (0.16, 0.2, 0.25, 1)
@@ -22,6 +21,37 @@ color_choose_btn = [(0.81, 0.81, 0.81, 1), (0.93, 0.94, 0.95, 1)]
 color_yes_no = (0.93, 0.42, 0.3, 1)
 
 version = "1.0"
+
+
+def date_follow_checker(str1, str2):
+    day1, month1, year1 = str1.split('.')
+    day2, month2, year2 = str2.split('.')
+    try:
+        date1 = datetime.datetime(int(year1), int(month1), int(day1))
+        date2 = datetime.datetime(int(year2), int(month2), int(day2))
+    except ValueError:
+        return False
+    else:
+        return date1 <= date2
+
+
+def get_years_list():
+    years = []
+    for i in range(int(datetime.datetime.now().strftime("%Y")) - 2,
+                   int(datetime.datetime.now().strftime("%Y")) + 3):
+        years.append(str(i))
+    years.append("dzisiaj")
+    return years
+
+
+def date_validator(date_str):
+    day, month, year = date_str.split('.')
+    try:
+        datetime.datetime(int(year), int(month), int(day))
+    except ValueError:
+        return False
+    else:
+        return True
 
 
 class CreateReport(Screen):
@@ -32,28 +62,20 @@ class CreateReport(Screen):
         self.layout_content.bind(minimum_height=self.layout_content.setter('height'))
         self.asked = False
 
-    def dismissYes(self):
+    def dismiss_confirmed(self):
         self.clear()
         self.manager.transition.direction = "up"
         sm.current = "start"
 
-    def getYears(self):
-        years = []
-        for i in range(int(datetime.datetime.now().strftime("%Y")) - 2,
-                       int(datetime.datetime.now().strftime("%Y")) + 3):
-            years.append(str(i))
-        years.append("dzisiaj")
-        return years
-
     def on_enter(self, *args):
         self.ids.scroll_id.scroll_to(self.ids.id_number)
-        self.ids.section_com.values = db.get_sectionComm() + json.loads('["Dowódca sekcji"]')
-        self.ids.action_com.values = db.get_actionComm() + json.loads('["Dowódca akcji"]')
+        self.ids.section_com.values = db.get_section_comm() + json.loads('["Dowódca sekcji"]')
+        self.ids.action_com.values = db.get_action_comm() + json.loads('["Dowódca akcji"]')
         self.ids.driver.values = db.get_driver() + json.loads('["Kierowca"]')
         self.truck_num.values = db.get_trucks() + json.loads('["Numer wozu"]')
         self.section_chooser.values = db.get_heroes() + json.loads('["Wybierz osoby z sekcji (pole powyżej)"]')
-        self.dep_date_y.values = self.getYears()
-        self.return_date_y.values = self.getYears()
+        self.dep_date_y.values = get_years_list()
+        self.return_date_y.values = get_years_list()
         self.checkbox.text = "Nie"
         self.asked = False
 
@@ -101,26 +123,6 @@ class CreateReport(Screen):
             else:
                 self.section.text = self.section.text + ", " + text
 
-    def date_validator(self, date_str):
-        day, month, year = date_str.split('.')
-        try:
-            datetime.datetime(int(year), int(month), int(day))
-        except ValueError:
-            return False
-        else:
-            return True
-
-    def date_follower(self, str1, str2):
-        day1, month1, year1 = str1.split('.')
-        day2, month2, year2 = str2.split('.')
-        try:
-            date1 = datetime.datetime(int(year1), int(month1), int(day1))
-            date2 = datetime.datetime(int(year2), int(month2), int(day2))
-        except ValueError:
-            return False
-        else:
-            return date1 <= date2
-
     def submit(self):
         if db.find_inner_id(self.id_number.text) or self.id_number.text == "Taka L.P. już istnieje!":
             Factory.IDpopout().open()
@@ -129,7 +131,7 @@ class CreateReport(Screen):
         else:
             if self.dep_date_d.text != "" and self.dep_date_m.text != "" and self.dep_date_y.text != "":
                 dep_date = self.dep_date_d.text + "." + self.dep_date_m.text + "." + self.dep_date_y.text
-                if not self.date_validator(dep_date):
+                if not date_validator(dep_date):
                     Factory.datePopout().open()
                     self.ids.scroll_id.scroll_to(self.dep_date_d)
                     return
@@ -137,14 +139,14 @@ class CreateReport(Screen):
                 dep_date = ""
             if self.return_date_d.text != "" and self.return_date_m.text != "" and self.return_date_y.text != "":
                 return_date = self.return_date_d.text + "." + self.return_date_m.text + "." + self.return_date_y.text
-                if not self.date_validator(return_date):
+                if not date_validator(return_date):
                     Factory.datePopout().open()
                     self.ids.scroll_id.scroll_to(self.return_date_d)
                     return
             else:
                 return_date = ""
             if dep_date != "" and return_date != "":
-                if not self.date_follower(dep_date, return_date):
+                if not date_follow_checker(dep_date, return_date):
                     Factory.date2Popout().open()
                     self.ids.scroll_id.scroll_to(self.return_date_d)
                     return
@@ -164,13 +166,13 @@ class CreateReport(Screen):
                 home_time = self.ids.home_time_h.text + ":" + self.ids.home_time_m.text
             else:
                 home_time = ""
-            result = db.put_report("", self.id_number.text, dep_date, dep_time, spot_time,
-                                   self.location.text, self.type_of_action.text, self.section_com.text,
-                                   self.action_com.text,
-                                   self.driver.text, self.perpetrator.text, self.victim.text, self.section.text,
-                                   self.details.text, return_date, end_time, home_time, self.stan_licznika.text,
-                                   self.km_location.text, self.checkbox.text, self.truck_num.text)
-            if result == 0:
+            status_code = db.put_report("", self.id_number.text, dep_date, dep_time, spot_time,
+                                        self.location.text, self.type_of_action.text, self.section_com.text,
+                                        self.action_com.text,
+                                        self.driver.text, self.perpetrator.text, self.victim.text, self.section.text,
+                                        self.details.text, return_date, end_time, home_time, self.meter_reading.text,
+                                        self.km_location.text, self.checkbox.text, self.truck_num.text)
+            if status_code == 0:
                 Factory.saveAndUploadOKPopout().open()
             else:
                 Factory.saveOKPopout().open()
@@ -203,41 +205,36 @@ class CreateReport(Screen):
         self.ids.home_time_h.text = ""
         self.ids.end_time_m.text = ""
         self.ids.home_time_m.text = ""
-        self.stan_licznika.text = ""
+        self.meter_reading.text = ""
         self.km_location.text = ""
         self.checkbox.text = ""
         self.truck_num.text = "Numer wozu"
         self.section_chooser.text = "Wybierz osoby z sekcji (pole powyżej)"
 
 
+def delete():
+    global tmp_uuid
+    db.delete_report(tmp_uuid[6:])
+
+
+def start(input_data):
+    global result
+    result = db.get_report(input_data)
+
+
 class EditReport(Screen):
     layout_content = ObjectProperty(None)
-    input_id = ""
     tmp_id = ""
-    tmp_uuid = ""
-    result = []
 
     def __init__(self, **kwargs):
         super(EditReport, self).__init__(**kwargs)
         self.layout_content.bind(minimum_height=self.layout_content.setter('height'))
         self.asked = True
 
-    def getYears(self):
-        years = []
-        for i in range(int(datetime.datetime.now().strftime("%Y")) - 2,
-                       int(datetime.datetime.now().strftime("%Y")) + 3):
-            years.append(str(i))
-        years.append("dzisiaj")
-        return years
-
-    def dismissYes(self):
+    def dismiss_confirmed(self):
         self.clear()
         self.manager.transition.direction = "up"
         sm.current = "start"
-
-    def start(self, input_data):
-        global result
-        result = db.get_report(input_data)
 
     def on_enter(self):
         self.ids.scroll_id.scroll_to(self.ids.id_number)
@@ -276,7 +273,7 @@ class EditReport(Screen):
         if result[16] != "":
             self.ids.home_time_h.text = str(result[16]).split(":")[0]
             self.ids.home_time_m.text = str(result[16]).split(":")[1]
-        self.stan_licznika.text = result[17]
+        self.meter_reading.text = result[17]
         self.km_location.text = result[18]
         self.modDate.text = result[19][:10] + "\n" + result[19][10:]
         self.checkbox.text = result[20]
@@ -284,37 +281,16 @@ class EditReport(Screen):
             self.asked = True
         else:
             self.asked = False
-        global tmp_id
-        tmp_id = result[1]
+        self.tmp_id = result[1]
         if result[21] != "":
             self.truck_num.text = result[21]
-        self.ids.section_com.values = db.get_sectionComm() + json.loads('["Dowódca sekcji"]')
-        self.ids.action_com.values = db.get_actionComm() + json.loads('["Dowódca akcji"]')
+        self.ids.section_com.values = db.get_section_comm() + json.loads('["Dowódca sekcji"]')
+        self.ids.action_com.values = db.get_action_comm() + json.loads('["Dowódca akcji"]')
         self.ids.driver.values = db.get_driver() + json.loads('["Kierowca"]')
         self.truck_num.values = db.get_trucks() + json.loads('["Numer wozu"]')
         self.section_chooser.values = db.get_heroes() + json.loads('["Wybierz osoby z sekcji (pole powyżej)"]')
-        self.dep_date_y.values = self.getYears()
-        self.return_date_y.values = self.getYears()
-
-    def date_validator(self, date_str):
-        day, month, year = date_str.split('.')
-        try:
-            datetime.datetime(int(year), int(month), int(day))
-        except ValueError:
-            return False
-        else:
-            return True
-
-    def date_follower(self, str1, str2):
-        day1, month1, year1 = str1.split('.')
-        day2, month2, year2 = str2.split('.')
-        try:
-            date1 = datetime.datetime(int(year1), int(month1), int(day1))
-            date2 = datetime.datetime(int(year2), int(month2), int(day2))
-        except ValueError:
-            return False
-        else:
-            return date1 <= date2
+        self.dep_date_y.values = get_years_list()
+        self.return_date_y.values = get_years_list()
 
     def on_spinner_select_depdate(self, text):
         if text == "dzisiaj":
@@ -361,8 +337,7 @@ class EditReport(Screen):
                 self.section.text = self.section.text + ", " + text
 
     def submit(self):
-        global tmp_id
-        if (self.id_number.text != tmp_id and db.find_inner_id(
+        if (self.id_number.text != self.tmp_id and db.find_inner_id(
                 self.id_number.text)) or self.id_number.text == "Taka L.P. już istnieje!":
             Factory.IDpopout().open()
             self.id_number.text = ""
@@ -370,7 +345,7 @@ class EditReport(Screen):
         else:
             if self.dep_date_d.text != "" and self.dep_date_m.text != "" and self.dep_date_y.text != "":
                 dep_date = self.dep_date_d.text + "." + self.dep_date_m.text + "." + self.dep_date_y.text
-                if not self.date_validator(dep_date):
+                if not date_validator(dep_date):
                     Factory.datePopout().open()
                     self.ids.scroll_id.scroll_to(self.dep_date_d)
                     return
@@ -378,14 +353,14 @@ class EditReport(Screen):
                 dep_date = ""
             if self.return_date_d.text != "" and self.return_date_m.text != "" and self.return_date_y.text != "":
                 return_date = self.return_date_d.text + "." + self.return_date_m.text + "." + self.return_date_y.text
-                if not self.date_validator(return_date):
+                if not date_validator(return_date):
                     Factory.datePopout().open()
                     self.ids.scroll_id.scroll_to(self.return_date_d)
                     return
             else:
                 return_date = ""
             if dep_date != "" and return_date != "":
-                if not self.date_follower(dep_date, return_date):
+                if not date_follow_checker(dep_date, return_date):
                     Factory.date2Popout().open()
                     self.ids.scroll_id.scroll_to(self.return_date_d)
                     return
@@ -405,15 +380,15 @@ class EditReport(Screen):
                 home_time = self.ids.home_time_h.text + ":" + self.ids.home_time_m.text
             else:
                 home_time = ""
-            result = db.put_report(self.uuid_num.text[6:], self.id_number.text, dep_date, dep_time,
-                                   spot_time,
-                                   self.location.text, self.type_of_action.text, self.section_com.text,
-                                   self.action_com.text,
-                                   self.driver.text, self.perpetrator.text, self.victim.text, self.section.text,
-                                   self.details.text,
-                                   return_date, end_time, home_time, self.stan_licznika.text,
-                                   self.km_location.text, self.checkbox.text, self.truck_num.text)
-            if result == 0:
+            status_code = db.put_report(self.uuid_num.text[6:], self.id_number.text, dep_date, dep_time,
+                                        spot_time,
+                                        self.location.text, self.type_of_action.text, self.section_com.text,
+                                        self.action_com.text,
+                                        self.driver.text, self.perpetrator.text, self.victim.text, self.section.text,
+                                        self.details.text,
+                                        return_date, end_time, home_time, self.meter_reading.text,
+                                        self.km_location.text, self.checkbox.text, self.truck_num.text)
+            if status_code == 0:
                 Factory.saveAndUploadOKPopout().open()
             else:
                 Factory.saveOKPopout().open()
@@ -447,22 +422,22 @@ class EditReport(Screen):
         self.ids.home_time_h.text = ""
         self.ids.end_time_m.text = ""
         self.ids.home_time_m.text = ""
-        self.stan_licznika.text = ""
+        self.meter_reading.text = ""
         self.km_location.text = ""
         self.modDate.text = ""
         self.checkbox.text = ""
         self.truck_num.text = "Numer wozu"
         self.section_chooser.text = "Wybierz osoby z sekcji (pole powyżej)"
 
-    def delete(self):
-        global tmp_uuid
-        db.delete_report(tmp_uuid[6:])
-
     def try_delete(self):
         global tmp_uuid
         tmp_uuid = self.uuid_num.text
         self.manager.transition.direction = "left"
         sm.current = "password"
+
+
+def delete_all():
+    db.delete_all()
 
 
 class Browser(Screen):
@@ -507,16 +482,13 @@ class Browser(Screen):
         self.ids.layout_content.add_widget(self.ids.cancel_but)
 
     def on_press(self, instance):
-        ed.start(str(instance.id))
+        start(str(instance.id))
         self.manager.transition.direction = "left"
         sm.current = "edit"
 
     def cancel(self):
         self.manager.transition.direction = "down"
         sm.current = "start"
-
-    def delete_all(self):
-        db.delete_all()
 
     def try_delete(self, instance):
         self.manager.transition.direction = "left"
@@ -533,8 +505,8 @@ class Password(Screen):
         self.password.text = ""
 
     def delete(self):
-        if self.password.text == db.get_passwd():
-            ed.delete()
+        if self.password.text == db.get_password():
+            delete()
             self.password.text = ""
             self.manager.transition.direction = "right"
             sm.current = "browser"
@@ -556,7 +528,7 @@ class Login(Screen):
 
     def change(self):
         if self.password.text != "" and self.user.text != "":
-            res = db.changeOSP(self.user.text, self.password.text)
+            res = db.change_osp(self.user.text, self.password.text)
             self.clear()
             if res == -1:  # bad password
                 Factory.userPopout().open()
@@ -586,8 +558,8 @@ class PasswordAll(Screen):
         self.password.text = ""
 
     def delete(self):
-        if self.password.text == db.get_passwd():
-            Browser().delete_all()
+        if self.password.text == db.get_password():
+            delete_all()
             self.password.text = ""
             self.manager.transition.direction = "right"
             sm.current = "browser"
@@ -618,22 +590,18 @@ def key_input(window, key, scancode, codepoint, modifier):
         return False
 
 
-Builder.load_file("my.kv")
+Builder.load_file("gui_files/gui.kv")
 global db
 
-cr = CreateReport(name="create")
-ed = EditReport(name="edit")
 sm = ScreenManager()
-screens = [StartWindow(name="start"), cr, Browser(name="browser"), Password(name="password"),
-           ed, PasswordAll(name="passwordAll"), Login(name="login")]
+screens = [StartWindow(name="start"), CreateReport(name="create"), Browser(name="browser"), Password(name="password"),
+           EditReport(name="edit"), PasswordAll(name="passwordAll"), Login(name="login")]
 for screen in screens:
     sm.add_widget(screen)
 sm.current = "start"
 
 
 class OSPApp(App):
-    create = cr
-    edit = ed
     database = ''
 
     def build(self):
