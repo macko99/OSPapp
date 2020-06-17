@@ -20,9 +20,9 @@ class DataBase:
         self.trucks_path = trucks_path
         self.path = path
         self.store = JsonStore(path)
-        with open("data/login", 'r') as file:
+        with open("login_data/login", 'r') as file:
             self.user = file.read().split("\n")[0]
-        with open("data/secret", 'r') as file:
+        with open("login_data/secret", 'r') as file:
             self.secret = file.read().split("\n")[0]
         self.url = self.base_url + self.user + self.secret
 
@@ -216,7 +216,7 @@ class DataBase:
         return self.admin_password
 
     def change_osp(self, user, password):
-        with open("data/login", 'r') as file:
+        with open("login_data/login", 'r') as file:
             old_user = file.read().split("\n")[0]
         if user != old_user:
             try:
@@ -273,6 +273,6 @@ class DataBase:
                 Logger.exception(str(no_password))
             self.store.clear()
             self.user = user
-            with open("data/login", 'w') as file:
+            with open("login_data/login", 'w') as file:
                 file.write(user)
         return 0
