@@ -20,6 +20,10 @@ color_font = (0.16, 0.2, 0.25, 1)
 color_choose_btn = [(0.81, 0.81, 0.81, 1), (0.93, 0.94, 0.95, 1)]
 color_yes_no = (0.93, 0.42, 0.3, 1)
 
+section_str = "Wybierz osoby z sekcji (pole powyżej)"
+id_number_str = "Taka L.P. już istnieje!"
+time_now_str = "teraz"
+
 version = "1.0"
 
 
@@ -29,10 +33,9 @@ def date_follow_checker(str1, str2):
     try:
         date1 = datetime.datetime(int(year1), int(month1), int(day1))
         date2 = datetime.datetime(int(year2), int(month2), int(day2))
+        return date1 <= date2
     except ValueError:
         return False
-    else:
-        return date1 <= date2
 
 
 def get_years_list():
@@ -48,10 +51,9 @@ def date_validator(date_str):
     day, month, year = date_str.split('.')
     try:
         datetime.datetime(int(year), int(month), int(day))
+        return True
     except ValueError:
         return False
-    else:
-        return True
 
 
 class CreateReport(Screen):
@@ -92,22 +94,22 @@ class CreateReport(Screen):
             self.return_date_y.text = str(datetime.datetime.now().strftime("%Y"))
 
     def on_spinner_select_deptime(self, text):
-        if text == "teraz":
+        if text == time_now_str:
             self.ids.dep_time_h.text = str(datetime.datetime.now().strftime("%H"))
             self.ids.dep_time_m.text = str(datetime.datetime.now().strftime("%M"))
 
     def on_spinner_select_spottime(self, text):
-        if text == "teraz":
+        if text == time_now_str:
             self.ids.spot_time_h.text = str(datetime.datetime.now().strftime("%H"))
             self.ids.spot_time_m.text = str(datetime.datetime.now().strftime("%M"))
 
     def on_spinner_select_endtime(self, text):
-        if text == "teraz":
+        if text == time_now_str:
             self.ids.end_time_h.text = str(datetime.datetime.now().strftime("%H"))
             self.ids.end_time_m.text = str(datetime.datetime.now().strftime("%M"))
 
     def on_spinner_select_hometime(self, text):
-        if text == "teraz":
+        if text == time_now_str:
             self.ids.home_time_h.text = str(datetime.datetime.now().strftime("%H"))
             self.ids.home_time_m.text = str(datetime.datetime.now().strftime("%M"))
 
@@ -117,14 +119,14 @@ class CreateReport(Screen):
             self.asked = True
 
     def on_spinner_chooser(self, text):
-        if text != "Wybierz osoby z sekcji (pole powyżej)":
+        if text != section_str:
             if self.section.text == "":
                 self.section.text = self.section.text + text
             else:
                 self.section.text = self.section.text + ", " + text
 
     def submit(self):
-        if db.find_inner_id(self.id_number.text) or self.id_number.text == "Taka L.P. już istnieje!":
+        if db.find_inner_id(self.id_number.text) or self.id_number.text == id_number_str:
             Factory.IDpopout().open()
             self.id_number.text = ""
             self.ids.scroll_id.scroll_to(self.ids.id_number)
@@ -209,7 +211,7 @@ class CreateReport(Screen):
         self.km_location.text = ""
         self.checkbox.text = ""
         self.truck_num.text = "Numer wozu"
-        self.section_chooser.text = "Wybierz osoby z sekcji (pole powyżej)"
+        self.section_chooser.text = section_str
 
 
 def delete():
@@ -305,22 +307,22 @@ class EditReport(Screen):
             self.return_date_y.text = str(datetime.datetime.now().strftime("%Y"))
 
     def on_spinner_select_deptime(self, text):
-        if text == "teraz":
+        if text == time_now_str:
             self.ids.dep_time_h.text = str(datetime.datetime.now().strftime("%H"))
             self.ids.dep_time_m.text = str(datetime.datetime.now().strftime("%M"))
 
     def on_spinner_select_spottime(self, text):
-        if text == "teraz":
+        if text == time_now_str:
             self.ids.spot_time_h.text = str(datetime.datetime.now().strftime("%H"))
             self.ids.spot_time_m.text = str(datetime.datetime.now().strftime("%M"))
 
     def on_spinner_select_endtime(self, text):
-        if text == "teraz":
+        if text == time_now_str:
             self.ids.end_time_h.text = str(datetime.datetime.now().strftime("%H"))
             self.ids.end_time_m.text = str(datetime.datetime.now().strftime("%M"))
 
     def on_spinner_select_hometime(self, text):
-        if text == "teraz":
+        if text == time_now_str:
             self.ids.home_time_h.text = str(datetime.datetime.now().strftime("%H"))
             self.ids.home_time_m.text = str(datetime.datetime.now().strftime("%M"))
 
@@ -330,7 +332,7 @@ class EditReport(Screen):
             self.asked = True
 
     def on_spinner_chooser(self, text):
-        if text != "Wybierz osoby z sekcji (pole powyżej)":
+        if text != section_str:
             if self.section.text == "":
                 self.section.text = self.section.text + text
             else:
@@ -338,7 +340,7 @@ class EditReport(Screen):
 
     def submit(self):
         if (self.id_number.text != self.tmp_id and db.find_inner_id(
-                self.id_number.text)) or self.id_number.text == "Taka L.P. już istnieje!":
+                self.id_number.text)) or self.id_number.text == id_number_str:
             Factory.IDpopout().open()
             self.id_number.text = ""
             self.ids.scroll_id.scroll_to(self.ids.id_number)
@@ -427,7 +429,7 @@ class EditReport(Screen):
         self.modDate.text = ""
         self.checkbox.text = ""
         self.truck_num.text = "Numer wozu"
-        self.section_chooser.text = "Wybierz osoby z sekcji (pole powyżej)"
+        self.section_chooser.text = section_str
 
     def try_delete(self):
         global tmp_uuid

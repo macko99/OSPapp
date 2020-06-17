@@ -65,7 +65,6 @@ class DataBase:
             Logger.exception(str(no_password_in_db))
         try:
             with open(self.password_path, 'r') as file:
-                # global admin_password
                 self.admin_password = file.readline()
         except Exception as no_password_file:
             Logger.exception(str(no_password_file))
@@ -212,7 +211,6 @@ class DataBase:
         return self.user
 
     def get_password(self):
-        # global admin_password
         return self.admin_password
 
     def change_osp(self, user, password):
