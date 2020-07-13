@@ -18,4 +18,4 @@ Project authors:
 We provide **.apk** file with proper database access credentials for selected fire departments.
 
 ---
-<img src="https://raw.githubusercontent.com/macko99/OSPapp/master/gui_files/logo.png" width="100">
+<img src="https://raw.githubusercontent.com/macko99/OSPapp/master/gui_files/truck1.png" width="100">
